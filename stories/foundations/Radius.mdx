@@ -1,0 +1,14 @@
+import { Meta, Unstyled } from '@storybook/addon-docs/blocks';
+import { RadiusFoundations } from './RadiusFoundations';
+
+<Meta title="Foundations/Radius" />
+
+# Radius
+
+Every `Radius` token applied to a 96×96px box, smallest to largest — `Radius.Full` renders as a circle, which is
+the correct result of applying a radius larger than the box, not a special case. `Radius` tokens have no
+`$description` field in tokens.json, which is called out on each box rather than left blank.
+
+<Unstyled>
+  <RadiusFoundations />
+</Unstyled>

@@ -1,0 +1,17 @@
+import { Meta, Unstyled } from '@storybook/addon-docs/blocks';
+import { TypeFoundations } from './TypeFoundations';
+
+<Meta title="Foundations/Typography" />
+
+# Typography
+
+Every `textStyle` token, largest to smallest, rendered at its real size, weight, and line height. Font weight in
+tokens.json is a keyword (`regular`/`semi-bold`/`bold`/`heavy`), not a CSS number, so the mapping used to render
+weight here is presentational only — not itself a token.
+
+The real typeface, "Greed Standard-TRIAL," isn't embedded in this prototype yet, so sizes and weights below are
+accurate but the typeface shown is your browser's fallback.
+
+<Unstyled>
+  <TypeFoundations />
+</Unstyled>
