@@ -98,3 +98,8 @@ export function collectLeaves(group: TokenTree, prefix = ''): TokenEntry[] {
 }
 
 export const NO_DESCRIPTION = 'No description in tokens.json';
+
+/** Resolves a dotted semantic color path (e.g. "background.page") straight to a CSS color string. */
+export function getTokenColor(path: string): string {
+  return colorCss(resolveValue(getNode(path).$value) as ColorValue);
+}

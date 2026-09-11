@@ -1,6 +1,7 @@
 import type { Preview } from '@storybook/nextjs-vite'
 import { INITIAL_VIEWPORTS } from 'storybook/viewport'
 import './preview.css'
+import { docsTheme } from './theme'
 
 // This prototype is fixed at the iPhone 12/13/14 width (390px) — see CLAUDE.md.
 const MOBILE_VIEWPORT = 'iphone12'
@@ -19,6 +20,12 @@ const preview: Preview = {
       // 'error' - fail CI on a11y violations
       // 'off' - skip a11y checks entirely
       test: 'todo'
+    },
+
+    // Dark mode only: theme the Docs page chrome itself, not just our content,
+    // so documentation text isn't rendered against Storybook's default light background.
+    docs: {
+      theme: docsTheme,
     },
 
     // Dark mode only, no toggle: tokens.css has one (dark) palette, applied in preview.css.
