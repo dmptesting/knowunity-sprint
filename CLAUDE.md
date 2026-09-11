@@ -20,6 +20,7 @@ Mobile-only (iOS, 390px, dark mode) design prototype for a voice-based active-re
 - Never give Knowie a voice/audio output.
 - Never add auto-detection of when someone stops talking.
 - Never invent a component not in design-system.md, or a token not in tokens/tokens.json.
+- Never edit `build/css/tokens.css` by hand — it's generated. Edit `tokens/tokens.json` and run `npm run tokens`.
 - Follow design-system.md's "Never do this" list (token fallbacks, unproven components, etc.) — don't relearn it here.
 - Follow sprint-context.md's "Not building" list — don't relearn it here.
 
