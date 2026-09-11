@@ -24,6 +24,10 @@ Mobile-only (iOS, 390px, dark mode) design prototype for a voice-based active-re
 - Follow design-system.md's "Never do this" list (token fallbacks, unproven components, etc.) — don't relearn it here.
 - Follow sprint-context.md's "Not building" list — don't relearn it here.
 
+## Storybook
+
+When working on UI, use the storybook tools to read the component library before answering or writing anything. Never assume a component prop exists. Query the documentation, and use only props that are documented or shown in a story. If a prop isn't there, stop and ask me.
+
 ## File map
 
 - `AGENTS.md` — Next.js-version rules for this repo; read before writing any Next.js code.
