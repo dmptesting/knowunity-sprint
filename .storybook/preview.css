@@ -1,0 +1,24 @@
+/* Design tokens (generated from tokens/tokens.json — see build/css/tokens.css). Never edit tokens.css by hand. */
+@import '../build/css/tokens.css';
+
+/* This prototype is dark-mode-only: tokens.css defines a single (dark) palette
+   with no light variant, so applying it directly is all "dark mode only" requires. */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--color-background-page);
+  color: var(--color-text-primary);
+  font-family: var(--font-family-default), Arial, Helvetica, sans-serif;
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Let documentation (MDX/autodocs) pages use the full available width —
+   a token swatch grid needs more room than Storybook's default reading column. */
+.sbdocs.sbdocs-content {
+  max-width: none;
+}
