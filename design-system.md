@@ -1,6 +1,6 @@
 # Design system rules
 
-Companion to tokens.json. That file has the values. This file has the rules for reaching for them. No values are repeated here, only paths.
+Companion to tokens/tokens.json. That file has the values. This file has the rules for reaching for them. No values are repeated here, only paths.
 
 ## Which component to reach for
 
@@ -93,11 +93,11 @@ The recall loop's screens compose from these pieces; nothing in the file defines
 
 **Combining multiple variant components into a set is name-driven.** Before calling combine, each source component must be named exactly `propertyName=value`, comma-separated for a second axis (e.g. `progress=completed, format=quiz`) — the variant property and its options come directly from parsing that string.
 
-**Every value is bound to a real token before a component counts as finished.** If nothing in tokens.json matches exactly, snap to the nearest real token and disclose the substitution rather than leaving a raw pixel value — this happened twice this sprint (voiceCircle's internal icon geometry, pathNode's 48px ring standing in for a 46px real reference).
+**Every value is bound to a real token before a component counts as finished.** If nothing in tokens/tokens.json matches exactly, snap to the nearest real token and disclose the substitution rather than leaving a raw pixel value — this happened twice this sprint (voiceCircle's internal icon geometry, pathNode's 48px ring standing in for a 46px real reference).
 
 **A finished component has a written `.description` before it's considered done.** Three of this sprint's six (voiceCircle, x-close, calloutBubble) shipped without one and it went unnoticed until this file was written — write the description as the last step of building the component, not as separate cleanup afterward.
 
-**In tokens.json specifically**, the same names become dot paths (`accent.brand.bold`) and the type scale is camelCase keys (`displayL`, `headlineXsBold`) instead of the Figma text style's `Greed/Display L` naming, since JSON object keys don't take spaces or slashes well. One deviation worth knowing: `interactive.primary`, `.secondary`, and `.destructive` are each both a token and the parent of a hover/active pair in Figma. JSON can't let a token double as a group, so those six became `interactive.primaryHover` / `interactive.primaryActive` etc. in the export. That's a file-format workaround, not a naming convention to copy into Figma.
+**In tokens/tokens.json specifically**, the same names become dot paths (`accent.brand.bold`) and the type scale is camelCase keys (`displayL`, `headlineXsBold`) instead of the Figma text style's `Greed/Display L` naming, since JSON object keys don't take spaces or slashes well. One deviation worth knowing: `interactive.primary`, `.secondary`, and `.destructive` are each both a token and the parent of a hover/active pair in Figma. JSON can't let a token double as a group, so those six became `interactive.primaryHover` / `interactive.primaryActive` etc. in the export. That's a file-format workaround, not a naming convention to copy into Figma.
 
 ## Structure conventions
 
@@ -107,7 +107,7 @@ The recall loop's screens compose from these pieces; nothing in the file defines
 
 ## Never do this
 
-**Never invent a value that isn't in tokens.json.** If the token you need doesn't exist (there's no `feedback/info/*` family right now, for instance), say that it's missing and ask, don't pick a nearby hex and move on.
+**Never invent a value that isn't in tokens/tokens.json.** If the token you need doesn't exist (there's no `feedback/info/*` family right now, for instance), say that it's missing and ask, don't pick a nearby hex and move on.
 
 **Never use a CSS fallback like `var(--token, #333)`.** If a token resolves to nothing, that's a broken reference to fix at the source, not a value to paper over in code.
 

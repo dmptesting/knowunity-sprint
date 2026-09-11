@@ -12,14 +12,14 @@ Mobile-only (iOS, 390px, dark mode) design prototype for a voice-based active-re
 - Recall only — no conversation branching on off-topic speech.
 - Every required action needs a way out (skip, text fallback, or save-and-resume). Never trap the student.
 - Build only the screens/states in the Voice UX Reference's "States to design" table. Must-column first, If-time sketched, Out-of-scope noted not built.
-- Use only components documented in design-system.md, bound to real tokens.json values. No ad hoc components, no raw hex/pixel values.
+- Use only components documented in design-system.md, bound to real tokens/tokens.json values. No ad hoc components, no raw hex/pixel values.
 - Sentence case on every label/button/heading (proper nouns excepted).
 
 ## Never
 
 - Never give Knowie a voice/audio output.
 - Never add auto-detection of when someone stops talking.
-- Never invent a component not in design-system.md, or a token not in tokens.json.
+- Never invent a component not in design-system.md, or a token not in tokens/tokens.json.
 - Follow design-system.md's "Never do this" list (token fallbacks, unproven components, etc.) — don't relearn it here.
 - Follow sprint-context.md's "Not building" list — don't relearn it here.
 
@@ -30,7 +30,8 @@ Mobile-only (iOS, 390px, dark mode) design prototype for a voice-based active-re
 - `Design Brief *.md` — the original brief: problem, constraints, mandate, open questions. Read before any product/UX call not already settled in sprint-context.md.
 - `Voice UX Reference *.md` — voice-UX principles and the states-to-build checklist. Read before designing or building any recall-loop screen.
 - `design-system.md` — which component to reach for, naming/token-binding rules, what's proven vs unproven. Read before placing or naming any component.
-- `tokens.json` — the token values design-system.md points at. Look up a value here; never hardcode one.
+- `tokens/tokens.json` — the token values design-system.md points at. Look up a value here; never hardcode one.
+- `build/css/tokens.css` — generated CSS custom properties from `tokens/tokens.json`, produced by `npm run tokens`. Never edit by hand; edit the source token and regenerate.
 - `reference/*.PNG` — screenshots of Knowunity's shipped beta. Check when a screen's behavior isn't settled elsewhere.
 - `public/images/*.svg` — Homie mascot expression states; only `standby` has real shipped usage (design-system.md).
 - `app/` — the actual prototype code. Currently unmodified create-next-app scaffold (stock page/layout/logos) — replace, don't extend.
