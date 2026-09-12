@@ -11,6 +11,12 @@ const CSS_FONT_WEIGHT: Record<string, number> = {
   heavy: 800,
 };
 
+// Tracking as Figma writes it: a signed percent of the font size.
+function formatTracking(percent: number): string {
+  if (percent === 0) return '0%';
+  return `${percent > 0 ? '+' : '\u2212'}${Math.abs(percent)}%`;
+}
+
 const SAMPLE_TEXT = 'Explain the concept in your own words';
 
 export function TypeFoundations() {
@@ -20,7 +26,7 @@ export function TypeFoundations() {
   return (
     <div>
       {entries.map((entry) => {
-        const { fontFamily, fontWeight, fontSize, lineHeight } = resolveTypography(
+        const { fontFamily, fontWeight, fontSize, lineHeight, letterSpacing } = resolveTypography(
           entry.value as Record<string, unknown>
         );
         return (
@@ -37,6 +43,8 @@ export function TypeFoundations() {
                 fontWeight: CSS_FONT_WEIGHT[fontWeight] ?? 400,
                 fontSize: `${fontSize.value}${fontSize.unit}`,
                 lineHeight: `${lineHeight.value}${lineHeight.unit}`,
+                // Figma tracking is a percent of font size; 1% = 0.01em.
+                letterSpacing: `${letterSpacing * 0.01}em`,
                 color: 'var(--color-text-primary)',
               }}
             >
@@ -56,7 +64,7 @@ export function TypeFoundations() {
               <span>
                 {fontWeight} · {fontSize.value}
                 {fontSize.unit} / {lineHeight.value}
-                {lineHeight.unit}
+                {lineHeight.unit} · {formatTracking(letterSpacing)} tracking
               </span>
             </div>
             <div

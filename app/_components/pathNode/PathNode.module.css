@@ -1,0 +1,124 @@
+/*
+ * pathNode — every value resolves to a custom property from
+ * build/css/tokens.css. No raw hex, no raw pixel dimensions.
+ *
+ * Layer names mirror Figma's: Marker (holding the Icon Slot) then Label.
+ */
+
+.pathNode {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--dimension-space-300);
+
+  /* Figma's component frame carries a white fill, but it is set to
+     visible: false, so the node is transparent on the page background. */
+  background: none;
+  border: none;
+  padding: var(--dimension-space-0);
+  text-align: start;
+  cursor: pointer;
+  appearance: none;
+  font-family: var(--font-family-default), Arial, Helvetica, sans-serif;
+}
+
+/* Not present in Figma, which defines no interaction states at all. The
+   description says tapping a node opens its flow, so it needs to be operable:
+   a focus ring built from real tokens. No hover (mobile only) and no pressed
+   state, since the file specifies neither. */
+.pathNode:focus-visible {
+  outline: var(--dimension-stroke-heavy-border) solid var(--color-accent-brand-bold);
+  outline-offset: var(--dimension-space-050);
+  border-radius: var(--dimension-radius-200);
+}
+
+/* ---------------------------------------------------------------- Marker -- */
+/*
+ * Figma binds the ring to Space/1200 (48px). design-system.md discloses this
+ * one: the real reference ellipse on screen 01 is 46px, which has no matching
+ * token, so it was snapped to the nearest real step.
+ */
+.marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  inline-size: var(--dimension-space-1200);
+  block-size: var(--dimension-space-1200);
+  border-radius: var(--dimension-radius-full);
+  /* Figma's Marker has clipsContent: true. */
+  overflow: hidden;
+}
+
+/*
+ * Each marker sets its own `color`, which the icon inherits through
+ * currentColor. Every fill is paired with the on-* token the design system
+ * defines for it, so contrast never has to be reasoned about per icon.
+ */
+
+/* completed — no stroke. feedback/success/bold is the file's own "completion
+   states" fill; its paired onBold ink gives 7.49:1 against it. The fill is the
+   only thing marking a node as done; the icon stays the format icon. */
+.markerCompleted {
+  background-color: var(--color-feedback-success-bold);
+  color: var(--color-feedback-success-on-bold);
+}
+
+/* current — the "you are here" node, the only one with a stroke. */
+.markerCurrent {
+  background-color: var(--color-accent-brand-subtle);
+  border: var(--dimension-stroke-heavy-border) solid var(--color-accent-brand-bold);
+  color: var(--color-text-primary);
+}
+
+/* upcoming — no stroke, still shows the format icon. */
+.markerUpcoming {
+  background-color: var(--color-background-surface);
+  color: var(--color-text-primary);
+}
+
+/* ------------------------------------------------------------- Icon Slot -- */
+
+/* Inherits its colour from the marker above, so the glyph is always drawn in
+   the on-* token paired with whatever fill it sits on. */
+.iconSlot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--dimension-icon-300);
+  block-size: var(--dimension-icon-300);
+}
+
+/* ----------------------------------------------------------------- Label -- */
+/*
+ * Figma text style "Greed/Headline XXS Bold". Set from the individual tokens
+ * rather than the --typography-text-style-* shorthand, because that shorthand
+ * carries the Figma keyword "semi-bold", which is not a valid CSS font-weight.
+ */
+.label {
+  color: var(--color-text-primary);
+  font-size: var(--dimension-font-size-sm);
+  line-height: var(--dimension-font-line-height-xs);
+  /* CSS spelling of font/weight/semibold — same presentational mapping already
+     used by stories/foundations/TypeFoundations.tsx, not a design value. */
+  font-weight: 600;
+  /* Greed/Headline XXS Bold is +1% in Figma. tokens.json's textStyle tokens
+     omit letterSpacing, and Figma never bound the styles to font/tracking/*,
+     so the value is read off the style and bound to the token here.
+     1% of the font size is 0.01em. */
+  letter-spacing: calc(var(--number-font-tracking-loose) * 0.01em);
+  /* "Don't change its Label to anything longer than a lesson title; it isn't
+     built to wrap." */
+  white-space: nowrap;
+}
+
+.visuallyHidden {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}

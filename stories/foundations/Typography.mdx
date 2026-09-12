@@ -5,12 +5,13 @@ import { TypeFoundations } from './TypeFoundations';
 
 # Typography
 
-Every `textStyle` token, largest to smallest, rendered at its real size, weight, and line height. Font weight in
+Every `textStyle` token, largest to smallest, rendered at its real size, weight, line height, and tracking. Font weight in
 tokens.json is a keyword (`regular`/`semi-bold`/`bold`/`heavy`), not a CSS number, so the mapping used to render
 weight here is presentational only — not itself a token.
 
-The real typeface, "Greed Standard-TRIAL," isn't embedded in this prototype yet, so sizes and weights below are
-accurate but the typeface shown is your browser's fallback.
+The real typeface, "Greed Standard-TRIAL," is embedded — four static weights (regular 400, semi-bold 600, bold 700,
+heavy 800) served as woff2 from `public/fonts/`, declared once in `app/fonts.css` and shared by the Next app and this
+Storybook. Every specimen below is the actual face at its real size, weight, line height, and tracking.
 
 <Unstyled>
   <TypeFoundations />

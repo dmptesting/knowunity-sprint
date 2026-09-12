@@ -1,0 +1,195 @@
+/*
+ * progressIndicator — every value resolves to a custom property from
+ * build/css/tokens.css. No raw hex, no raw pixel dimensions.
+ *
+ * Layer names mirror Figma's: the root (track), Container (holding Progress),
+ * then Unit Progress.
+ */
+
+.progressIndicator {
+  /* Root, Container and Unit Progress all share one grid cell, so they stack
+     without absolute positioning — the same approach voiceCircle uses. */
+  display: grid;
+  block-size: var(--progress-indicator-block);
+
+  /* Figma's root is a fixed 350px frame. 350 is 390 minus 20px a side, and
+     there is no 20px space token, so the bar fills its parent instead and the
+     screen supplies the side insets. */
+  inline-size: 100%;
+
+  /* Makes the bar's own width available to its layers as 100cqi. */
+  container-type: inline-size;
+
+  /* Figma: unbound radius 12. No 12px radius token exists; 12 is already at
+     least half of every height in the set, so Radius/Full renders the same
+     pill. */
+  border-radius: var(--dimension-radius-full);
+  background-color: var(--color-background-stacking);
+
+  /* The fill's height, which is also its width at progress=0. */
+  --progress-indicator-dot: calc(
+    var(--progress-indicator-block) - (2 * var(--progress-indicator-inset))
+  );
+
+  /* Where the fill ends, measured from the root's start edge. Uses cqi, the
+     root's width, so it means the same thing in every layer that reads it. */
+  --progress-indicator-fill-end: calc(
+    var(--progress-indicator-inset) +
+      max(
+        var(--progress-indicator-value) *
+          (100cqi - (2 * var(--progress-indicator-inset))),
+        var(--progress-indicator-dot)
+      )
+  );
+}
+
+/* ------------------------------------------------------------ thickness ---- */
+/* Figma's heights and Container inset are unbound; each lands exactly on a
+   real token step. */
+
+.thickness24 {
+  --progress-indicator-block: var(--dimension-space-600);
+  --progress-indicator-inset: var(--dimension-space-050);
+}
+
+.thickness16 {
+  --progress-indicator-block: var(--dimension-space-400);
+  --progress-indicator-inset: var(--dimension-space-0);
+}
+
+/* -------------------------------------------------------------- variant ---- */
+/* Each fill is paired with the onBold ink the design system defines for it. */
+
+.variantPrimary {
+  --progress-indicator-fill: var(--color-accent-brand-bold);
+  --progress-indicator-on-fill: var(--color-accent-brand-on-bold);
+}
+
+/* accent/coral is a hue-named token (design-system.md: existing debt). Carried
+   through because it is what Figma binds, not extended. */
+.variantCoral {
+  --progress-indicator-fill: var(--color-accent-coral-bold);
+  --progress-indicator-on-fill: var(--color-accent-coral-on-bold);
+}
+
+/* ------------------------------------------------------------- progress ---- */
+/* Five fixed steps, as fractions of the Container's width. Plain numbers
+   rather than percentages so the fill's end can be computed from them. */
+
+.progress0 {
+  --progress-indicator-value: 0;
+}
+
+.progress25 {
+  --progress-indicator-value: 0.25;
+}
+
+.progress50 {
+  --progress-indicator-value: 0.5;
+}
+
+.progress75 {
+  --progress-indicator-value: 0.75;
+}
+
+.progress100 {
+  --progress-indicator-value: 1;
+}
+
+/* ------------------------------------------------------------ Container ---- */
+
+.container {
+  grid-area: 1 / 1;
+  display: grid;
+  margin: var(--progress-indicator-inset);
+  border-radius: var(--dimension-radius-full);
+}
+
+/* Figma: 1px inside stroke bound to Stroke/Border and border/subtle. That
+   variable is gone from the file's semantic collection and was never exported;
+   border/default resolves to the same 10% white. Drawn as a layer after the
+   fill so the stroke sits over Progress rather than shrinking it. */
+.container::after {
+  content: '';
+  grid-area: 1 / 1;
+  border: var(--dimension-stroke-border) solid var(--color-border-default);
+  border-radius: var(--dimension-radius-full);
+}
+
+/* ------------------------------------------------------------- Progress ---- */
+
+.progress {
+  grid-area: 1 / 1;
+  justify-self: start;
+  inline-size: calc(var(--progress-indicator-value) * 100%);
+  /* At progress=0 Figma draws a dot as wide as the bar is tall, not nothing. */
+  min-inline-size: var(--progress-indicator-dot);
+  border-radius: var(--dimension-radius-full);
+  background-color: var(--progress-indicator-fill);
+}
+
+/* -------------------------------------------------------- Unit Progress ---- */
+
+/*
+ * Each ink of the count lives in its own wrapper over the bar. Outside the
+ * split step a wrapper spans the whole bar; at progress=50 each is cut to its
+ * own side of the fill's edge and crops whatever crosses it. Cropping with
+ * overflow rather than clip-path matters: contrast checkers account for
+ * overflow, but read a clip-path'd copy as sitting on the wrong backdrop.
+ */
+.countOnTrack,
+.countOnFill {
+  grid-area: 1 / 1;
+  display: flex;
+  overflow: hidden;
+}
+
+/* Figma's ink, kept wherever the count sits on the track. Anchored to the
+   bar's end, so a cropped copy loses its start side. */
+.countOnTrack {
+  justify-content: flex-end;
+  color: var(--color-interactive-on-secondary);
+}
+
+/* DEVIATION: Figma's interactive/onSecondary fails contrast over the fill
+   (3.14:1 on brand, 2.3:1 on coral), so over the fill the count takes the
+   fill's paired onBold ink instead. Anchored to the bar's start. */
+.countOnFill {
+  justify-content: flex-start;
+  color: var(--progress-indicator-on-fill);
+}
+
+.countSplit .countOnTrack {
+  justify-self: end;
+  inline-size: calc(100cqi - var(--progress-indicator-fill-end));
+}
+
+.countSplit .countOnFill {
+  justify-self: start;
+  inline-size: var(--progress-indicator-fill-end);
+}
+
+/*
+ * Figma text style "Greed/Caption S Bold", centred on the bar. Always the
+ * bar's full width (100cqi) whatever its wrapper's width, so both copies land
+ * in exactly the same spot. Set from the individual tokens rather than the
+ * --typography-text-style-* shorthand, because that shorthand carries the
+ * Figma keyword "semi-bold", which is not a valid CSS font-weight.
+ */
+.unitProgress {
+  flex: none;
+  inline-size: 100cqi;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-family-default), Arial, Helvetica, sans-serif;
+  font-size: var(--dimension-font-size-2xs);
+  line-height: var(--dimension-font-line-height-2xs);
+  /* CSS spelling of font/weight/semibold — same presentational mapping already
+     used by stories/foundations/TypeFoundations.tsx, not a design value. */
+  font-weight: 600;
+  /* Greed/Caption S Bold is +1% in Figma. tokens.json's textStyle tokens omit
+     letterSpacing, so it is read off the style and bound to the tracking token
+     here. 1% of the font size is 0.01em. */
+  letter-spacing: calc(var(--number-font-tracking-loose) * 0.01em);
+  white-space: nowrap;
+}

@@ -1,0 +1,176 @@
+/*
+ * voiceCircle — every value resolves to a custom property from
+ * build/css/tokens.css. No raw hex, no raw pixel dimensions.
+ *
+ * Layer names mirror Figma's: Ring — halo, Ring — inner, Core, then the
+ * per-mode content (Icon / Bars / Think dot).
+ */
+
+.voiceCircle {
+  /* Figma's component box is Illustration/2500 square. The halo is larger and
+     deliberately overflows it, exactly as in the file — so this element
+     measures 200px but reads as 320px wide on screen. Explicit single-cell
+     grid track so the oversized halo overflows centred instead of stretching
+     the track. */
+  display: grid;
+  grid-template:
+    var(--dimension-illustration-2500) / var(--dimension-illustration-2500);
+  place-items: center;
+  inline-size: var(--dimension-illustration-2500);
+  block-size: var(--dimension-illustration-2500);
+}
+
+/* Every layer shares the one grid cell, so they stack concentrically without
+   absolute positioning. */
+.layer {
+  grid-area: 1 / 1;
+}
+
+/* Figma: "Ring — halo". Stroke bound to accent/brand/bold, node opacity 0.12. */
+.halo {
+  inline-size: var(--dimension-illustration-4000);
+  block-size: var(--dimension-illustration-4000);
+  border: var(--dimension-stroke-border) solid var(--color-accent-brand-bold);
+  border-radius: var(--dimension-radius-full);
+  opacity: var(--number-opacity-12);
+}
+
+/* Figma: "Ring — inner". Same stroke, node opacity 0.25. */
+.ring {
+  inline-size: var(--dimension-illustration-2500);
+  block-size: var(--dimension-illustration-2500);
+  border: var(--dimension-stroke-border) solid var(--color-accent-brand-bold);
+  border-radius: var(--dimension-radius-full);
+  opacity: var(--number-opacity-25);
+}
+
+/* Figma: "Core". Solid accent/brand/bold. */
+.core {
+  inline-size: var(--dimension-illustration-1500);
+  block-size: var(--dimension-illustration-1500);
+  background-color: var(--color-accent-brand-bold);
+  border-radius: var(--dimension-radius-full);
+}
+
+/* Everything sitting on the Core inherits accent/brand/onBold, so the mic,
+   the bars and the think dot never restate the colour. */
+.content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-accent-brand-on-bold);
+}
+
+/* ----------------------------------------------------------- mode=idle ---- */
+/* Figma: "Icon", an Illustration/500 frame holding the mic vector. */
+.icon {
+  inline-size: var(--dimension-illustration-500);
+  block-size: var(--dimension-illustration-500);
+}
+
+/* ------------------------------------------------------ mode=recording ---- */
+/* Figma: "Bars", a horizontal auto-layout frame, gap Space/200, 5 bars. */
+.bars {
+  display: flex;
+  align-items: center;
+  gap: var(--dimension-space-200);
+}
+
+.bar {
+  inline-size: var(--dimension-icon-100);
+  background-color: var(--color-accent-brand-on-bold);
+  border-radius: var(--dimension-radius-full);
+}
+
+/*
+ * Resting heights are Figma's. The waveform animates each bar between real
+ * Icon tokens rather than arbitrary values, so every frame of the motion is
+ * still a token step. Durations and delays are unbound — tokens.json carries
+ * no motion tokens.
+ *
+ * Voice UX Reference, principle 1: recording "must be unmistakable", and
+ * colour alone is not enough — it has to be paired with shape or motion.
+ */
+.bar1 {
+  block-size: var(--dimension-icon-150);
+  animation: wave1 900ms ease-in-out infinite;
+}
+
+.bar2 {
+  block-size: var(--dimension-icon-400);
+  animation: wave2 700ms ease-in-out infinite;
+}
+
+.bar3 {
+  block-size: var(--dimension-icon-250);
+  animation: wave3 1100ms ease-in-out infinite;
+}
+
+.bar4 {
+  block-size: var(--dimension-icon-400);
+  animation: wave4 800ms ease-in-out infinite;
+}
+
+.bar5 {
+  block-size: var(--dimension-icon-200);
+  animation: wave5 1000ms ease-in-out infinite;
+}
+
+@keyframes wave1 {
+  0%,
+  100% { block-size: var(--dimension-icon-150); }
+  50% { block-size: var(--dimension-icon-400); }
+}
+
+@keyframes wave2 {
+  0%,
+  100% { block-size: var(--dimension-icon-400); }
+  50% { block-size: var(--dimension-icon-200); }
+}
+
+@keyframes wave3 {
+  0%,
+  100% { block-size: var(--dimension-icon-250); }
+  50% { block-size: var(--dimension-icon-400); }
+}
+
+@keyframes wave4 {
+  0%,
+  100% { block-size: var(--dimension-icon-400); }
+  50% { block-size: var(--dimension-icon-150); }
+}
+
+@keyframes wave5 {
+  0%,
+  100% { block-size: var(--dimension-icon-200); }
+  50% { block-size: var(--dimension-icon-400); }
+}
+
+/* ----------------------------------------------------- mode=processing ---- */
+/* Figma: "Think dot", an Icon/250 circle in accent/brand/onBold.
+   Voice UX Reference, principle 6: the thinking state should be "a
+   skeleton/animated state, not a dead spinner", so the dot breathes between
+   full opacity and the Opacity/25 token. */
+.thinkDot {
+  inline-size: var(--dimension-icon-250);
+  block-size: var(--dimension-icon-250);
+  background-color: var(--color-accent-brand-on-bold);
+  border-radius: var(--dimension-radius-full);
+  animation: think 1400ms ease-in-out infinite;
+}
+
+@keyframes think {
+  0%,
+  100% { opacity: 1; }
+  50% { opacity: var(--number-opacity-25); }
+}
+
+/* mode=idle is deliberately still: it is the resting state before the student
+   speaks, and Figma specifies no motion for it. */
+
+@media (prefers-reduced-motion: reduce) {
+  .bar,
+  .thinkDot {
+    animation: none;
+  }
+}

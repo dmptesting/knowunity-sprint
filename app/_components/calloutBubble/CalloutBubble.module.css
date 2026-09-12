@@ -1,0 +1,66 @@
+/*
+ * calloutBubble — every value resolves to a custom property from
+ * build/css/tokens.css. No raw hex, no raw pixel dimensions.
+ *
+ * Layer names mirror Figma's: Tail, then Bubble holding Body text.
+ */
+
+.calloutBubble {
+  display: flex;
+  align-items: center;
+
+  /* Figma's Bubble is a fixed 342px — 390 minus Space/600 a side. The bubble
+     fills its parent instead, so the screen supplies the insets, the same way
+     progressIndicator does. */
+  inline-size: 100%;
+}
+
+/*
+ * Figma: "Tail", a 15×19 polygon rotated 90° so it points left, tucked under
+ * the Bubble by Space/Negative 200. Neither 15 nor 19 is a token, so the box is
+ * snapped to the nearest real steps (Icon/250 wide, Icon/200 tall) and drawn
+ * with clip-path rather than a rotated node.
+ *
+ * Figma binds the polygon's corner radius to Radius/100, but design-system.md
+ * records that the binding never renders on a POLYGON — so the tail is drawn
+ * with sharp corners here, matching what the file actually shows.
+ */
+.tail {
+  flex: none;
+  inline-size: var(--dimension-icon-250);
+  block-size: var(--dimension-icon-200);
+  background-color: var(--color-background-surface);
+  clip-path: polygon(100% 0, 0 50%, 100% 100%);
+}
+
+/* Figma: "Bubble". Overlaps the tail by Space/Negative 200 — expressed as a
+   negative margin, since CSS gap can't be negative. */
+.bubble {
+  flex: 1;
+  min-inline-size: 0;
+  margin-inline-start: var(--dimension-space-negative-200);
+  padding: var(--dimension-space-400);
+  border-radius: var(--dimension-radius-400);
+  background-color: var(--color-background-surface);
+}
+
+/*
+ * Figma text style "Greed/Body M Regular". Set from the individual tokens
+ * rather than the --typography-text-style-* shorthand, because that shorthand
+ * carries the Figma keyword "regular", which is not a valid CSS font-weight.
+ */
+.body {
+  margin: var(--dimension-space-0);
+  color: var(--color-text-primary);
+  font-family: var(--font-family-default), Arial, Helvetica, sans-serif;
+  font-size: var(--dimension-font-size-md);
+  line-height: var(--dimension-font-line-height-md);
+  /* CSS spelling of font/weight/regular. */
+  font-weight: 400;
+  /* Greed/Body M Regular is +1% in Figma. tokens.json's textStyle tokens omit
+     letterSpacing, so it is read off the style and bound to the tracking token
+     here. 1% of the font size is 0.01em. */
+  letter-spacing: calc(var(--number-font-tracking-loose) * 0.01em);
+  /* "Long copy should wrap to a second line, not stretch the bubble out." */
+  overflow-wrap: break-word;
+}

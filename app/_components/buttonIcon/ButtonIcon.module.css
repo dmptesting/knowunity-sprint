@@ -1,0 +1,84 @@
+/*
+ * buttonIcon — every value resolves to a custom property from
+ * build/css/tokens.css. No raw hex, no raw pixel dimensions.
+ *
+ * Only the square sizing lives here. Emphasis (Primary/Secondary/Tertiary) and
+ * state (Pressed/Disabled/Loading) are the button's own rules, imported from
+ * ../button/Button.module.css, because Figma's description calls this "the
+ * icon-only twin of button, same variant/size/state grid".
+ */
+
+.buttonIcon {
+  /* Equal padding on all four sides around a square icon box, so the button is
+     square without restating a width and height. */
+  aspect-ratio: 1;
+}
+
+/*
+ * Sizes follow the button's rendered heights rather than Figma's inner boxes,
+ * so an icon button and a label button line up when buttonGroup puts them in
+ * the same row.
+ *
+ * S: Space/200 around Icon/200 = 32px, matching Figma exactly.
+ * M: Space/300 around Icon/250 = 44px. Figma's inner box is 40px, which needs
+ *    10px of padding and there is no token between Space/200 and Space/300 —
+ *    the same snap the button discloses for its own M.
+ * L: Space/400 around Icon/300 = 56px, matching Figma exactly.
+ *
+ * Two classes deep so these win over the button stylesheet's
+ * `.variantTertiary` padding reset, whichever order the two modules load in.
+ */
+.buttonIcon.sizeS {
+  padding: var(--dimension-space-200);
+}
+
+.buttonIcon.sizeM {
+  padding: var(--dimension-space-300);
+}
+
+.buttonIcon.sizeL {
+  padding: var(--dimension-space-400);
+}
+
+/*
+ * Figma draws a 1px border/default edge on the Primary variant only — the
+ * label button has no border on any variant.
+ *
+ * Drawn as an inset shadow rather than a border because Figma's stroke is
+ * INSIDE: it sits on the edge without growing the box. A real border would add
+ * 2px to a content-sized button, making Primary wider than Secondary at the
+ * same size (44px became 46px).
+ */
+.primaryEdge {
+  box-shadow: inset 0 0 0 var(--dimension-stroke-border) var(--color-border-default);
+}
+
+/*
+ * Figma: the nested iconSlot, one Icon/* step per size — S -> Icon/200,
+ * M -> Icon/250, L -> Icon/300.
+ *
+ * The box is set explicitly rather than left to the glyph, because an icon
+ * component that fills its slot (`width: 100%`, which is how pathNode's icons
+ * are written) would otherwise resolve against a box whose own width depends
+ * on its content. That collapses into a circular measurement and the button
+ * balloons. Sizing the slot here means any icon lands on a real token.
+ */
+.icon {
+  display: inline-flex;
+  flex: none;
+}
+
+.buttonIcon.sizeS .icon {
+  inline-size: var(--dimension-icon-200);
+  block-size: var(--dimension-icon-200);
+}
+
+.buttonIcon.sizeM .icon {
+  inline-size: var(--dimension-icon-250);
+  block-size: var(--dimension-icon-250);
+}
+
+.buttonIcon.sizeL .icon {
+  inline-size: var(--dimension-icon-300);
+  block-size: var(--dimension-icon-300);
+}

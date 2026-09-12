@@ -1,0 +1,38 @@
+/*
+ * buttonGroup — every value resolves to a custom property from
+ * build/css/tokens.css. No raw hex, no raw pixel dimensions.
+ *
+ * The group only lays out; the buttons inside are the button and buttonIcon
+ * components, so nothing about their fills or sizes is restated here.
+ */
+
+.buttonGroup {
+  display: flex;
+
+  /* Figma's frame is a fixed 319px. There is no token for that, and a pair of
+     actions spans the screen, so the group fills its parent. */
+  inline-size: 100%;
+
+  /*
+   * Space/200 in both directions and both sizes. Figma's own itemSpacing reads
+   * Space/0 at M and Space/200 at L, but its M buttons sit in 48px wrappers
+   * around 40px buttons — so the 4px wrapper insets produce the same 8px
+   * visual gap the L variant sets explicitly. One token for both.
+   */
+  gap: var(--dimension-space-200);
+}
+
+.vertical {
+  flex-direction: column;
+}
+
+.horizontal {
+  flex-direction: row;
+  align-items: center;
+}
+
+/* Figma's Primary button fills the row or column; the icon button hugs. */
+.horizontal .primary {
+  flex: 1;
+  min-inline-size: 0;
+}

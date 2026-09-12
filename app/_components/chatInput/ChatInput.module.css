@@ -1,0 +1,284 @@
+/*
+ * chatInput — every value resolves to a custom property from
+ * build/css/tokens.css. No raw hex, no raw pixel dimensions.
+ *
+ * Layer names mirror Figma's: the leading icon button, then "Input container"
+ * holding the placeholder text, the "Audio Input" waveform, and the trailing
+ * mic or send action.
+ */
+
+.chatInput {
+  display: flex;
+  align-items: center;
+  gap: var(--dimension-space-050);
+
+  /* Figma's frame is a fixed 361px and fills its parent in real use. */
+  inline-size: 100%;
+  padding-block: var(--dimension-space-050);
+  padding-inline: var(--dimension-space-200);
+}
+
+/* Long input grows upward, so the bar's actions stay at the bottom. */
+.longInput {
+  align-items: flex-end;
+}
+
+.lead {
+  flex: none;
+}
+
+/* Figma: "Input container". */
+.field {
+  display: flex;
+  flex: 1;
+  min-inline-size: 0;
+  align-items: center;
+
+  /* DEVIATION: Figma's field is 38px tall, under the 44px touch floor. Raised to
+     Target/Minimum so the pill itself is a reliable target. Padding and radius
+     are unchanged, so it still reads as drawn. */
+  min-block-size: var(--dimension-target-minimum);
+  gap: var(--dimension-space-200);
+  padding-block: var(--dimension-space-150);
+  padding-inline: var(--dimension-space-400);
+  border: var(--dimension-stroke-border) solid var(--color-border-default);
+  border-radius: var(--dimension-radius-full);
+  background-color: var(--color-background-input);
+}
+
+/* With a send button inside, Figma tightens the end padding so the button sits
+   in the same place the mic did. */
+.readyToSend .field,
+.recording .field,
+.longInput .field {
+  padding-inline-end: var(--dimension-space-200);
+}
+
+/* Figma swaps the pill for Radius/600 once the text wraps to several lines. */
+.longInput .field {
+  align-items: flex-end;
+  border-radius: var(--dimension-radius-600);
+}
+
+/* ---------------------------------------------------------------- text ---- */
+/*
+ * Figma's placeholder is Inter SemiBold 14 with no text style attached — the
+ * only text in the component set that isn't on the Greed scale. Snapped to
+ * "Greed/Body S Bold", the nearest real style at the same weight.
+ */
+.input {
+  flex: 1;
+  min-inline-size: 0;
+
+  /* The painted pill is the affordance, so the input fills it. Left to itself the
+     input is only its 20px line box and the rest of the pill takes no taps. */
+  align-self: stretch;
+  margin: var(--dimension-space-0);
+  padding: var(--dimension-space-0);
+  border: none;
+  background: none;
+  color: var(--color-text-primary);
+  font-family: var(--font-family-default), Arial, Helvetica, sans-serif;
+  font-size: var(--dimension-font-size-sm);
+  line-height: var(--dimension-font-line-height-sm);
+  /* CSS spelling of font/weight/semibold. */
+  font-weight: 600;
+  /* Greed/Body S Bold is +1% in Figma; tokens.json's textStyle tokens omit
+     letterSpacing. 1% of the font size is 0.01em. */
+  letter-spacing: calc(var(--number-font-tracking-loose) * 0.01em);
+}
+
+.input:focus-visible {
+  outline: none;
+}
+
+/* The whole field shows the focus ring, since the input has no edge of its own. */
+.field:focus-within {
+  outline: var(--dimension-stroke-heavy-border) solid var(--color-border-focus);
+  outline-offset: var(--dimension-space-050);
+}
+
+/*
+ * DEVIATION: Figma uses text/disabled here. A placeholder is ordinary text and
+ * is not exempt from WCAG 1.4.3 the way a disabled control is, and text/disabled
+ * measures 3.79:1 on background/input — under the 4.5:1 minimum. text/secondary
+ * is the next token up, clearing it with margin (7.72:1) while still reading
+ * well below text/primary. See text.disabled's description in tokens.json.
+ */
+.input::placeholder {
+  color: var(--color-text-secondary);
+  opacity: 1;
+}
+
+.textarea {
+  resize: none;
+  overflow-y: auto;
+  /* Multi-line height comes from `rows`, so it must not stretch to the field. */
+  align-self: auto;
+}
+
+/* Figma: a 1px rule the height of one line, before the placeholder. Static —
+   the file specifies no blink, and tokens.json carries no motion tokens. */
+.caret {
+  flex: none;
+  inline-size: var(--dimension-stroke-border);
+  block-size: 1lh;
+  background-color: var(--color-text-primary);
+}
+
+/* ------------------------------------------------------------ waveform ---- */
+/* Figma: "Audio Input", 33 bars, brightest in the middle and faded at each end. */
+.waveform {
+  display: flex;
+  flex: 1;
+  min-inline-size: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--dimension-space-050);
+  block-size: var(--dimension-icon-300);
+}
+
+.bar {
+  flex: 1;
+  min-inline-size: 0;
+  border-radius: var(--dimension-radius-full);
+  background-color: var(--color-text-primary);
+}
+
+/* The two bars at each end are dimmed, as in Figma. */
+.bar:nth-child(-n + 2),
+.bar:nth-last-child(-n + 2) {
+  background-color: var(--color-interactive-secondary);
+}
+
+/*
+ * Heights step across real Icon tokens. The bars animate because recording
+ * "must be unmistakable" (Voice UX Reference, principle 1) and a frozen
+ * waveform reads as a screenshot; voiceCircle's waveform set the precedent.
+ * Durations are unbound — tokens.json carries no motion tokens.
+ */
+.bar1 {
+  block-size: var(--dimension-icon-100);
+  animation: chat-wave1 900ms ease-in-out infinite;
+}
+
+.bar2 {
+  block-size: var(--dimension-icon-200);
+  animation: chat-wave2 700ms ease-in-out infinite;
+}
+
+.bar3 {
+  block-size: var(--dimension-icon-150);
+  animation: chat-wave3 1100ms ease-in-out infinite;
+}
+
+.bar4 {
+  block-size: var(--dimension-icon-250);
+  animation: chat-wave4 800ms ease-in-out infinite;
+}
+
+@keyframes chat-wave1 {
+  0%,
+  100% { block-size: var(--dimension-icon-100); }
+  50% { block-size: var(--dimension-icon-250); }
+}
+
+@keyframes chat-wave2 {
+  0%,
+  100% { block-size: var(--dimension-icon-200); }
+  50% { block-size: var(--dimension-icon-100); }
+}
+
+@keyframes chat-wave3 {
+  0%,
+  100% { block-size: var(--dimension-icon-150); }
+  50% { block-size: var(--dimension-icon-300); }
+}
+
+@keyframes chat-wave4 {
+  0%,
+  100% { block-size: var(--dimension-icon-250); }
+  50% { block-size: var(--dimension-icon-150); }
+}
+
+/* ------------------------------------------------------------- actions ---- */
+/*
+ * Figma draws the mic as a bare icon rather than a control. It is a button here
+ * so the text-to-voice path is actually operable. It keeps Figma's Icon/300 box
+ * as its painted size; the tappable area is widened to Target/Minimum by the
+ * ::after below, so the drawing still matches the file while the target does not
+ * have to.
+ */
+.fieldAction {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  /* Figma's icon box. Set explicitly so a glyph that fills its slot has a real
+     token to resolve against rather than its own content. */
+  inline-size: var(--dimension-icon-300);
+  block-size: var(--dimension-icon-300);
+  padding: var(--dimension-space-0);
+  border: none;
+  border-radius: var(--dimension-radius-full);
+  background: none;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  appearance: none;
+  position: relative;
+}
+
+/* Transparent target, centred on the painted icon. It overhangs the field edge
+   and the input's last 2px; the input keeps the rest of the pill. */
+.fieldAction::after {
+  content: '';
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  translate: -50% -50%;
+  inline-size: max(100%, var(--dimension-target-minimum));
+  block-size: max(100%, var(--dimension-target-minimum));
+}
+
+.fieldAction:focus-visible {
+  outline: var(--dimension-stroke-heavy-border) solid var(--color-border-focus);
+  outline-offset: var(--dimension-space-050);
+}
+
+.send {
+  flex: none;
+}
+
+/* Figma: the "loading-01" glyph, in interactive/onSecondary. */
+.spinner {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  color: var(--color-interactive-on-secondary);
+  animation: chat-spin 1s linear infinite;
+}
+
+@keyframes chat-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bar,
+  .spinner {
+    animation: none;
+  }
+}
+
+.visuallyHidden {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}

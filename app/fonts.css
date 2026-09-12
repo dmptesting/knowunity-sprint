@@ -1,0 +1,56 @@
+/*
+ * Greed Standard (trial) — the family tokens.json names in
+ * `font/family/default` and `font/family/display`.
+ *
+ * Declared as plain @font-face rather than next/font/local so there is a single
+ * definition shared by the Next app and Storybook. Storybook's preview is plain
+ * CSS and never renders app/layout.tsx, so a next/font loader there would have
+ * had to be duplicated as @font-face anyway — and two definitions of the same
+ * family drift. Files are served from public/, which Next and Storybook (via
+ * staticDirs) both expose at the site root.
+ *
+ * The four weights ship as separate static faces whose own internal family
+ * names differ (SemiBold and Heavy each report their own family). Declaring
+ * them all under one @font-face family with distinct font-weight values is what
+ * lets `font-weight: 600` pick SemiBold, which is the whole point.
+ *
+ * Weight numbers are the CSS spelling of tokens.json's weight keywords
+ * (regular / semi-bold / bold / heavy) — the same mapping
+ * stories/foundations/TypeFoundations.tsx uses. tokens.json stores those as
+ * Figma keywords, which are not valid CSS font-weight values.
+ *
+ * Source files: GreedStandard-TRIAL-*.otf, converted to woff2 (~70% smaller).
+ * TRIAL licence — fine for this internal prototype, not for public deployment.
+ */
+
+@font-face {
+  font-family: 'Greed Standard-TRIAL';
+  src: url('/fonts/GreedStandard-TRIAL-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Greed Standard-TRIAL';
+  src: url('/fonts/GreedStandard-TRIAL-SemiBold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Greed Standard-TRIAL';
+  src: url('/fonts/GreedStandard-TRIAL-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Greed Standard-TRIAL';
+  src: url('/fonts/GreedStandard-TRIAL-Heavy.woff2') format('woff2');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}

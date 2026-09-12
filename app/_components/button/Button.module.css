@@ -1,0 +1,266 @@
+/*
+ * button — every value below resolves to a custom property from
+ * build/css/tokens.css (generated from tokens/tokens.json). No raw hex, no raw
+ * pixel dimensions. Deviations from Figma are commented inline where they occur
+ * and repeated in the Storybook docs.
+ */
+
+.button {
+  /* tokens.json stores font weight as a Figma keyword ('semi-bold', 'bold'),
+     which is not a valid CSS font-weight value. Same presentational mapping
+     already used by stories/foundations/TypeFoundations.tsx — these two numbers
+     are the CSS spelling of the token, not design values of their own. */
+  --button-weight-semibold: 600;
+  --button-weight-bold: 700;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Figma nests a "Content" frame inside "Button" carrying 2px (S/M) or 4px
+     (L) of bottom padding. Those are unbound optical nudges compensating for
+     Figma's text baseline box, not tokens — flex centring against an explicit
+     line-height does the same job here, so the frame is flattened away. */
+  border: none;
+  border-radius: var(--dimension-radius-full);
+  font-family: var(--font-family-default), Arial, Helvetica, sans-serif;
+  text-align: center;
+  cursor: pointer;
+  appearance: none;
+  background-color: transparent;
+  background-repeat: no-repeat;
+
+  /* Anchors the ::after target below. */
+  position: relative;
+}
+
+/*
+ * Minimum touch target. Several of Figma's painted sizes are smaller than a
+ * finger can reliably hit: S is 32px, and Tertiary S/M collapse to a bare 20px
+ * line box because their padding-block is Space/0. WCAG 2.2 AA puts the floor at
+ * 24px and Apple's HIG at 44px.
+ *
+ * The fix expands the target, not the drawing: a transparent ::after centred on
+ * the button grows the tappable region to Target/Minimum while the painted box
+ * stays exactly as Figma draws it. `max()` makes it a no-op on M and L, which
+ * are already 44px and 56px.
+ */
+.button::after {
+  content: '';
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  translate: -50% -50%;
+  inline-size: max(100%, var(--dimension-target-minimum));
+  block-size: max(100%, var(--dimension-target-minimum));
+}
+
+/* Figma has no Hover variant and this prototype is mobile-only (see
+   CLAUDE.md), so no hover state is defined. Pressed is the only pointer
+   feedback. */
+
+.button:disabled {
+  cursor: not-allowed;
+}
+
+/* Not present in Figma. A keyboard focus indicator is required for the button
+   to be operable, so it is built from real tokens rather than left out. */
+.button:focus-visible {
+  outline: var(--dimension-stroke-heavy-border) solid var(--color-interactive-primary);
+  outline-offset: var(--dimension-space-050);
+}
+
+/*
+ * Tracking. Figma's text styles all specify letterSpacing in PERCENT, which
+ * tokens.json's textStyle tokens omit entirely — the font/tracking/* variables
+ * exist and match, but none of the 19 styles is actually bound to them in
+ * Figma. Read off the styles directly and bound to the tracking tokens here.
+ *
+ * Figma percent -> CSS em: 1% of the font size is 0.01em. The 0.01em factor is
+ * a unit conversion, not a design value; the number itself comes from the token.
+ */
+
+/* ---------------------------------------------------------------- size ---- */
+/* Figma fixes the Button frame's height per size with vertical padding bound
+   to Space/0. Expressed as padding-block around the label's line-height, S and
+   L land exactly on Figma's 32px and 56px. */
+
+.sizeS {
+  padding-inline: var(--dimension-space-300);
+  padding-block: var(--dimension-space-150);
+  gap: var(--dimension-space-150);
+  font-size: var(--dimension-font-size-sm);
+  line-height: var(--dimension-font-line-height-sm);
+  font-weight: var(--button-weight-semibold);
+  /* Greed/Body S Bold */
+  letter-spacing: calc(var(--number-font-tracking-loose) * 0.01em);
+}
+
+/* DEVIATION: Figma's M is 40px tall, which needs 10px of padding-block. The
+   Space scale steps 8px -> 12px, so there is no token for it. Snapped up to
+   Space/300, making M 44px rather than 40px. */
+.sizeM {
+  padding-inline: var(--dimension-space-400);
+  padding-block: var(--dimension-space-300);
+  gap: var(--dimension-space-150);
+  font-size: var(--dimension-font-size-sm);
+  line-height: var(--dimension-font-line-height-sm);
+  font-weight: var(--button-weight-semibold);
+  /* Greed/Body S Bold */
+  letter-spacing: calc(var(--number-font-tracking-loose) * 0.01em);
+}
+
+.sizeL {
+  padding-inline: var(--dimension-space-600);
+  padding-block: var(--dimension-space-400);
+  gap: var(--dimension-space-200);
+  font-size: var(--dimension-font-size-lg);
+  line-height: var(--dimension-font-line-height-md);
+  font-weight: var(--button-weight-bold);
+  /* Greed/Headline S — the one style in the scale set to 0% */
+  letter-spacing: calc(var(--number-font-tracking-none) * 0.01em);
+}
+
+/* ------------------------------------------------------------- variant ---- */
+
+.variantPrimary {
+  background-color: var(--color-interactive-primary);
+  color: var(--color-interactive-on-primary);
+}
+
+/* Figma's Secondary carries strokeWeight 3 but an empty strokes array — no
+   paint, so nothing renders. Secondary is a surface fill only, no border. */
+.variantSecondary {
+  background-color: var(--color-background-surface);
+  color: var(--color-text-primary);
+}
+
+/* Tertiary has no fill and no padding-inline in Figma. border-radius stays on
+   it for the focus ring's sake; with no fill it is otherwise invisible. */
+.variantTertiary {
+  background-color: transparent;
+  color: var(--color-text-primary);
+  padding-inline: var(--dimension-space-0);
+}
+
+.variantTertiary.sizeS,
+.variantTertiary.sizeM {
+  padding-block: var(--dimension-space-0);
+}
+
+/* --------------------------------------------------------------- state ---- */
+/* Figma stacks a second fill over the base one for Pressed. Reproduced as a
+   flat gradient layer over background-color so both fills stay token-bound. */
+
+.variantPrimary.statePressed,
+.variantPrimary:not(:disabled):active {
+  background-image: linear-gradient(
+    var(--color-interactive-press-overlay),
+    var(--color-interactive-press-overlay)
+  );
+}
+
+.variantSecondary.statePressed,
+.variantSecondary:not(:disabled):active {
+  background-image: linear-gradient(
+    var(--color-background-stacking),
+    var(--color-background-stacking)
+  );
+}
+
+/* Tertiary's Pressed state in Figma is a 10%-white overlay on the label, which
+   over text/primary (#f4f2ff) is imperceptible. Left visually identical to
+   Default rather than inventing a stronger treatment. */
+
+.variantPrimary.stateDisabled,
+.variantPrimary:disabled {
+  background-color: var(--color-background-surface);
+  background-image: none;
+  color: var(--color-text-disabled);
+}
+
+.variantSecondary.stateDisabled,
+.variantSecondary:disabled {
+  background-color: var(--color-background-surface);
+  background-image: none;
+  color: var(--color-text-disabled);
+}
+
+.variantTertiary.stateDisabled,
+.variantTertiary:disabled {
+  color: var(--color-text-disabled);
+}
+
+/* Loading keeps the resting fill and hides the label, so the button hugs the
+   spinner — matching Figma, where the Loading variants are narrower. */
+.variantPrimary.stateLoading {
+  background-color: var(--color-interactive-primary);
+  color: var(--color-interactive-on-primary);
+}
+
+/* Figma binds Secondary's hidden Loading label to interactive/onPrimary
+   (#090c18), which would be near-invisible on background/surface. Reading that
+   as leftover from duplicating the Primary variant, the spinner uses
+   text/primary — the colour Secondary's label actually has when visible. */
+.variantSecondary.stateLoading {
+  background-color: var(--color-background-surface);
+  color: var(--color-text-primary);
+}
+
+.variantTertiary.stateLoading {
+  color: var(--color-text-link);
+}
+
+/* ---------------------------------------------------------------- parts --- */
+
+.label {
+  white-space: nowrap;
+}
+
+.icon {
+  display: inline-flex;
+  flex: none;
+}
+
+.spinner {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  /* At size S the spinner glyph (Icon/200, 16px) is shorter than the label's
+     line-height (20px), so with the label pulled out of flow the button would
+     collapse to 28px instead of Figma's 32px. Holding the spinner to one line
+     box keeps every Loading variant the same height as its resting state.
+     `1lh` resolves to the size class's own line-height token, so this stays
+     token-bound rather than restating a pixel value. */
+  height: 1lh;
+  /* Material's `progress_activity` is a smooth arc, so it rotates linearly
+     rather than stepping the way the old 12-spoke glyph did.
+     tokens.json carries no motion tokens, so this duration is not bound. */
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation: none;
+  }
+}
+
+/* Keeps the button's accessible name while Loading hides the label visually. */
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}

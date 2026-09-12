@@ -1,0 +1,58 @@
+/*
+ * mascotSlot — every value resolves to a custom property from
+ * build/css/tokens.css. No raw hex, no raw pixel dimensions.
+ *
+ * Layer names mirror Figma's: the sized component frame, then
+ * ".mascotSlotBase" holding the mascot instance.
+ */
+
+.mascotSlot {
+  display: inline-flex;
+  flex: none;
+  inline-size: var(--mascot-slot-size);
+  block-size: var(--mascot-slot-size);
+}
+
+/* ----------------------------------------------------------------- size --- */
+/* Each size is bound in Figma to an Illustration token, and all four land
+   exactly on a real step. */
+
+.sizeXl {
+  --mascot-slot-size: var(--dimension-illustration-800);
+}
+
+.size2xl {
+  --mascot-slot-size: var(--dimension-illustration-1500);
+}
+
+.size3xl {
+  --mascot-slot-size: var(--dimension-illustration-2500);
+}
+
+.size4xl {
+  --mascot-slot-size: var(--dimension-illustration-4000);
+}
+
+/* Figma: ".mascotSlotBase", a Space/300 inset on all four sides. */
+.base {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 100%;
+  block-size: 100%;
+  padding: var(--dimension-space-300);
+}
+
+/*
+ * The shipped artwork is 200×217, not square like the Figma instance, so it is
+ * contained rather than stretched: Knowie keeps his proportions and sits
+ * centred in the padded box, leaving a little slack at the sides.
+ */
+.art {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: contain;
+  /* Knowie is artwork, not a UI surface: no token-bound colour of his own.
+     The SVG carries Homie/Inkwell and Homie/Eyes internally. */
+  user-select: none;
+}

@@ -1,0 +1,112 @@
+/*
+ * checkbox — every value resolves to a custom property from
+ * build/css/tokens.css. No raw hex, no raw pixel dimensions.
+ *
+ * Layer names mirror Figma's: the component frame is the 48px touch target,
+ * Box is the 24px circle, and the check glyph sits in it through an iconSlot.
+ */
+
+.checkbox {
+  display: inline-grid;
+  place-items: center;
+  /* Figma's component frame is 48×48 — Space/1200, and exactly the 44px+
+     minimum touch target. */
+  inline-size: var(--dimension-space-1200);
+  block-size: var(--dimension-space-1200);
+}
+
+/* The real control. Covers the whole touch target and stays focusable and
+   hit-testable, but is invisible: the Box below is what the student sees. */
+.input {
+  grid-area: 1 / 1;
+  inline-size: 100%;
+  block-size: 100%;
+  margin: var(--dimension-space-0);
+  /* Not a design value: zero opacity is what hides the native control so the
+     Box can be drawn in its place, the same mechanism the visually-hidden
+     helpers elsewhere in this build use. tokens.json has no Opacity/0. */
+  opacity: 0;
+  cursor: pointer;
+}
+
+.input:disabled {
+  cursor: not-allowed;
+}
+
+/* Figma: "Box". A circle, not a rounded square — Radius/Full on a 24px box. */
+.box {
+  grid-area: 1 / 1;
+  display: grid;
+  place-items: center;
+  inline-size: var(--dimension-icon-300);
+  block-size: var(--dimension-icon-300);
+  padding: var(--dimension-space-100);
+  border: var(--dimension-stroke-heavy-border) solid;
+  border-radius: var(--dimension-radius-full);
+  pointer-events: none;
+}
+
+/* Figma's check is an Icon/200 glyph inside the Icon/300 box, which is exactly
+   what Space/100 of padding leaves. */
+.icon {
+  display: flex;
+  inline-size: var(--dimension-icon-200);
+  block-size: var(--dimension-icon-200);
+}
+
+/*
+ * Not present in Figma, which defines no focus state. A checkbox is not
+ * operable without one, so it is built from real tokens — the same pair
+ * pathNode and the button use.
+ */
+.input:focus-visible + .box {
+  outline: var(--dimension-stroke-heavy-border) solid var(--color-border-focus);
+  outline-offset: var(--dimension-space-050);
+}
+
+/* --------------------------------------------------------- Default state --- */
+/*
+ * DEVIATION: Figma binds the selected fill and stroke to `highlight/indicator`,
+ * a variable that is not in the file's semantic collection and was never
+ * exported to tokens.json. `highlight/border` is the token for "edge of a
+ * chosen element", so it stands in for both — which also makes the selected
+ * circle read as the unselected ring filled in.
+ */
+.stateDefault.unselected .box {
+  border-color: var(--color-highlight-border);
+}
+
+.stateDefault.selected .box {
+  border-color: var(--color-highlight-border);
+  background-color: var(--color-highlight-border);
+  color: var(--color-text-primary);
+}
+
+/* ----------------------------------------------------------- Error state --- */
+/* Figma's `feedback/error` is exported as feedback.error.bold. */
+.stateError.unselected .box {
+  border-color: var(--color-feedback-error-bold);
+}
+
+/*
+ * DEVIATION: Figma fills the selected error box with `feedback/errorSurface`,
+ * which is not in tokens.json either. feedback/error/subtle is the token for a
+ * tinted error background, so it stands in.
+ */
+.stateError.selected .box {
+  border-color: var(--color-feedback-error-bold);
+  background-color: var(--color-feedback-error-subtle);
+  color: var(--color-feedback-error-bold);
+}
+
+/* -------------------------------------------------------- Disabled state --- */
+
+.stateDisabled.unselected .box {
+  border-color: var(--color-interactive-disabled);
+}
+
+.stateDisabled.selected .box {
+  border-color: var(--color-interactive-disabled);
+  background-color: var(--color-interactive-disabled);
+  color: var(--color-text-disabled);
+}

@@ -99,6 +99,8 @@ The recall loop's screens compose from these pieces; nothing in the file defines
 
 **In tokens/tokens.json specifically**, the same names become dot paths (`accent.brand.bold`) and the type scale is camelCase keys (`displayL`, `headlineXsBold`) instead of the Figma text style's `Greed/Display L` naming, since JSON object keys don't take spaces or slashes well. One deviation worth knowing: `interactive.primary`, `.secondary`, and `.destructive` are each both a token and the parent of a hover/active pair in Figma. JSON can't let a token double as a group, so those six became `interactive.primaryHover` / `interactive.primaryActive` etc. in the export. That's a file-format workaround, not a naming convention to copy into Figma.
 
+**Text-style tracking is percent in Figma, and Figma can only bind it as pixels.** All 19 text styles set letterSpacing as a percent of font size: −1% for Display L/M/S and Headline XL/L/M, 0% for Headline S, +1% for everything smaller. `font/tracking/tight`, `none` and `loose` hold exactly those numbers (−1 / 0 / 1). But binding a number variable to a text style's letterSpacing makes Figma apply it in pixels, so +1% becomes 1px, about 6.7× wider on 15px body text. The styles therefore stay deliberately unbound, with the percent typed in. That's a Figma limitation, not a missing binding to go back and fix. In tokens.json each `textStyle` references its tracking token (`"letterSpacing": "{font.tracking.loose}"`), and code converts it with `calc(var(--number-font-tracking-loose) * 0.01em)`, since 1% of the font size is 0.01em.
+
 ## Structure conventions
 
 **Every new component lives in its own "Component Container" frame** (a white frame holding a title text naming the component, then the component or set itself), stacked on the "🎨 Mascot & components" page. This is a staging convention for finding things on that page later, not a rule about a component's own internal structure — don't read a Component Container as part of the shipped design.
@@ -117,12 +119,16 @@ The recall loop's screens compose from these pieces; nothing in the file defines
 
 **Never read a primitive directly.** Every component consumes the semantic layer; the semantic layer is the only thing that references a primitive. If you catch yourself binding a fill straight to `color/violet/500` instead of `accent/brand/bold` or whichever semantic token fits, that's a broken layer, not a shortcut.
 
-**Never trust that a matching literal value means something is actually bound.** A swatch, a text node, or a spacing value can display the right number while still being a hardcoded literal underneath. Check the actual binding (the Fill panel, the Selection colors panel, or `boundVariables` in code) before treating a value as wired to a token. This file has had three separate cases of that exact gap.
+**Never trust that a matching literal value means something is actually bound.** A swatch, a text node, or a spacing value can display the right number while still being a hardcoded literal underneath. Check the actual binding (the Fill panel, the Selection colors panel, or `boundVariables` in code) before treating a value as wired to a token. This file has had three separate cases of that exact gap. Text-style tracking looks like a fourth but isn't: those styles are unbound on purpose, because Figma can't bind them without switching to pixels (see the tracking note under Naming conventions).
 
 **Never leave a gap, padding, or radius at a number that isn't a real token step.** If the spacing you want falls between two `Space/*` values, snap to the nearest real one and bind it, don't leave an untracked pixel value sitting next to tokens that are all real steps.
 
 **Never treat appBar, snackbar, or textBlock's variant grid as proof of how they're meant to look.** Zero real instances exist for any of the three. Build with them, then check the result, don't assume the structure alone is validated. The same caution now applies to hintCard and pathNode's format-icon marker: both are new and unproven in a real shipped composition.
 
 **Never ship a component still showing its default placeholder text** ("1/2 words," "0/12," snackbar's two-line placeholder) as if it were real content. Most chip instances in the file today still do this; it's a known gap, not a model.
+
+**Never colour placeholder text with `text/disabled`.** A disabled control is exempt from WCAG 1.4.3; an empty field's placeholder is ordinary text and is not. `text/disabled` measures 3.79:1 on `background/input`, under the 4.5:1 minimum, so placeholders take `text/secondary` (7.72:1) instead. The token's description in tokens.json says so — chatInput was the one place that had it wrong.
+
+**Never let a control's touch target fall below `Target/Minimum` (44px).** Several of Figma's painted sizes are smaller — button S is 32px, Tertiary S/M collapse to a 20px line box, and the chatInput mic is a 24px icon box. Match the drawing, then expand the *target* with a transparent centred `::after` sized `max(100%, var(--dimension-target-minimum))`. Never resize the painted box to hit the number, and never leave the gap unfixed because the file draws it that way.
 
 **Never finish a component without writing its description.** Three of this sprint's six shipped without one; see Naming conventions above.

@@ -58,6 +58,12 @@ export interface TypographyResolved {
   fontWeight: string;
   fontSize: DimensionValue;
   lineHeight: DimensionValue;
+  /**
+   * Percent of the font size, as Figma stores it (1 = +1%). Resolved from a
+   * font.tracking.* reference. Figma keeps these unbound on purpose — it can
+   * only bind letterSpacing variables as pixels (see design-system.md).
+   */
+  letterSpacing: number;
 }
 
 export function resolveTypography(value: Record<string, unknown>): TypographyResolved {
@@ -66,6 +72,7 @@ export function resolveTypography(value: Record<string, unknown>): TypographyRes
     fontWeight: resolveValue(value.fontWeight) as string,
     fontSize: resolveValue(value.fontSize) as DimensionValue,
     lineHeight: resolveValue(value.lineHeight) as DimensionValue,
+    letterSpacing: resolveValue(value.letterSpacing) as number,
   };
 }
 

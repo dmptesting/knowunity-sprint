@@ -1,0 +1,50 @@
+/*
+ * hintCard — every value resolves to a custom property from
+ * build/css/tokens.css. No raw hex, no raw pixel dimensions.
+ *
+ * Layer names mirror Figma's: Label ("Hint"), then Body.
+ */
+
+.hintCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--dimension-space-200);
+
+  /* Figma's card is a fixed 342px — 390 minus Space/600 a side. It fills its
+     parent instead, so the bottom sheet supplies the insets. */
+  inline-size: 100%;
+  padding: var(--dimension-space-400);
+  border-radius: var(--dimension-radius-400);
+  background-color: var(--color-accent-brand-subtle);
+}
+
+/*
+ * Figma text style "Greed/Body S Bold". Set from the individual tokens rather
+ * than the --typography-text-style-* shorthand, because that shorthand carries
+ * the Figma keyword "semi-bold", which is not a valid CSS font-weight.
+ */
+.label {
+  margin: var(--dimension-space-0);
+  color: var(--color-accent-brand-bold);
+  font-family: var(--font-family-default), Arial, Helvetica, sans-serif;
+  font-size: var(--dimension-font-size-sm);
+  line-height: var(--dimension-font-line-height-sm);
+  /* CSS spelling of font/weight/semibold. */
+  font-weight: 600;
+  /* Greed/Body S Bold is +1% in Figma; tokens.json's textStyle tokens omit
+     letterSpacing. 1% of the font size is 0.01em. */
+  letter-spacing: calc(var(--number-font-tracking-loose) * 0.01em);
+}
+
+/* Figma text style "Greed/Body S Regular". */
+.body {
+  margin: var(--dimension-space-0);
+  color: var(--color-text-primary);
+  font-family: var(--font-family-default), Arial, Helvetica, sans-serif;
+  font-size: var(--dimension-font-size-sm);
+  line-height: var(--dimension-font-line-height-sm);
+  /* CSS spelling of font/weight/regular. */
+  font-weight: 400;
+  letter-spacing: calc(var(--number-font-tracking-loose) * 0.01em);
+  overflow-wrap: break-word;
+}

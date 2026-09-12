@@ -1,0 +1,141 @@
+/*
+ * appBar — every value resolves to a custom property from
+ * build/css/tokens.css. No raw hex, no raw pixel dimensions.
+ *
+ * Layer names mirror Figma's: the "Top Nav Default" frame holding the
+ * App Bar Button Icon(s), the Slot, and the App Bar Button.
+ */
+
+.appBar {
+  display: flex;
+  align-items: center;
+  gap: var(--dimension-space-100);
+
+  /* Figma's frame is a fixed 375px — an older iPhone width, not this
+     prototype's 390. The bar fills its parent instead. */
+  inline-size: 100%;
+
+  /* Figma's 56px height is not declared here because there is no 56 token:
+     it falls out of the 48px action box (Space/1200) plus the Space/200 of
+     bottom padding every variant carries. Measured, it lands on 56 exactly. */
+
+  /*
+   * Figma stacks two identical linear gradients, page colour at full opacity
+   * fading to transparent. Both are bound to background/page and both render,
+   * so both are reproduced: the duplicate looks accidental, but it doubles the
+   * alpha curve, and dropping it would change what the file shows.
+   *
+   * The gradient assumes content scrolling underneath — position the bar at
+   * the top of the screen when composing.
+   */
+  background-image:
+    linear-gradient(var(--color-background-page), transparent),
+    linear-gradient(var(--color-background-page), transparent);
+}
+
+/* ---------------------------------------------------------------- padding --- */
+/*
+ * Every variant carries Space/0 on top and Space/200 at the bottom; the side
+ * insets change with what sits in them, because an icon button's own 48px box
+ * already supplies visual padding where a bare Slot edge does not.
+ */
+
+.variantDefault {
+  padding: var(--dimension-space-0) var(--dimension-space-400)
+    var(--dimension-space-200) var(--dimension-space-400);
+}
+
+.variantLeftIconButtonOnly,
+.variantLeftAndRightButton {
+  padding: var(--dimension-space-0) var(--dimension-space-400)
+    var(--dimension-space-200) var(--dimension-space-100);
+}
+
+.variantLeftAndRightIconButton,
+.variantLeftAndTwoRightIconButtons {
+  padding: var(--dimension-space-0) var(--dimension-space-100)
+    var(--dimension-space-200) var(--dimension-space-100);
+}
+
+.variantLeftAnd2RightButtons {
+  padding: var(--dimension-space-0) var(--dimension-space-300)
+    var(--dimension-space-200) var(--dimension-space-100);
+}
+
+/* ------------------------------------------------------------------- Slot --- */
+/*
+ * Figma's Slot is FILL/FILL with stretchChildOnInsert, so it takes the space
+ * between the actions and whatever goes in stretches to fill it.
+ */
+.slot {
+  display: flex;
+  flex: 1;
+  min-inline-size: 0;
+  align-items: center;
+  block-size: var(--dimension-space-1200);
+}
+
+.slot > * {
+  flex: 1;
+  min-inline-size: 0;
+}
+
+/* ---------------------------------------------------------------- actions --- */
+/*
+ * Figma's "App Bar Button Icon": a 48px box with a transparent 40px button
+ * inside and an Icon/300 glyph. It is its own component set in Figma — four
+ * states, one variant — rather than an instance of buttonIcon, so it is
+ * reproduced here on the button stylesheet's Tertiary rules: no fill, the
+ * shared focus ring, and text/primary for the glyph.
+ *
+ * Two classes deep so the box wins over that stylesheet's Tertiary padding
+ * reset, whichever order the two modules load in.
+ */
+.appBar .iconButton {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  inline-size: var(--dimension-space-1200);
+  block-size: var(--dimension-space-1200);
+  padding: var(--dimension-space-0);
+  border-radius: var(--dimension-radius-full);
+}
+
+.glyph {
+  display: inline-flex;
+  inline-size: var(--dimension-icon-300);
+  block-size: var(--dimension-icon-300);
+}
+
+/*
+ * Figma's "App Bar Button": the text action, Label bound to text/primary at
+ * Greed/Headline XXS Bold, in a 48px-tall box.
+ */
+.appBar .textButton {
+  flex: none;
+  block-size: var(--dimension-space-1200);
+  padding-inline: var(--dimension-space-300);
+  border-radius: var(--dimension-radius-full);
+  color: var(--color-text-primary);
+  font-size: var(--dimension-font-size-sm);
+  line-height: var(--dimension-font-line-height-xs);
+  /* CSS spelling of font/weight/semibold. */
+  font-weight: 600;
+  /* Greed/Headline XXS Bold is +1% in Figma; tokens.json's textStyle tokens
+     omit letterSpacing. 1% of the font size is 0.01em. */
+  letter-spacing: calc(var(--number-font-tracking-loose) * 0.01em);
+  white-space: nowrap;
+}
+
+/* Figma wraps two trailing actions in their own frame, gap Space/0, with
+   Space/100 of end padding in the icon + text pairing. */
+.rightGroup {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--dimension-space-0);
+}
+
+.variantLeftAnd2RightButtons .rightGroup {
+  padding-inline-end: var(--dimension-space-100);
+}
