@@ -33,13 +33,14 @@ const meta = {
           '### Departures from Figma',
           '',
           '- **Two opacity tokens were added.** The halo (0.12) and inner ring (0.25) use raw Figma node opacity, and `tokens.json` had no opacity family at all. `Opacity/12` and `Opacity/25` were added to the token source and regenerated, so both rings are now bound. These still need mirroring as Figma variables to keep the file and the code in sync.',
-          '- **`recording` and `processing` animate; Figma is static.** The component is called "the animated circle" but the file carries no motion spec. The waveform steps each bar between real `Icon/*` tokens, and the think dot breathes between full opacity and `Opacity/25`, so every frame lands on a token. Durations and delays are unbound — there are no motion tokens.',
-          '- **`idle` is deliberately still.** It is the resting state before the student speaks, and Figma specifies no motion for it.',
-          '- All motion is disabled under `prefers-reduced-motion: reduce`.',
+          '- **Every mode animates; Figma is static.** The component is called "the animated circle" but the file carries no motion spec. The waveform steps each bar between real `Icon/*` tokens, and the think dot breathes between full opacity and `Opacity/25`, so every frame lands on a token. Durations and delays are unbound — there are no motion tokens.',
+          '- **`idle` breathes, to invite a press.** Both rings swell outward by `Space/200` a side and back on a 4s loop, the halo trailing the inner ring by 0.4s. As they swell the inner ring dims (`Opacity/25` → `Opacity/12`) while the halo brightens (`Opacity/12` → `Opacity/25`), so the light passes outward. It moves only the rings, never the core, and is several times slower than the waveform and think dot, so an idle circle never reads as one that is listening.',
+          '- **The breath widens the overflow.** At its peak the halo reaches `Space/800 + Space/200` (40px) past the component box, 8px more than at rest.',
+          '- All motion is disabled under `prefers-reduced-motion: reduce`. In idle the halo holds at `Opacity/25` instead, a static stand-in for the breath.',
           '',
           '### Why it animates at all',
           '',
-          'Voice UX Reference, principle 1: the current state must be unmistakable, and "colour alone isn\'t enough: pair it with a shape, icon, or motion." Principle 6 asks the thinking state to be "a skeleton/animated state, not a dead spinner." Each mode already carries a distinct shape (mic / bars / dot); the motion is what makes `recording` and `processing` read as live rather than frozen.',
+          'Voice UX Reference, principle 1: the current state must be unmistakable, and "colour alone isn\'t enough: pair it with a shape, icon, or motion." Principle 6 asks the thinking state to be "a skeleton/animated state, not a dead spinner." Each mode already carries a distinct shape (mic / bars / dot); the motion is what makes `recording` and `processing` read as live rather than frozen. In `idle` the motion has a different job — inviting the press — so it is slower, sits on the rings, and never touches the core.',
         ].join('\n'),
       },
     },
@@ -64,12 +65,19 @@ type Story = StoryObj<typeof meta>;
  * names it.
  * ---------------------------------------------------------------------- */
 
-/** The student hasn't started speaking. Mic glyph, no motion. */
+/** The student hasn't started speaking. Mic glyph; the rings breathe to invite a press. */
 export const Idle: Story = {
   name: 'mode=idle',
   args: { mode: 'idle' },
   play: async ({ canvas }) => {
-    await expect(canvas.getByRole('img', { name: 'Ready to record' })).toBeVisible();
+    const circle = canvas.getByRole('img', { name: 'Ready to record' });
+    await expect(circle).toBeVisible();
+
+    // Both rings breathe; the core stays still.
+    const [halo, ring, core] = Array.from(circle.children) as HTMLElement[];
+    await expect(getComputedStyle(ring).animationName).not.toBe('none');
+    await expect(getComputedStyle(halo).animationName).not.toBe('none');
+    await expect(getComputedStyle(core).animationName).toBe('none');
   },
 };
 
@@ -78,7 +86,13 @@ export const Recording: Story = {
   name: 'mode=recording',
   args: { mode: 'recording' },
   play: async ({ canvas }) => {
-    await expect(canvas.getByRole('img', { name: 'Recording' })).toBeVisible();
+    const circle = canvas.getByRole('img', { name: 'Recording' });
+    await expect(circle).toBeVisible();
+
+    // The breath belongs to idle only: once recording, the rings are still.
+    const [halo, ring] = Array.from(circle.children) as HTMLElement[];
+    await expect(getComputedStyle(ring).animationName).toBe('none');
+    await expect(getComputedStyle(halo).animationName).toBe('none');
   },
 };
 

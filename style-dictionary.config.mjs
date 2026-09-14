@@ -40,6 +40,32 @@ StyleDictionary.registerTransform({
   },
 });
 
+// tokens.json keeps font weights as the keywords Figma exports ("semi-bold"),
+// which CSS can't read. Map them to the numeric weights app/fonts.css registers
+// the Greed faces under, so --font-weight-* and the textStyle shorthands are
+// valid CSS. An unknown keyword fails the build rather than emitting junk.
+const CSS_FONT_WEIGHT = {
+  regular: 400,
+  "semi-bold": 600,
+  bold: 700,
+  heavy: 800,
+};
+
+StyleDictionary.registerTransform({
+  name: "fontWeight/css-number",
+  type: "value",
+  filter: (token) => token.$type === "fontWeight",
+  transform: (token) => {
+    const value = token.$value ?? token.value;
+    if (typeof value === "number") return value;
+    const weight = CSS_FONT_WEIGHT[value];
+    if (weight === undefined) {
+      throw new Error(`Unknown font weight "${value}" at ${token.path.join(".")}`);
+    }
+    return weight;
+  },
+});
+
 export default {
   source: ["tokens/tokens.json"],
   platforms: {
@@ -50,6 +76,7 @@ export default {
         "color/css",
         "size/px",
         "fontFamily/css",
+        "fontWeight/css-number",
         "typography/css/shorthand",
       ],
       files: [

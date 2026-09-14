@@ -6,18 +6,24 @@
  * per-mode content (Icon / Bars / Think dot).
  */
 
+/*
+ * Figma's component box is Illustration/2500 (200px). This build is a step
+ * down at Space/4000 (160px) — the scale has nothing between 120 and 200, so
+ * a smaller circle means the next real step, not a percentage.
+ *
+ * Every layer below scales with it and keeps Figma's proportions: the core is
+ * 60% of the box and the glyph 33% of the core, exactly as in the file.
+ * Explicit single-cell grid track so the oversized halo overflows centred
+ * instead of stretching the track.
+ */
 .voiceCircle {
-  /* Figma's component box is Illustration/2500 square. The halo is larger and
-     deliberately overflows it, exactly as in the file — so this element
-     measures 200px but reads as 320px wide on screen. Explicit single-cell
-     grid track so the oversized halo overflows centred instead of stretching
-     the track. */
+  --voice-circle-size: var(--dimension-space-4000);
+
   display: grid;
-  grid-template:
-    var(--dimension-illustration-2500) / var(--dimension-illustration-2500);
+  grid-template: var(--voice-circle-size) / var(--voice-circle-size);
   place-items: center;
-  inline-size: var(--dimension-illustration-2500);
-  block-size: var(--dimension-illustration-2500);
+  inline-size: var(--voice-circle-size);
+  block-size: var(--voice-circle-size);
 }
 
 /* Every layer shares the one grid cell, so they stack concentrically without
@@ -26,28 +32,44 @@
   grid-area: 1 / 1;
 }
 
-/* Figma: "Ring — halo". Stroke bound to accent/brand/bold, node opacity 0.12. */
+/*
+ * Figma: "Ring — halo". Stroke bound to accent/brand/bold, node opacity 0.12.
+ *
+ * Derived from the inner ring plus a gap on each side, rather than set to a
+ * diameter of its own. Figma draws it at Illustration/4000 (320px) against a
+ * 200px inner ring, which leaves 60px of empty space between the two — wider
+ * than any real token, and wider than it needs to be. Expressing it as
+ * `ring + 2 × Space/800` puts the *gap* on a token, which is the value that
+ * actually matters here.
+ */
 .halo {
-  inline-size: var(--dimension-illustration-4000);
-  block-size: var(--dimension-illustration-4000);
+  --voice-circle-ring-gap: var(--dimension-space-800);
+
+  inline-size: calc(
+    var(--voice-circle-size) + var(--voice-circle-ring-gap) * 2
+  );
+  block-size: calc(
+    var(--voice-circle-size) + var(--voice-circle-ring-gap) * 2
+  );
   border: var(--dimension-stroke-border) solid var(--color-accent-brand-bold);
   border-radius: var(--dimension-radius-full);
   opacity: var(--number-opacity-12);
 }
 
-/* Figma: "Ring — inner". Same stroke, node opacity 0.25. */
+/* Figma: "Ring — inner". Same stroke, node opacity 0.25. Fills the box. */
 .ring {
-  inline-size: var(--dimension-illustration-2500);
-  block-size: var(--dimension-illustration-2500);
+  inline-size: var(--voice-circle-size);
+  block-size: var(--voice-circle-size);
   border: var(--dimension-stroke-border) solid var(--color-accent-brand-bold);
   border-radius: var(--dimension-radius-full);
   opacity: var(--number-opacity-25);
 }
 
-/* Figma: "Core". Solid accent/brand/bold. */
+/* Figma: "Core". Solid accent/brand/bold. Illustration/1500 against Figma's
+   200px box is 60%; Space/2400 against this 160px one is the same 60%. */
 .core {
-  inline-size: var(--dimension-illustration-1500);
-  block-size: var(--dimension-illustration-1500);
+  inline-size: var(--dimension-space-2400);
+  block-size: var(--dimension-space-2400);
   background-color: var(--color-accent-brand-bold);
   border-radius: var(--dimension-radius-full);
 }
@@ -62,18 +84,25 @@
 }
 
 /* ----------------------------------------------------------- mode=idle ---- */
-/* Figma: "Icon", an Illustration/500 frame holding the mic vector. */
+/* Figma: "Icon", an Illustration/500 frame holding the mic vector — 33% of
+   its 120px core. Icon/400 is the same 33% of this 96px one. */
 .icon {
-  inline-size: var(--dimension-illustration-500);
-  block-size: var(--dimension-illustration-500);
+  inline-size: var(--dimension-icon-400);
+  block-size: var(--dimension-icon-400);
 }
 
 /* ------------------------------------------------------ mode=recording ---- */
-/* Figma: "Bars", a horizontal auto-layout frame, gap Space/200, 5 bars. */
+/*
+ * Figma: "Bars", a horizontal auto-layout frame, 5 bars. Figma's gap is
+ * Space/200, which spanned 72px of its 120px core — 60%. In this 96px core
+ * that same gap reaches 75% and crowds the edges, so it steps down to
+ * Space/150 and the waveform sits at 67%, between the mic's proportion and
+ * Figma's.
+ */
 .bars {
   display: flex;
   align-items: center;
-  gap: var(--dimension-space-200);
+  gap: var(--dimension-space-150);
 }
 
 .bar {
@@ -165,12 +194,78 @@
   50% { opacity: var(--number-opacity-25); }
 }
 
-/* mode=idle is deliberately still: it is the resting state before the student
-   speaks, and Figma specifies no motion for it. */
+/* ---------------------------------------------------- idle: breathing ---- */
+/*
+ * The rings breathe in idle to invite a press. Not in Figma, which specifies
+ * no motion for this mode.
+ *
+ * Each breath swells both rings outward by Space/200 on every side and back,
+ * the halo trailing the inner ring so the breath reads as moving outward. As
+ * it swells the inner ring dims from Opacity/25 to Opacity/12 while the halo
+ * brightens from Opacity/12 to Opacity/25 — the light passes outward. Every
+ * size and opacity in it is a token step.
+ *
+ * Kept clearly apart from the two modes that already move: it lives on the
+ * rings, not the core, and at 4s a breath it is several times slower than the
+ * waveform (0.7–1.1s) and the think dot (1.4s), so a breathing circle cannot be
+ * mistaken for one that is listening. Durations are unbound — tokens.json
+ * carries no motion tokens.
+ */
+.idle {
+  --voice-circle-breath: var(--dimension-space-200);
+}
+
+.idle .ring {
+  animation: breathe-ring 4000ms ease-in-out infinite;
+}
+
+.idle .halo {
+  animation: breathe-halo 4000ms ease-in-out 400ms infinite;
+}
+
+@keyframes breathe-ring {
+  0%,
+  100% {
+    inline-size: var(--voice-circle-size);
+    block-size: var(--voice-circle-size);
+    opacity: var(--number-opacity-25);
+  }
+  50% {
+    inline-size: calc(var(--voice-circle-size) + var(--voice-circle-breath) * 2);
+    block-size: calc(var(--voice-circle-size) + var(--voice-circle-breath) * 2);
+    opacity: var(--number-opacity-12);
+  }
+}
+
+@keyframes breathe-halo {
+  0%,
+  100% {
+    inline-size: calc(var(--voice-circle-size) + var(--voice-circle-ring-gap) * 2);
+    block-size: calc(var(--voice-circle-size) + var(--voice-circle-ring-gap) * 2);
+    opacity: var(--number-opacity-12);
+  }
+  50% {
+    inline-size: calc(
+      var(--voice-circle-size) + (var(--voice-circle-ring-gap) + var(--voice-circle-breath)) * 2
+    );
+    block-size: calc(
+      var(--voice-circle-size) + (var(--voice-circle-ring-gap) + var(--voice-circle-breath)) * 2
+    );
+    opacity: var(--number-opacity-25);
+  }
+}
 
 @media (prefers-reduced-motion: reduce) {
   .bar,
-  .thinkDot {
+  .thinkDot,
+  .idle .ring,
+  .idle .halo {
     animation: none;
+  }
+
+  /* The static stand-in for the breath: the halo held at its brightest, so an
+     idle circle still reads as ready without anything moving. */
+  .idle .halo {
+    opacity: var(--number-opacity-25);
   }
 }

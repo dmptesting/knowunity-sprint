@@ -10,7 +10,14 @@
 .chatInput {
   display: flex;
   align-items: center;
-  gap: var(--dimension-space-050);
+  /*
+   * Space/200, not Figma's Space/050. The field's focus ring is drawn outside
+   * it — Stroke/Heavy Border thick at a Space/050 offset, so it reaches 4px
+   * past the field's edge. With only 2px between the field and the + button,
+   * focusing the field painted the ring 2px over the button. 8px leaves the
+   * ring 4px clear of it, the minimum the two controls need between them.
+   */
+  gap: var(--dimension-space-200);
 
   /* Figma's frame is a fixed 361px and fills its parent in real use. */
   inline-size: 100%;
@@ -78,13 +85,9 @@
   border: none;
   background: none;
   color: var(--color-text-primary);
-  font-family: var(--font-family-default), Arial, Helvetica, sans-serif;
-  font-size: var(--dimension-font-size-sm);
-  line-height: var(--dimension-font-line-height-sm);
-  /* CSS spelling of font/weight/semibold. */
-  font-weight: 600;
-  /* Greed/Body S Bold is +1% in Figma; tokens.json's textStyle tokens omit
-     letterSpacing. 1% of the font size is 0.01em. */
+  font: var(--typography-text-style-body-sbold), Arial, Helvetica, sans-serif;
+  /* Greed/Body S Bold is +1% in Figma; the font shorthand can't
+     carry letterSpacing. 1% of the font size is 0.01em. */
   letter-spacing: calc(var(--number-font-tracking-loose) * 0.01em);
 }
 

@@ -1,0 +1,30 @@
+/*
+ * RecallSession — composition only. Every value resolves to a custom property
+ * from build/css/tokens.css.
+ */
+
+/*
+ * Anchors the abandon sheet, which covers the turn behind it.
+ *
+ * Height comes from the container, never from the viewport: this sits inside
+ * the 390×844 phone frame, and a `100dvh` here made Screen size to the browser
+ * window instead — clipping the action row off the bottom of the device.
+ */
+.session {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-block-size: 100%;
+}
+
+/*
+ * The turn, in its own wrapper so it can be made inert while the result sheet
+ * is over it. It fills the session exactly as the screen did before.
+ */
+.turn {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-block-size: 100%;
+}

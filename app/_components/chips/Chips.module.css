@@ -1,0 +1,139 @@
+/*
+ * chips — every value below resolves to a custom property from
+ * build/css/tokens.css (generated from tokens/tokens.json). No raw hex, no raw
+ * pixel dimensions. Deviations from Figma are commented inline where they occur
+ * and repeated in the Storybook docs.
+ */
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--dimension-radius-full);
+  /* All three text styles (Caption S Bold, Caption M Bold, Body S Bold) are
+     +1%. 1% of the font size is 0.01em; the number comes from the token. */
+  letter-spacing: calc(var(--number-font-tracking-loose) * 0.01em);
+  white-space: nowrap;
+}
+
+/* ---------------------------------------------------------------- size ---- */
+/* Figma fixes each chip's height with padding-block at 0. Expressed here as
+   padding-block around the label's line-height, XXS, XS and S land exactly on
+   Figma's 20px, 24px and 32px. */
+
+/* 12px line + 2 × Space/100 = 20px. Greed/Caption S Bold. */
+.sizeXXS {
+  padding-inline: var(--dimension-space-150);
+  padding-block: var(--dimension-space-100);
+  gap: var(--dimension-space-050);
+  font: var(--typography-text-style-caption-sbold), Arial, Helvetica, sans-serif;
+}
+
+/* 12px line + 2 × Space/150 = 24px. Greed/Caption S Bold — Figma gives XS the
+   same text style and icon as XXS; only padding and gap grow. */
+.sizeXS {
+  padding-inline: var(--dimension-space-200);
+  padding-block: var(--dimension-space-150);
+  gap: var(--dimension-space-100);
+  font: var(--typography-text-style-caption-sbold), Arial, Helvetica, sans-serif;
+}
+
+/* 16px line + 2 × Space/200 = 32px. Greed/Caption M Bold. */
+.sizeS {
+  padding-inline: var(--dimension-space-300);
+  padding-block: var(--dimension-space-200);
+  gap: var(--dimension-space-100);
+  font: var(--typography-text-style-caption-mbold), Arial, Helvetica, sans-serif;
+}
+
+/* DEVIATION: Figma's M is 40px tall, which needs 10px of padding-block. The
+   Space scale steps 8px -> 12px, so there is no token for it. Snapped up to
+   Space/300, making M 44px rather than 40px — the same call Button M makes.
+   Greed/Body S Bold. */
+.sizeM {
+  padding-inline: var(--dimension-space-400);
+  padding-block: var(--dimension-space-300);
+  gap: var(--dimension-space-150);
+  font: var(--typography-text-style-body-sbold), Arial, Helvetica, sans-serif;
+}
+
+/* -------------------------------------------------------- color/active ---- */
+/* Figma's inactive variants are identical for both colors: surface fill,
+   text/primary label. `color` only takes effect once the chip is active. */
+
+.inactive {
+  background-color: var(--color-background-surface);
+  color: var(--color-text-primary);
+}
+
+.colorPrimary {
+  background-color: var(--color-interactive-primary);
+  color: var(--color-interactive-on-primary);
+}
+
+.colorPro {
+  background-color: var(--color-pro-bold);
+  color: var(--color-pro-on-bold);
+}
+
+/*
+ * Not Figma variants — added for the spent-hint chips, which needed two
+ * distinguishable fills. Each is its accent's bold/onBold pair: 6.77:1 for
+ * magenta, 6.64:1 for blue.
+ */
+.colorMagenta {
+  background-color: var(--color-accent-magenta-bold);
+  color: var(--color-accent-magenta-on-bold);
+}
+
+.colorBlue {
+  background-color: var(--color-accent-blue-bold);
+  color: var(--color-accent-blue-on-bold);
+}
+
+/* ---------------------------------------------------------- interactive --- */
+/*
+ * The chip as a control, only when it is given an onClick. Resets the button's
+ * own chrome so it renders identically to the label version.
+ */
+.interactive {
+  position: relative;
+  border: none;
+  margin: var(--dimension-space-0);
+  cursor: pointer;
+  appearance: none;
+}
+
+/*
+ * Minimum touch target. The chips are 20-44px tall; the smaller three are under
+ * the 44px floor. A transparent ::after centred on the chip grows the tappable
+ * region to Target/Minimum while the painted chip stays exactly as drawn — the
+ * same approach button uses. `max()` makes it a no-op on M.
+ */
+.interactive::after {
+  content: '';
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  translate: -50% -50%;
+  inline-size: max(100%, var(--dimension-target-minimum));
+  block-size: max(100%, var(--dimension-target-minimum));
+}
+
+.interactive:focus-visible {
+  outline: var(--dimension-stroke-heavy-border) solid var(--color-border-focus);
+  outline-offset: var(--dimension-space-050);
+}
+
+/* ---------------------------------------------------------------- parts --- */
+
+.label {
+  white-space: nowrap;
+}
+
+/* Icons draw in currentColor, so they follow the label's token-bound colour —
+   dark on an active fill, light on the surface, matching the Figma render. */
+.icon {
+  display: inline-flex;
+  flex: none;
+}

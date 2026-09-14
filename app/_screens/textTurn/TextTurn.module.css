@@ -1,0 +1,32 @@
+/*
+ * TextTurn — composition only. Every value resolves to a custom property from
+ * build/css/tokens.css; no component is restyled here.
+ *
+ * No frame exists for this screen, so it borrows the voice turn's geometry:
+ * the same header, the same Knowie row at Space/400 insets. Only the action
+ * region differs, and chatInput sits in it the way the voice circle sits in
+ * the middle of the voice turn.
+ */
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--dimension-space-600);
+  padding-block: var(--dimension-space-600);
+  flex: 1;
+}
+
+/*
+ * At the top, where the voice turn puts it. Switching to text should change how
+ * the answer arrives, not where the question is — so the mascot and his bubble
+ * stay put rather than dropping to sit above the field.
+ *
+ * knowieSays owns the row; the screen supplies only the inset.
+ */
+.knowie {
+  padding-inline: var(--dimension-space-400);
+}
+
+.notice {
+  padding-inline: var(--dimension-space-600);
+}

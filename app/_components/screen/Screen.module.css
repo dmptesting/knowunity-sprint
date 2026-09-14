@@ -1,0 +1,125 @@
+/*
+ * screen — every value resolves to a custom property from
+ * build/css/tokens.css. No raw hex, no raw pixel dimensions.
+ *
+ * Region names mirror the loose frames Figma leaves on every flow screen:
+ * Panel Header (Status Bar), topNavigation, the free middle area, and
+ * bottomContent / bottomSheetOnly.
+ */
+
+.screen {
+  display: flex;
+  flex-direction: column;
+
+  /*
+   * No width of its own. Figma draws these frames at 390, but nothing in
+   * tokens.json holds 390 — Responsive/Device Width is 1200 (desktop) / 768 /
+   * 375 and none of those is this prototype's width. So the shell fills its
+   * container and the container is the phone: Storybook's iphone12 viewport,
+   * or the handset under `next dev`.
+   */
+  inline-size: 100%;
+
+  /*
+   * The container owns the height: the phone frame under `next dev`, the
+   * viewport iframe in Storybook. Figma's frames are 844 tall, but 844 is not
+   * a token and a screen should fill whatever device it is on rather than
+   * carry a device's dimensions itself.
+   */
+  min-block-size: 100%;
+
+  background-color: var(--color-background-page);
+  color: var(--color-text-primary);
+}
+
+/*
+ * Figma's "topNavigation": 48px, holding the App Bar. The bar draws its own
+ * background gradient, so this region only pins it.
+ */
+.top {
+  flex: none;
+}
+
+/*
+ * The free middle area. Figma leaves it unframed and positions content into it
+ * absolutely; here it takes the remaining height and scrolls when it outgrows
+ * it, which is what lets the scrim below do its job.
+ */
+.content {
+  /*
+   * A column flex container, not a block, so a screen can say "fill the middle
+   * region" with `flex: 1` on its own wrapper. A percentage height cannot do
+   * that job: this region's own height comes from flexing, so `height`
+   * computes to `auto` and a child's `min-block-size: 100%` resolves to
+   * nothing.
+   *
+   * With a single stretching child this behaves like block layout, so it costs
+   * a screen that doesn't want it nothing.
+   */
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-block-size: 0;
+  overflow-y: auto;
+  /* Scrolls, but paints no scrollbar. This is an iPhone mock, and iOS shows no
+     persistent bar; a desktop browser's bar would sit inside the phone frame
+     and eat into the 390px layout. Wheel, trackpad, touch and keyboard
+     scrolling all still work. */
+  scrollbar-width: none;
+}
+
+.content::-webkit-scrollbar {
+  display: none;
+}
+
+/*
+ * Figma's "bottomContent": the action row, Space/400 of padding all round.
+ *
+ * The scrim above it is Figma's "Scrim" rectangle — a 390×151 gradient running
+ * from transparent to background/page, ending exactly where this region
+ * starts, so content scrolling underneath fades out instead of colliding with
+ * the action.
+ *
+ * The region itself is solid and the fade sits above it as one continuous
+ * ramp, transparent at the top and fully page-coloured where the solid takes
+ * over. Painting the gradient on both — as this first did — puts an opaque
+ * band at the top of the region and a second ramp below it, which wipes out
+ * any content that ends just above the action row.
+ *
+ * 151 is not a token. The ramp is Space/1600 instead, which is: a real step,
+ * enough to read as a fade, and short enough that a screen only needs that
+ * much bottom padding to keep its content clear of it.
+ */
+.bottom {
+  flex: none;
+  position: relative;
+  padding: var(--dimension-space-400);
+  background-color: var(--color-background-page);
+
+  /* Both frames that draw an action centre it: 06 centres a hugging button,
+     07 centres a buttonGroup. A child that wants the full width still takes it
+     by sizing itself. */
+  display: flex;
+  justify-content: center;
+}
+
+.bottom::before {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 100%;
+  block-size: var(--dimension-space-1600);
+  background-image: linear-gradient(transparent, var(--color-background-page));
+  pointer-events: none;
+}
+
+/*
+ * Figma's "bottomContent" / "bottomSheetOnly" strip: 34px, the iPhone home
+ * indicator. 34 is not a token step; snapped to the nearest real one,
+ * Space/800 (32), and disclosed here per design-system.md.
+ */
+.homeIndicator {
+  flex: none;
+  block-size: var(--dimension-space-800);
+  background-color: var(--color-background-page);
+}

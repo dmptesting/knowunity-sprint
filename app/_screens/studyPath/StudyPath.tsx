@@ -1,0 +1,120 @@
+"use client";
+
+import { Screen } from "../../_components/screen/Screen";
+import {
+  PathNode,
+  type PathNodeProgress,
+} from "../../_components/pathNode/PathNode";
+import { SECTION_TITLE } from "../../_recall/script";
+import {
+  EXPLAIN_STEP,
+  NEXT_SECTION,
+  NEXT_SECTION_STEPS,
+  PLAN_META,
+  PLAN_MODE,
+  PLAN_TITLE,
+  SECTION_STEPS,
+} from "../../_recall/plan";
+import styles from "./StudyPath.module.css";
+
+export type StudyPathProps = {
+  /**
+   * How far the three quizzes are. All done by default, so the recall node is
+   * the one thing left in the section — it is reachable either way, which is
+   * the point of it being persistent.
+   */
+  quizProgress?: PathNodeProgress[];
+  /**
+   * The recall node's own state. `completed` only once at least one question
+   * has passed — sitting through four misses is not a completed node, and
+   * marking it done would overstate what happened (SPEC.md).
+   */
+  explainProgress?: PathNodeProgress;
+  /** Tapping the recall node. The prototype's one live control on this screen. */
+  onExplain?: () => void;
+};
+
+/**
+ * The study plan path — Figma screen 01, and the screen the recall step is
+ * launched from and returned to.
+ *
+ * It already ships in the beta, so this is a reproduction, not new design.
+ * It exists here because the prototype otherwise had no entry and no exit:
+ * SPEC.md's out-of-scope note says the entry is **"node tap only"**, and the
+ * node lives here.
+ *
+ * **Only the recall node does anything.** The tabs, the quizzes and the next
+ * section are drawn because the frame draws them, but this prototype's scope
+ * is the recall step — everything else is scenery.
+ */
+export function StudyPath({
+  quizProgress = ["completed", "completed", "completed"],
+  explainProgress = "current",
+  onExplain,
+}: StudyPathProps) {
+  return (
+    <Screen>
+      <div className={styles.content}>
+        <p className={styles.mode}>{PLAN_MODE}</p>
+        <h1 className={styles.title}>{PLAN_TITLE}</h1>
+        <p className={styles.meta}>{PLAN_META}</p>
+
+        {/*
+          Figma draws the tabs as a single text node. They are scenery: this
+          prototype has no Materials view, so rendering them as buttons would
+          promise something that is not there.
+        */}
+        <p className={styles.tabs}>
+          <span className={styles.tabActive}>Plan</span>
+          <span className={styles.tab}>Materials</span>
+        </p>
+
+        <h2 className={styles.section}>{SECTION_TITLE}</h2>
+
+        {/*
+          Both sections' steps share one centred column, so every marker in
+          both lines up; the divider heading between them spans the full row.
+        */}
+        <div className={styles.path}>
+          <ul className={styles.steps}>
+            {SECTION_STEPS.map((step, i) => (
+              <li key={step.id}>
+                <PathNode
+                  progress={quizProgress[i] ?? "upcoming"}
+                  format={step.format}
+                  label={step.label}
+                />
+              </li>
+            ))}
+            <li>
+              <PathNode
+                progress={explainProgress}
+                format={EXPLAIN_STEP.format}
+                label={EXPLAIN_STEP.label}
+                onClick={onExplain}
+              />
+            </li>
+          </ul>
+
+          {/*
+            The next section: its title centred between two rules, then its
+            steps, none started. Scenery like the quizzes — nothing here opens.
+          */}
+          <h2 className={styles.nextSection}>{NEXT_SECTION}</h2>
+
+          <ul className={styles.steps}>
+            {NEXT_SECTION_STEPS.map((step) => (
+              <li key={step.id}>
+                <PathNode
+                  progress="upcoming"
+                  format={step.format}
+                  label={step.label}
+                />
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </Screen>
+  );
+}

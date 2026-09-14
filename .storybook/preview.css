@@ -8,6 +8,13 @@
 /* This prototype is dark-mode-only: tokens.css defines a single (dark) palette
    with no light variant, so applying it directly is all "dark mode only" requires. */
 html,
+body,
+#storybook-root {
+  /* Screen fills its container, so the container needs a height of its own. */
+  height: 100%;
+}
+
+html,
 body {
   margin: 0;
   padding: 0;

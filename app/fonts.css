@@ -14,10 +14,10 @@
  * them all under one @font-face family with distinct font-weight values is what
  * lets `font-weight: 600` pick SemiBold, which is the whole point.
  *
- * Weight numbers are the CSS spelling of tokens.json's weight keywords
- * (regular / semi-bold / bold / heavy) — the same mapping
- * stories/foundations/TypeFoundations.tsx uses. tokens.json stores those as
- * Figma keywords, which are not valid CSS font-weight values.
+ * Weight numbers match what `npm run tokens` maps tokens.json's weight
+ * keywords to (regular 400 / semi-bold 600 / bold 700 / heavy 800, in
+ * style-dictionary.config.mjs). They stay literal here because @font-face
+ * descriptors can't read var().
  *
  * Source files: GreedStandard-TRIAL-*.otf, converted to woff2 (~70% smaller).
  * TRIAL licence — fine for this internal prototype, not for public deployment.

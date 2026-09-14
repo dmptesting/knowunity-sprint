@@ -1,0 +1,200 @@
+/*
+ * bottomSheet — every value below resolves to a custom property from
+ * build/css/tokens.css (generated from tokens/tokens.json). No raw hex, no raw
+ * pixel dimensions. Deviations from Figma are commented inline where they occur
+ * and repeated in the Storybook docs.
+ */
+
+.bottomSheet {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  inline-size: 100%;
+
+  /* Fixed at Sheet/Result (376px). The content sits at the top, the action
+     row is pinned to the bottom, and any spare height opens between them.
+     Nothing inside scrolls. */
+  block-size: var(--dimension-sheet-result);
+
+  border-start-start-radius: var(--dimension-radius-900);
+  border-start-end-radius: var(--dimension-radius-900);
+  /* Figma: a 1px inside stroke on the top edge only. Drawn as an inset shadow
+     rather than a border so, like Figma's inside stroke, it takes no layout
+     space and follows the top radius. */
+  box-shadow: inset 0 var(--dimension-stroke-border) 0 var(--color-border-default);
+
+  font-family: var(--font-family-default), Arial, Helvetica, sans-serif;
+}
+
+/* -------------------------------------------------------------- result ---- */
+/* The result changes only the panel (and Knowie's expression, in the
+   component). The buttons are the same on both sheets: an action, not a
+   verdict. */
+
+.correct {
+  background-color: var(--color-feedback-success-subtle);
+}
+
+/* Deliberately not feedback/error: SPEC.md rules out any error treatment
+   behind a miss. */
+.incorrect {
+  background-color: var(--color-background-surface);
+}
+
+/* A distorted recording is not the student's fault and not a verdict, so it
+   sits on the same neutral surface — never an error or warning panel. */
+.unsure {
+  background-color: var(--color-background-surface);
+}
+
+/* Out of hints, answer next. Neutral too: this is the moment the student has
+   struggled most, and nothing here should read as a final failure. */
+.reveal {
+  background-color: var(--color-background-surface);
+}
+
+/* ---------------------------------------------------------------- parts --- */
+
+/* Figma's "Handle": 32×4, 6px from the top edge, radius Stroke/Heavy Border. */
+.grabber {
+  position: absolute;
+  inset-block-start: var(--dimension-space-150);
+  inset-inline-start: 50%;
+  translate: -50% 0;
+  inline-size: var(--dimension-space-800);
+  block-size: var(--dimension-space-100);
+  border-radius: var(--dimension-stroke-heavy-border);
+  background-color: var(--color-background-stacking);
+}
+
+/*
+ * Knowie on the left, the words on the right. mascotSlot 2XL (Illustration/1500,
+ * 120px) is the largest step that leaves the text column a readable width at
+ * 390px: 3XL (200px) would squeeze it under 120px.
+ *
+ * Takes all the height the action row leaves and never scrolls. The title
+ * stays one size on every sheet, so copy that does not fit is a content error:
+ * clipped here rather than drawn over the button, and warned about in
+ * development.
+ */
+.content {
+  display: flex;
+  flex: 1;
+  align-items: flex-start;
+  gap: var(--dimension-space-400);
+  min-block-size: 0;
+  overflow: hidden;
+  padding-block-start: var(--dimension-space-1200);
+  padding-inline: var(--dimension-space-700);
+}
+
+/* Drops the title to sit level with Knowie's head rather than the top of his
+   slot, which carries Space/300 of padding above the art. */
+.text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--dimension-space-400);
+  min-inline-size: 0;
+  padding-block-start: var(--dimension-space-400);
+}
+
+/* Greed/Headline S — font/size/lg. */
+.title {
+  margin: var(--dimension-space-0);
+  color: var(--color-text-primary);
+  font: var(--typography-text-style-headline-s), Arial, Helvetica, sans-serif;
+  letter-spacing: calc(var(--number-font-tracking-none) * 0.01em);
+}
+
+/* Greed/Body M Regular. */
+.summary {
+  margin: var(--dimension-space-0);
+  color: var(--color-text-primary);
+  font: var(--typography-text-style-body-mregular), Arial, Helvetica, sans-serif;
+  letter-spacing: calc(var(--number-font-tracking-loose) * 0.01em);
+}
+
+/* "Actions": Space/700 on every side, pinned to the bottom of the sheet.
+   Stacked: the incorrect sheet puts "View hint" under "Try again", Space/300
+   apart. */
+.actions {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: var(--dimension-space-300);
+  padding: var(--dimension-space-700);
+}
+
+/*
+ * The buttons. Not library `button` instances: that has no verdict colours and
+ * no lip. Each fills the row's width.
+ *
+ * Padding: Figma binds Padding/lg and Padding/xl, which are not in
+ * tokens.json; Space/400 and Space/600 carry the same 16px and 24px.
+ *
+ * Height: Figma's 56px is 16 + a 20px line + a 4px unbound "Text helper"
+ * nudge + 16. The nudge is flattened, as Button does, and the line box set to
+ * font/lineHeight/md (24px) so the button still lands on 56px.
+ */
+.cta {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding-block: var(--dimension-space-400);
+  padding-inline: var(--dimension-space-600);
+  border: none;
+  border-radius: var(--dimension-radius-900);
+  appearance: none;
+  cursor: pointer;
+  /* Figma binds Greed/Headline XS Bold (18/20). Snapped to Body M Bold, the
+     same size and weight on the 24px line the 56px height above depends on. */
+  font: var(--typography-text-style-body-mbold), Arial, Helvetica, sans-serif;
+  letter-spacing: calc(var(--number-font-tracking-loose) * 0.01em);
+  white-space: nowrap;
+  background-repeat: no-repeat;
+
+  /* DEVIATION: Figma's lip is an inner shadow, 0 −4px, black at 15%. No
+     token holds black at 15%; snapped to interactive/pressOverlayInverse
+     (near-black at 10%), the file's own dark overlay. */
+  box-shadow: inset 0 calc(-1 * var(--dimension-space-100)) 0
+    var(--color-interactive-press-overlay-inverse);
+}
+
+/*
+ * The main action, interactive/primary on both sheets. Figma drew it green on
+ * correct and red on incorrect; both were dropped so the button reads as the
+ * next step rather than a reward or a penalty, and sits in the same place in
+ * the same colour every time.
+ */
+.ctaPrimary {
+  background-color: var(--color-interactive-primary);
+  color: var(--color-interactive-on-primary);
+}
+
+/* The supporting action, interactive/secondary — the same fill Figma gave the
+   old "Why?" button. */
+.ctaSecondary {
+  background-color: var(--color-interactive-secondary);
+  color: var(--color-interactive-on-secondary);
+}
+
+/* No Pressed variant in Figma. Same pointer feedback Button gives its fills. */
+.ctaPrimary:active {
+  background-image: linear-gradient(
+    var(--color-interactive-press-overlay),
+    var(--color-interactive-press-overlay)
+  );
+}
+
+.ctaSecondary:active {
+  background-color: var(--color-interactive-secondary-active);
+}
+
+/* Not in Figma. Required for the button to be keyboard-operable. */
+.cta:focus-visible {
+  outline: var(--dimension-stroke-heavy-border) solid var(--color-border-focus);
+  outline-offset: var(--dimension-space-050);
+}

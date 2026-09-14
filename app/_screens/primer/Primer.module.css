@@ -1,0 +1,36 @@
+/*
+ * Primer — composition only. Every value resolves to a custom property from
+ * build/css/tokens.css; no component is restyled here.
+ *
+ * Frame 02's middleContent: a vertical stack with Space/400 of side padding,
+ * mascot centred above the copy.
+ */
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--dimension-space-800);
+  padding-inline: var(--dimension-space-600);
+  padding-block: var(--dimension-space-600);
+  flex: 1;
+}
+
+.mascot {
+  flex: none;
+}
+
+/*
+ * Figma text style "Greed/Headline S" — the one style in the scale set to 0%
+ * tracking. The screen has exactly one line of copy, so it carries the whole
+ * message and is sized to.
+ */
+.line {
+  margin: var(--dimension-space-0);
+  color: var(--color-text-primary);
+  font: var(--typography-text-style-headline-s), Arial, Helvetica, sans-serif;
+  letter-spacing: calc(var(--number-font-tracking-none) * 0.01em);
+  text-align: center;
+  text-wrap: pretty;
+}

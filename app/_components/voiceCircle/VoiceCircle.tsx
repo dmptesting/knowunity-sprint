@@ -49,7 +49,13 @@ export function VoiceCircle({
   className,
   ...rest
 }: VoiceCircleProps) {
-  const classes = [styles.voiceCircle, className].filter(Boolean).join(' ');
+  const classes = [
+    styles.voiceCircle,
+    mode === 'idle' ? styles.idle : undefined,
+    className,
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   return (
     <div

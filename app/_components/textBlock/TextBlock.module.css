@@ -1,0 +1,109 @@
+/*
+ * textBlock — every value resolves to a custom property from
+ * build/css/tokens.css. No raw hex, no raw pixel dimensions.
+ *
+ * Layer names mirror Figma's: a vertical frame holding "Header", then
+ * "Caption".
+ *
+ * Tracking is percent in Figma and converts as
+ * `calc(var(--number-font-tracking-*) * 0.01em)`, since 1% of the font size is
+ * 0.01em (design-system.md).
+ */
+
+.textBlock {
+  display: flex;
+  flex-direction: column;
+  /* Figma: HUG/HUG at a fixed width, with both texts FILL. The block fills its
+     parent instead, so the screen supplies the insets — the same convention
+     calloutBubble and progressIndicator already follow. */
+  inline-size: 100%;
+}
+
+/* Figma: "Header". text/primary at every size. */
+.title {
+  margin: var(--dimension-space-0);
+  color: var(--color-text-primary);
+  font-family: var(--font-family-default), Arial, Helvetica, sans-serif;
+  overflow-wrap: break-word;
+}
+
+/*
+ * Figma: "Caption". Bound to text/secondary, with the node also carrying 67.8%
+ * opacity — that is the token's own alpha (--color-text-secondary resolves to
+ * rgba(245, 243, 255, 0.6784)), already composited, so no extra opacity here.
+ */
+.caption {
+  margin: var(--dimension-space-0);
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-default), Arial, Helvetica, sans-serif;
+  overflow-wrap: break-word;
+}
+
+/* --------------------------------------------------------------- variant --- */
+/*
+ * Each variant pairs a Header style with a Caption style, and sets the gap and
+ * alignment Figma gives it. XL and L centre their text; M and S are left
+ * aligned. That alignment is part of the variant in the file, not a separate
+ * property, so it is not exposed as a prop.
+ */
+
+/* XL — Header "Greed/Display M", Caption "Greed/Headline XS Regular", gap Space/100. */
+.variantXl {
+  gap: var(--dimension-space-100);
+  text-align: center;
+}
+
+.variantXl .title {
+  font: var(--typography-text-style-display-m), Arial, Helvetica, sans-serif;
+  letter-spacing: calc(var(--number-font-tracking-tight) * 0.01em);
+}
+
+/* L — Header "Greed/Headline XL", same Caption, gap Space/100. */
+.variantL {
+  gap: var(--dimension-space-100);
+  text-align: center;
+}
+
+.variantL .title {
+  font: var(--typography-text-style-headline-xl), Arial, Helvetica, sans-serif;
+  letter-spacing: calc(var(--number-font-tracking-tight) * 0.01em);
+}
+
+/* Both large steps share "Greed/Headline XS Regular" for the caption. */
+.variantXl .caption,
+.variantL .caption {
+  font: var(--typography-text-style-headline-xs-regular), Arial, Helvetica, sans-serif;
+  letter-spacing: calc(var(--number-font-tracking-loose) * 0.01em);
+}
+
+/* M — Header "Greed/Body M Bold", Caption "Greed/Caption M Regular", gap Space/050. */
+.variantM {
+  gap: var(--dimension-space-050);
+  text-align: start;
+}
+
+.variantM .title {
+  font: var(--typography-text-style-body-mbold), Arial, Helvetica, sans-serif;
+  letter-spacing: calc(var(--number-font-tracking-loose) * 0.01em);
+}
+
+.variantM .caption {
+  font: var(--typography-text-style-caption-mregular), Arial, Helvetica, sans-serif;
+  letter-spacing: calc(var(--number-font-tracking-loose) * 0.01em);
+}
+
+/* S — Header "Greed/Body S Bold", Caption "Greed/Caption S Regular", gap Space/050. */
+.variantS {
+  gap: var(--dimension-space-050);
+  text-align: start;
+}
+
+.variantS .title {
+  font: var(--typography-text-style-body-sbold), Arial, Helvetica, sans-serif;
+  letter-spacing: calc(var(--number-font-tracking-loose) * 0.01em);
+}
+
+.variantS .caption {
+  font: var(--typography-text-style-caption-sregular), Arial, Helvetica, sans-serif;
+  letter-spacing: calc(var(--number-font-tracking-loose) * 0.01em);
+}

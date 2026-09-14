@@ -35,6 +35,7 @@ When working on UI, use the storybook tools to read the component library before
 - `Design Brief *.md` — the original brief: problem, constraints, mandate, open questions. Read before any product/UX call not already settled in sprint-context.md.
 - `Voice UX Reference *.md` — voice-UX principles and the states-to-build checklist. Read before designing or building any recall-loop screen.
 - `design-system.md` — which component to reach for, naming/token-binding rules, what's proven vs unproven. Read before placing or naming any component.
+- `component-gaps.md` — running list of things built inline during a screen build because Storybook had no component for them. Read before building a new screen.
 - `tokens/tokens.json` — the token values design-system.md points at. Look up a value here; never hardcode one.
 - `build/css/tokens.css` — generated CSS custom properties from `tokens/tokens.json`, produced by `npm run tokens`. Never edit by hand; edit the source token and regenerate.
 - `reference/*.PNG` — screenshots of Knowunity's shipped beta. Check when a screen's behavior isn't settled elsewhere.

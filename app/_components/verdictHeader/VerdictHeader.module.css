@@ -1,0 +1,44 @@
+/*
+ * verdictHeader — every value resolves to a custom property from
+ * build/css/tokens.css. No raw hex, no raw pixel dimensions.
+ *
+ * Read off Figma screen 06, which draws the pairing as a loose `Icon Slot`
+ * plus a text node rather than a component.
+ */
+
+.verdictHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  inline-size: 100%;
+  text-align: center;
+}
+
+/*
+ * Figma text style "Greed/Caption M Bold".
+ */
+.label {
+  margin: var(--dimension-space-0);
+  font: var(--typography-text-style-caption-mbold), Arial, Helvetica, sans-serif;
+  /* Greed/Caption M Bold is +1% in Figma. 1% of the font size is 0.01em. */
+  letter-spacing: calc(var(--number-font-tracking-loose) * 0.01em);
+}
+
+/* --------------------------------------------------------------- verdict --- */
+
+/* 06 binds the word to accent/green/bold, the same token as the disc. */
+.pass .label {
+  color: var(--color-accent-green-bold);
+}
+
+/*
+ * A miss gets no colour of its own. SPEC.md: feedback/success/subtle is used
+ * only behind a pass, and "no error or warning panel is ever painted behind a
+ * miss, so the distinction stays in copy". text/secondary keeps the word
+ * present without making it an alarm.
+ */
+.partial .label,
+.fail .label {
+  color: var(--color-text-secondary);
+}

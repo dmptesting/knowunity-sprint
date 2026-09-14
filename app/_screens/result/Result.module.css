@@ -1,0 +1,109 @@
+/*
+ * Result — composition only. Every value resolves to a custom property from
+ * build/css/tokens.css; no component is restyled here.
+ */
+
+.content {
+  display: flex;
+  flex-direction: column;
+  padding-block: var(--dimension-space-600);
+
+  /* Body copy takes the file's wider inset: 06 and 07 both set their text at
+     x=24 across 342px, which is Space/600 a side. */
+  padding-inline: var(--dimension-space-600);
+
+  /* Fill the middle region, so the auto margins below have free space to
+     distribute. Screen's content region is a column flex container. */
+  flex: 1;
+}
+
+/*
+ * The verdict, the transcript and the feedback as one block.
+ *
+ * 06 and 07 both sit their content in the middle of the free area rather than
+ * under the nav. Auto margins reproduce that: the block centres while there is
+ * room and falls back to scrolling from the top once there isn't, which
+ * `justify-content: center` would not do without clipping the overflow.
+ */
+.panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--dimension-space-600);
+  margin-block: auto;
+}
+
+/* Knowie's reaction, centred above the verdict. Figma 06 and 07 draw no
+   mascot; SPEC.md's resolved item 4 assigns one per verdict. */
+.mascot {
+  flex: none;
+}
+
+/*
+ * The transcript, pitched below the feedback on purpose.
+ *
+ * Label at Greed/Caption M Bold, the words themselves at Greed/Body S Regular
+ * — both quieter than the feedback's Body M Bold. Showing what was heard is a
+ * transparency aid, not the verdict; when the two carried equal weight the
+ * screen read flat.
+ *
+ * Both take text/secondary. The label was text/tertiary, which measures
+ * 4.16:1 on feedback/success/subtle behind a pass — under WCAG 1.4.3's 4.5:1
+ * for normal text. text/secondary is 6.87:1 there, and the label still reads
+ * as the quieter of the two through size and weight rather than colour.
+ */
+.transcript {
+  display: flex;
+  flex-direction: column;
+  gap: var(--dimension-space-100);
+  text-align: center;
+}
+
+.transcript p {
+  margin: var(--dimension-space-0);
+}
+
+/* Greed/Caption M Bold. */
+.transcriptLabel {
+  color: var(--color-text-secondary);
+  font: var(--typography-text-style-caption-mbold), Arial, Helvetica, sans-serif;
+  letter-spacing: calc(var(--number-font-tracking-loose) * 0.01em);
+}
+
+/* Greed/Body S Regular. */
+.transcriptBody {
+  color: var(--color-text-secondary);
+  font: var(--typography-text-style-body-sregular), Arial, Helvetica, sans-serif;
+  letter-spacing: calc(var(--number-font-tracking-loose) * 0.01em);
+  text-wrap: pretty;
+}
+
+/*
+ * A pass, and only a pass, gets a surface. SPEC.md: "feedback/success/subtle is
+ * used only behind a pass — no error or warning panel is ever painted behind a
+ * miss, so the distinction stays in copy exactly as decided, while the one
+ * feedback token that can only feel good gets used."
+ *
+ * It hugs the block rather than filling the region: a panel the height of the
+ * screen reads as a background, not as a thing said about this answer.
+ */
+.passed {
+  padding: var(--dimension-space-600) var(--dimension-space-400);
+  border-radius: var(--dimension-radius-600);
+  background-color: var(--color-feedback-success-subtle);
+}
+
+/*
+ * 06 and 07 both centre every line on the result screens, and the verdict
+ * header is centred to match 06. textBlock's alignment is part of its variant
+ * — XL and L centre, M and S are left aligned — so centring the two blocks
+ * here is a deliberate, disclosed override of that, made because the
+ * alternative is a centred verdict marker orphaned above a left-aligned
+ * column. Two classes deep so it wins over the variant rule whichever order
+ * the two modules load in.
+ *
+ * Nothing else about the blocks is touched: no colour, no size, no spacing.
+ */
+.content .centred {
+  text-align: center;
+}

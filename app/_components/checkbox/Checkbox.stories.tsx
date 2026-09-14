@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, fn, userEvent } from 'storybook/test';
 
+import { CheckboxRow } from '../checkboxRow/CheckboxRow';
 import { Checkbox } from './Checkbox';
 
 /**
@@ -24,7 +25,7 @@ const meta = {
           '',
           '### Also worth knowing',
           '',
-          '- **It is not in design-system.md.** The set lives in Figma (local, with six variants and its own description) but the design-system doc never lists it, so there is no guidance on where it has been proven. Treat it like appBar, snackbar and textBlock: structurally complete, unverified in a shipped composition.',
+          '- **Unproven in a shipped composition.** The set lives in Figma (local, with six variants and its own description); design-system.md lists it under code-only components with no real usage yet. Treat it like appBar, snackbar and textBlock: structurally complete, unverified.',
           "- **Where the sprint uses it:** the multi-reason abandon sheet, which sprint-context.md keeps rather than cutting. The shipped beta's sheet shows exactly this round control against reasons like \"I'd rather type than talk.\"",
           '- **It draws a circle, not a square.** `Radius/Full` on a 24px box. Worth knowing because a round multi-select reads as a radio group to most people; the beta sheet does the same thing.',
           '- **`label` is required.** The Figma component is the box alone, with no label layer, so nothing in the design names it.',
@@ -122,7 +123,8 @@ export const SelectedDisabled: Story = {
 /**
  * The place the sprint uses it: the multi-reason abandon sheet that appears if
  * the student leaves mid-session. Each row is a reason, the box is the control,
- * and the whole row is the label — which is how the shipped beta does it.
+ * and the whole row is the label — which is how the shipped beta does it. The
+ * pairing is `checkboxRow`, so this renders that rather than rebuilding it.
  */
 export const InAbandonSheet: Story = {
   name: 'In the abandon sheet',
@@ -132,7 +134,9 @@ export const InAbandonSheet: Story = {
       style={{
         display: 'flex',
         flexDirection: 'column',
-        gap: 'var(--dimension-space-200)',
+        // checkboxRow carries Target/Minimum, so the rows need no gap — the
+        // same call the abandon sheet makes.
+        gap: 'var(--dimension-space-0)',
         padding: 'var(--dimension-space-600)',
       }}
     >
@@ -141,30 +145,7 @@ export const InAbandonSheet: Story = {
         "I can't speak out loud right now",
         "I'd rather type than talk",
       ].map((reason, i) => (
-        <label
-          key={reason}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: 'var(--dimension-space-300)',
-            color: 'var(--color-text-primary)',
-            fontFamily: 'var(--font-family-default), Arial, Helvetica, sans-serif',
-            fontSize: 'var(--dimension-font-size-sm)',
-            lineHeight: 'var(--dimension-font-line-height-sm)',
-            fontWeight: 600,
-          }}
-        >
-          {reason}
-          {/* The row's own text names the control here, so the box doesn't
-              repeat it — hence aria-hidden on an empty label. */}
-          <Checkbox
-            selection={i === 2 ? 'Selected' : 'Unselected'}
-            state="Default"
-            label={reason}
-            aria-label={undefined}
-          />
-        </label>
+        <CheckboxRow key={reason} label={reason} checked={i === 2} onCheckedChange={fn()} />
       ))}
     </div>
   ),

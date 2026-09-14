@@ -1,0 +1,53 @@
+/*
+ * PermissionDenied — composition only. Every value resolves to a custom
+ * property from build/css/tokens.css; no component is restyled here.
+ *
+ * Mirrors the primer, which it is the other outcome of: the same centred
+ * stack, the same message style. The recovery line is the one addition, and it
+ * is pitched well below the message so the two do not compete.
+ */
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--dimension-space-600);
+  padding-inline: var(--dimension-space-600);
+  padding-block: var(--dimension-space-600);
+  flex: 1;
+}
+
+.mascot {
+  flex: none;
+  /* A little more room under Knowie than between the two lines of copy, so
+     the copy reads as one unit. */
+  margin-block-end: var(--dimension-space-200);
+}
+
+.message,
+.recovery {
+  margin: var(--dimension-space-0);
+  font-family: var(--font-family-default), Arial, Helvetica, sans-serif;
+  text-align: center;
+  text-wrap: pretty;
+}
+
+/* Greed/Headline S — the primer's message style, so the pair read as siblings. */
+.message {
+  color: var(--color-text-primary);
+  font: var(--typography-text-style-headline-s), Arial, Helvetica, sans-serif;
+  letter-spacing: calc(var(--number-font-tracking-none) * 0.01em);
+}
+
+/*
+ * Greed/Body S Regular in text/secondary. The recovery steps were a textBlock
+ * with a bold 18px title — the same weight as the message — so a note for the
+ * few students who want their voice back competed with what every student
+ * needs to hear.
+ */
+.recovery {
+  color: var(--color-text-secondary);
+  font: var(--typography-text-style-body-sregular), Arial, Helvetica, sans-serif;
+  letter-spacing: calc(var(--number-font-tracking-loose) * 0.01em);
+}

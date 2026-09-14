@@ -6,13 +6,6 @@
  */
 
 .button {
-  /* tokens.json stores font weight as a Figma keyword ('semi-bold', 'bold'),
-     which is not a valid CSS font-weight value. Same presentational mapping
-     already used by stories/foundations/TypeFoundations.tsx — these two numbers
-     are the CSS spelling of the token, not design values of their own. */
-  --button-weight-semibold: 600;
-  --button-weight-bold: 700;
-
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -71,10 +64,9 @@
 }
 
 /*
- * Tracking. Figma's text styles all specify letterSpacing in PERCENT, which
- * tokens.json's textStyle tokens omit entirely — the font/tracking/* variables
- * exist and match, but none of the 19 styles is actually bound to them in
- * Figma. Read off the styles directly and bound to the tracking tokens here.
+ * Tracking. Figma's text styles all specify letterSpacing in PERCENT, and the
+ * --typography-text-style-* font shorthand can't carry it, so each size binds
+ * the matching font/tracking/* token alongside the shorthand.
  *
  * Figma percent -> CSS em: 1% of the font size is 0.01em. The 0.01em factor is
  * a unit conversion, not a design value; the number itself comes from the token.
@@ -89,9 +81,7 @@
   padding-inline: var(--dimension-space-300);
   padding-block: var(--dimension-space-150);
   gap: var(--dimension-space-150);
-  font-size: var(--dimension-font-size-sm);
-  line-height: var(--dimension-font-line-height-sm);
-  font-weight: var(--button-weight-semibold);
+  font: var(--typography-text-style-body-sbold), Arial, Helvetica, sans-serif;
   /* Greed/Body S Bold */
   letter-spacing: calc(var(--number-font-tracking-loose) * 0.01em);
 }
@@ -103,9 +93,7 @@
   padding-inline: var(--dimension-space-400);
   padding-block: var(--dimension-space-300);
   gap: var(--dimension-space-150);
-  font-size: var(--dimension-font-size-sm);
-  line-height: var(--dimension-font-line-height-sm);
-  font-weight: var(--button-weight-semibold);
+  font: var(--typography-text-style-body-sbold), Arial, Helvetica, sans-serif;
   /* Greed/Body S Bold */
   letter-spacing: calc(var(--number-font-tracking-loose) * 0.01em);
 }
@@ -114,9 +102,7 @@
   padding-inline: var(--dimension-space-600);
   padding-block: var(--dimension-space-400);
   gap: var(--dimension-space-200);
-  font-size: var(--dimension-font-size-lg);
-  line-height: var(--dimension-font-line-height-md);
-  font-weight: var(--button-weight-bold);
+  font: var(--typography-text-style-headline-s), Arial, Helvetica, sans-serif;
   /* Greed/Headline S — the one style in the scale set to 0% */
   letter-spacing: calc(var(--number-font-tracking-none) * 0.01em);
 }

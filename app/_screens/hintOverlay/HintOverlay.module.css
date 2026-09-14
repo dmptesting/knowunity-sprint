@@ -1,0 +1,25 @@
+/*
+ * HintOverlay — composition only. Every value resolves to a custom property
+ * from build/css/tokens.css; no component is restyled here.
+ */
+
+/*
+ * Opaque, and the full height of the phone. The hint has to be readable, and
+ * anything showing through would be noise behind the one sentence the student
+ * stopped to read.
+ *
+ * Positioned rather than flowed, so it has a definite height for Screen inside
+ * it to fill. As a plain flex child its own height came from flexing, which
+ * leaves `height: auto` — and Screen's `min-block-size: 100%` then resolves
+ * against nothing, so the screen collapsed to its content and the action row's
+ * scrim landed across the last line of the hint.
+ */
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-background-page);
+}
+
+/* The label and the hint are `spotlight`, which fills the content region. */

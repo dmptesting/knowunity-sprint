@@ -64,6 +64,38 @@ What each `progress` value means: `completed` — Marker fill `accent/green/subt
 
 > The mic glyph used inside voiceCircle, promoted to a standalone icon so it can be swapped into any iconSlot (for example inside pathNode's explainOutLoud marker). Don't restyle its fill per-instance; it inherits text/primary like the file's other line icons.
 
+**bottomSheet** — component set, variant property `result`: `correct` / `incorrect`. Combined from two loose frames on 2026-09-13; no real screen composes it yet.
+
+> The sheet that rises after a quiz answer is checked: the verdict (icon + title), a thumbs up/down rating of the check itself, and a 'Why?' explanation button beside the verdict-coloured continue button. Two variants: result=correct (feedback/success/subtle panel, green) and result=incorrect (background/surface panel, feedback/error red). USE: binary quiz feedback. DON'T: use it for the voice-recall verdict — recall is judged pass/partial/fail and SPEC.md forbids an error treatment behind a miss.
+
+**Code and Figma have diverged.** The Figma set (quoted above) has a verdict mark, "Nice!" / "Incorrect", thumbs up/down and a "Why?" button, and hugs at 176px. The React component was reworked on 2026-09-13 to a later reference: mascotSlot 2XL (`excited` on correct, `confused` on incorrect — both unverified expressions) beside a Headline S title (`font/size/lg`) and a Body M Regular summary, one full-width button on correct ("Next question") and two stacked on incorrect ("Try again" above "View hint 1" or "View hint 2", set by a `hint` prop) and on `unsure` ("Try again" above "Skip question"), and one on `reveal` ("Reveal answer"), the end of the hint ladder, with Knowie on `standby`. `unsure` and `reveal` are code-only. `unsure` is a thinking Knowie on the neutral surface for a recording too distorted to judge — it overlaps SPEC.md §7's garbled `statusNotice`, so use one treatment per screen. The buttons are the same colour on both results — `interactive/primary` for the main action, `interactive/secondary` for the hint — replacing Figma's green and red; only the panel and Knowie's expression change with the result, fixed at `Sheet/Result` (376px), never scrolling and never shrinking the title (a per-sheet step-down was tried and removed: it gave two sheets different title sizes) — a summary should stay within about six lines on correct, three on incorrect, with slack for browsers that wrap differently. Treat the Storybook version as current until Figma is brought in line. Its button is not a `button` instance — the library button has no verdict colours and no bottom lip — and the lip's black-at-15% has no token, so code snaps it to `interactive/pressOverlayInverse`.
+
+## Components built in code but not documented above
+
+Most of these exist only in `app/_components/`, promoted through `component-gaps.md`. Two are exceptions: `checkbox` and `chatInput` are Figma component sets that this file never listed (only `chatInput` lacks a `.description`). None has real shipped-screen usage, so treat each the way appBar/textBlock are treated above: structurally complete, verify it in context. Their Storybook docs hold the full props and departures; this is only which one to reach for.
+
+**checkbox** — the box alone, variants `selection` (`Unselected`/`Selected`) and `state` (`Default`/`Error`/`Disabled`). Figma gives it no label layer, so `label` is required as the accessible name. Draws a circle (`Radius/Full`), so a group of them can read as radios. Almost never placed on its own — reach for checkboxRow.
+
+**checkboxRow** — a checkbox with its visible text: label left, box right, the whole row one `Target/Minimum` hit area. Reach for it for any list of options the student picks from (the abandon sheet's reasons). Don't add a second label to the row; its text is already the control's name.
+
+**chatInput** — the text answer bar, variant `status`: `Inactive` / `Typing` / `Ready to send` / `Recording` / `Loading` / `Long input`. Reach for it on the text fallback turn. Send is always explicit (`onSend`); the mic shows only when nothing is typed. Its icon buttons are `buttonIcon`, not Figma's nested "OLD Icon Button".
+
+**screen** — the shell every screen composes inside: status bar, pinned `top` (appBar), scrolling middle, pinned `bottom` action row over a scrim. `lockBody` makes the middle and bottom inert while `top` stays live, for a sheet over the lower screen. Not a Figma component — Figma leaves these regions as loose frames on each screen.
+
+**statusBar** — iOS device chrome (clock, signal, wi-fi, battery), rendered by screen. Decorative only; nothing in it reports real state. Don't place it yourself.
+
+**knowieSays** — mascotSlot `2XL` beside a calloutBubble, mascot on the left so the bubble's fixed tail points at him. Reach for it whenever Knowie says a line inside the recall loop. `children` renders in a row under the bubble for things attached to his line (hintChips). Never put the student's words in it.
+
+**hintChips** — the spent hints as tappable chips ("Hint 1" magenta, "Hint 2" blue), each reopening its hint. Attach it under knowieSays on a turn. Renders nothing when no hint is spent. Replaced hintCard on the turns, which leaves hintCard unused in the app.
+
+**spotlight** — one statement given the whole content region: a Caption M Bold label in `accent/brand/bold`, the body centred at `size` XL/L/M/S (Headline XL/L/M/S), an optional quiet footnote. Reach for it for the hint overlay and the revealed answer. Don't put Knowie beside it, and step `size` down before the body would scroll.
+
+**statusNotice** — reports that an attempt couldn't be judged (nothing heard, heard badly, slow, offline), with an optional retry. `accent/brand/subtle` with `text/secondary` — deliberately not `feedback/error` or `feedback/warning`. Never use it for a verdict.
+
+**verdictHeader** — the word that opens a result screen, variant `verdict`: `pass` / `partial` / `fail`. Only `pass` gets a coloured treatment; `partial` and `fail` are neutral and differ only in copy, per SPEC.md.
+
+**chips additions** — two `color` values (`magenta`, `blue`) and an `onClick` that turns the chip into a real `<button>` with a `Target/Minimum` hit area. Neither is in the Figma component set yet; Figma needs both to stay in sync.
+
 ## Scaffold
 
 The recall loop's screens compose from these pieces; nothing in the file defines this as one locked template, so treat it as the pattern real usage implies, not a rule handed down from Figma:
@@ -100,6 +132,8 @@ The recall loop's screens compose from these pieces; nothing in the file defines
 **In tokens/tokens.json specifically**, the same names become dot paths (`accent.brand.bold`) and the type scale is camelCase keys (`displayL`, `headlineXsBold`) instead of the Figma text style's `Greed/Display L` naming, since JSON object keys don't take spaces or slashes well. One deviation worth knowing: `interactive.primary`, `.secondary`, and `.destructive` are each both a token and the parent of a hover/active pair in Figma. JSON can't let a token double as a group, so those six became `interactive.primaryHover` / `interactive.primaryActive` etc. in the export. That's a file-format workaround, not a naming convention to copy into Figma.
 
 **Text-style tracking is percent in Figma, and Figma can only bind it as pixels.** All 19 text styles set letterSpacing as a percent of font size: −1% for Display L/M/S and Headline XL/L/M, 0% for Headline S, +1% for everything smaller. `font/tracking/tight`, `none` and `loose` hold exactly those numbers (−1 / 0 / 1). But binding a number variable to a text style's letterSpacing makes Figma apply it in pixels, so +1% becomes 1px, about 6.7× wider on 15px body text. The styles therefore stay deliberately unbound, with the percent typed in. That's a Figma limitation, not a missing binding to go back and fix. In tokens.json each `textStyle` references its tracking token (`"letterSpacing": "{font.tracking.loose}"`), and code converts it with `calc(var(--number-font-tracking-loose) * 0.01em)`, since 1% of the font size is 0.01em.
+
+**Code sets type from the whole text style, never from its parts.** Write `font: var(--typography-text-style-body-sregular), Arial, Helvetica, sans-serif;` plus the style's `letter-spacing` calc (the font shorthand can't carry tracking). Don't rebuild a style from `--dimension-font-size-*`, `--dimension-font-line-height-*` and a typed `font-weight`. tokens.json keeps Figma's weight keywords (`semi-bold`, `heavy`); `style-dictionary.config.mjs` maps them to 400/600/700/800 at build time, so `--font-weight-*` and every `--typography-text-style-*` are valid CSS. The only literal weights left are the `@font-face` descriptors in `app/fonts.css`, which can't read `var()`. If no text style fits, snap to the nearest one and disclose it, the same as any other value.
 
 ## Structure conventions
 

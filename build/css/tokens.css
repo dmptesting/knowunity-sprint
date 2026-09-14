@@ -90,6 +90,7 @@
   --dimension-icon-300: 24px;
   --dimension-icon-400: 32px;
   --dimension-target-minimum: 44px; /** Smallest tappable size for any control, per Apple HIG and WCAG 2.5.5. Applied to the hit area, which may extend beyond the painted box, so a control can stay visually small while remaining operable. */
+  --dimension-sheet-result: 376px; /** Fixed height of the bottomSheet that shows a checked answer's result (correct or incorrect), grabber to bottom edge. The header sits at the top and the action row is pinned to the bottom; the space between is left open. */
   --dimension-illustration-500: 40px;
   --dimension-illustration-800: 64px;
   --dimension-illustration-1500: 120px;
@@ -124,10 +125,10 @@
   --number-font-tracking-loose: 1;
   --font-family-display: 'Greed Standard-TRIAL';
   --font-family-default: 'Greed Standard-TRIAL';
-  --font-weight-regular: regular;
-  --font-weight-semibold: semi-bold;
-  --font-weight-bold: bold;
-  --font-weight-heavy: heavy;
+  --font-weight-regular: 400;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-heavy: 800;
   --string-responsive-device: desktop;
   --dimension-responsive-device-width: 1200px;
   --number-responsive-scale: 1;
@@ -213,23 +214,23 @@
   --color-feedback-warning-subtle: #3a2d0b; /** Soft warning surface, used for caution banners, expiry notices at rest. */
   --color-highlight-surface: #15103a; /** Fill of a chosen element, used for selected cards, active tabs, the answer a student picked. */
   --color-highlight-border: #7b65e0; /** Edge of a chosen element on a highlight.surface fill, always used paired with highlight.surface and never alone. */
-  --typography-text-style-display-l: heavy 103px/104px 'Greed Standard-TRIAL'; /** Text style "Greed/Display L" from the file's type scale. */
-  --typography-text-style-display-m: bold 76px/76px 'Greed Standard-TRIAL'; /** Text style "Greed/Display M" from the file's type scale. */
-  --typography-text-style-display-s: bold 59px/60px 'Greed Standard-TRIAL'; /** Text style "Greed/Display S" from the file's type scale. */
-  --typography-text-style-headline-xl: bold 44px/44px 'Greed Standard-TRIAL'; /** Text style "Greed/Headline XL" from the file's type scale. */
-  --typography-text-style-headline-l: bold 33px/36px 'Greed Standard-TRIAL'; /** Text style "Greed/Headline L" from the file's type scale. */
-  --typography-text-style-headline-m: bold 28px/28px 'Greed Standard-TRIAL'; /** Text style "Greed/Headline M" from the file's type scale. */
-  --typography-text-style-headline-s: bold 21px/24px 'Greed Standard-TRIAL'; /** Text style "Greed/Headline S" from the file's type scale. */
-  --typography-text-style-headline-xs-bold: semi-bold 18px/20px 'Greed Standard-TRIAL'; /** Text style "Greed/Headline XS Bold" from the file's type scale. */
-  --typography-text-style-headline-xs-regular: regular 18px/20px 'Greed Standard-TRIAL'; /** Text style "Greed/Headline XS Regular" from the file's type scale. */
-  --typography-text-style-headline-xxs-bold: semi-bold 15px/16px 'Greed Standard-TRIAL'; /** Text style "Greed/Headline XXS Bold" from the file's type scale. */
-  --typography-text-style-headline-xxs-regular: regular 15px/16px 'Greed Standard-TRIAL'; /** Text style "Greed/Headline XXS Regular" from the file's type scale. */
-  --typography-text-style-body-mbold: semi-bold 18px/24px 'Greed Standard-TRIAL'; /** Text style "Greed/Body M Bold" from the file's type scale. */
-  --typography-text-style-body-mregular: regular 18px/24px 'Greed Standard-TRIAL'; /** Text style "Greed/Body M Regular" from the file's type scale. */
-  --typography-text-style-body-sbold: semi-bold 15px/20px 'Greed Standard-TRIAL'; /** Text style "Greed/Body S Bold" from the file's type scale. */
-  --typography-text-style-body-sregular: regular 15px/20px 'Greed Standard-TRIAL'; /** Text style "Greed/Body S Regular" from the file's type scale. */
-  --typography-text-style-caption-mbold: semi-bold 12px/16px 'Greed Standard-TRIAL'; /** Text style "Greed/Caption M Bold" from the file's type scale. */
-  --typography-text-style-caption-mregular: regular 12px/16px 'Greed Standard-TRIAL'; /** Text style "Greed/Caption M Regular" from the file's type scale. */
-  --typography-text-style-caption-sbold: semi-bold 9px/12px 'Greed Standard-TRIAL'; /** Text style "Greed/Caption S Bold" from the file's type scale. */
-  --typography-text-style-caption-sregular: regular 9px/12px 'Greed Standard-TRIAL'; /** Text style "Greed/Caption S Regular" from the file's type scale. */
+  --typography-text-style-display-l: 800 103px/104px 'Greed Standard-TRIAL'; /** Text style "Greed/Display L" from the file's type scale. */
+  --typography-text-style-display-m: 700 76px/76px 'Greed Standard-TRIAL'; /** Text style "Greed/Display M" from the file's type scale. */
+  --typography-text-style-display-s: 700 59px/60px 'Greed Standard-TRIAL'; /** Text style "Greed/Display S" from the file's type scale. */
+  --typography-text-style-headline-xl: 700 44px/44px 'Greed Standard-TRIAL'; /** Text style "Greed/Headline XL" from the file's type scale. */
+  --typography-text-style-headline-l: 700 33px/36px 'Greed Standard-TRIAL'; /** Text style "Greed/Headline L" from the file's type scale. */
+  --typography-text-style-headline-m: 700 28px/28px 'Greed Standard-TRIAL'; /** Text style "Greed/Headline M" from the file's type scale. */
+  --typography-text-style-headline-s: 700 21px/24px 'Greed Standard-TRIAL'; /** Text style "Greed/Headline S" from the file's type scale. */
+  --typography-text-style-headline-xs-bold: 600 18px/20px 'Greed Standard-TRIAL'; /** Text style "Greed/Headline XS Bold" from the file's type scale. */
+  --typography-text-style-headline-xs-regular: 400 18px/20px 'Greed Standard-TRIAL'; /** Text style "Greed/Headline XS Regular" from the file's type scale. */
+  --typography-text-style-headline-xxs-bold: 600 15px/16px 'Greed Standard-TRIAL'; /** Text style "Greed/Headline XXS Bold" from the file's type scale. */
+  --typography-text-style-headline-xxs-regular: 400 15px/16px 'Greed Standard-TRIAL'; /** Text style "Greed/Headline XXS Regular" from the file's type scale. */
+  --typography-text-style-body-mbold: 600 18px/24px 'Greed Standard-TRIAL'; /** Text style "Greed/Body M Bold" from the file's type scale. */
+  --typography-text-style-body-mregular: 400 18px/24px 'Greed Standard-TRIAL'; /** Text style "Greed/Body M Regular" from the file's type scale. */
+  --typography-text-style-body-sbold: 600 15px/20px 'Greed Standard-TRIAL'; /** Text style "Greed/Body S Bold" from the file's type scale. */
+  --typography-text-style-body-sregular: 400 15px/20px 'Greed Standard-TRIAL'; /** Text style "Greed/Body S Regular" from the file's type scale. */
+  --typography-text-style-caption-mbold: 600 12px/16px 'Greed Standard-TRIAL'; /** Text style "Greed/Caption M Bold" from the file's type scale. */
+  --typography-text-style-caption-mregular: 400 12px/16px 'Greed Standard-TRIAL'; /** Text style "Greed/Caption M Regular" from the file's type scale. */
+  --typography-text-style-caption-sbold: 600 9px/12px 'Greed Standard-TRIAL'; /** Text style "Greed/Caption S Bold" from the file's type scale. */
+  --typography-text-style-caption-sregular: 400 9px/12px 'Greed Standard-TRIAL'; /** Text style "Greed/Caption S Regular" from the file's type scale. */
 }

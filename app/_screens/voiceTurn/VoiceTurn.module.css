@@ -1,0 +1,162 @@
+/*
+ * VoiceTurn — composition only. Every value resolves to a custom property from
+ * build/css/tokens.css; no component is restyled here.
+ *
+ * Geometry read off frames 03, 04 and 05, which are identical apart from the
+ * circle's mode and the hint line's copy.
+ */
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--dimension-space-600);
+  padding-block: var(--dimension-space-600);
+  flex: 1;
+}
+
+/* Frames 03-05 draw this row at Space/400 insets with a Space/200 gap. */
+/* knowieSays owns the row; the screen supplies only the inset. */
+.knowie {
+  padding-inline: var(--dimension-space-400);
+}
+
+/*
+ * The hint line and the circle, centred in what is left of the middle region.
+ *
+ * The gap is Space/1600 rather than the Space/600 used elsewhere on these
+ * screens, because voiceCircle's halo ring is Illustration/4000 (320px)
+ * painted out of an Illustration/2500 (200px) box — it overflows 60px on every
+ * side. Anything closer than that sits inside the halo. 64 is the nearest real
+ * step that clears it.
+ */
+.stage {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--dimension-space-1600);
+  padding-inline: var(--dimension-space-600);
+  /* Lifts the circle off the action row, so "type instead" reads as the foot
+     of the screen rather than as something attached to the circle. */
+  padding-block-end: var(--dimension-space-1600);
+}
+
+/*
+ * Figma text style "Greed/Caption M Bold" in text/tertiary, which is what
+ * frames 03-05 bind it to. text/tertiary measures 4.65:1 on background/page,
+ * so it clears WCAG 1.4.3 for normal text — worth stating, because the
+ * neighbouring text/disabled does not.
+ *
+ * Named `.hintLine` and not `.hint`: the spent hint's card wrapper below is
+ * `.hint`, and two rules of the same name in one CSS Module compile to one
+ * class. They did, and the card inherited this rule's centring while the line
+ * inherited the card's side padding.
+ */
+.hintLine {
+  margin: var(--dimension-space-0);
+  color: var(--color-text-tertiary);
+  font: var(--typography-text-style-caption-mbold), Arial, Helvetica, sans-serif;
+  /* Greed/Caption M Bold is +1% in Figma. 1% of the font size is 0.01em. */
+  letter-spacing: calc(var(--number-font-tracking-loose) * 0.01em);
+  text-align: center;
+  /* No margin of its own: the stage's Space/1600 gap is the whole distance to
+     the circle. The Space/300 that used to sit here was added when the halo
+     overflowed the circle's box by 60px; at 160px with a 32px ring gap it no
+     longer needs clearing, and the label read as detached from the control. */
+}
+
+/* The notice takes the hint line's place, at the body-copy inset. */
+.notice {
+  inline-size: 100%;
+}
+
+/*
+ * The circle is a real button: it carries the gesture, the accessible name and
+ * the focus ring. voiceCircle itself only draws, so nothing about its fills or
+ * size is restated here.
+ */
+.control {
+  display: block;
+  padding: var(--dimension-space-0);
+  border: none;
+  border-radius: var(--dimension-radius-full);
+  background-color: transparent;
+  cursor: pointer;
+  appearance: none;
+  /* The gesture is a drag; letting the OS select text or show the magnifier
+     mid-hold would swallow it. */
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.control:disabled {
+  cursor: default;
+}
+
+/*
+ * The circle is disabled while a notice is up — the notice's own "try again"
+ * is the way on — but it looked exactly as pressable as ever, so the largest
+ * control on the screen did nothing when tapped and the one that worked was
+ * half its size. Faded to Opacity/25 it reads as unavailable and hands the
+ * student's attention to the notice.
+ *
+ * Only during a notice. While an answer is processing the circle is disabled
+ * too, but its breathing think-dot *is* the status, and fading it would hide
+ * the one thing saying the app is working.
+ */
+.unavailable {
+  opacity: var(--number-opacity-25);
+}
+
+.control:focus-visible {
+  outline: var(--dimension-stroke-heavy-border) solid var(--color-border-focus);
+  outline-offset: var(--dimension-space-100);
+}
+
+/*
+ * The escape. Figma 03 draws it as a bare text node in text/tertiary, far down
+ * the screen — quiet on purpose, because voice is the primary affordance here.
+ *
+ * button's Tertiary variant is text/primary and has no quieter option, so the
+ * colour is set from the screen. That is a disclosed override of a component's
+ * own value, taken because the alternative is a bare text node with no hit
+ * target — and a 44px target matters more here than the principle.
+ */
+.typeInstead {
+  color: var(--color-text-secondary);
+}
+
+/* Holds the action row's height while the escape is not offered — see the
+   note in VoiceTurn.tsx. */
+.reserved {
+  visibility: hidden;
+}
+
+/*
+ * The stage while a result sheet is over it. Opacity fades it; visibility
+ * waits for the fade to finish before taking it out entirely, and comes back
+ * at once when the sheet goes. Duration unbound — tokens.json carries no
+ * motion tokens.
+ */
+.stage {
+  transition:
+    opacity 180ms ease-out,
+    visibility 0s linear 0s;
+}
+
+.stageHidden {
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 180ms ease-out,
+    visibility 0s linear 180ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stage,
+  .stageHidden {
+    transition: none;
+  }
+}

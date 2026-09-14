@@ -1,0 +1,109 @@
+/*
+ * spotlight — every value resolves to a custom property from
+ * build/css/tokens.css. No raw hex, no raw pixel dimensions.
+ */
+
+/*
+ * Fills the region it is placed in and centres its content there. The auto
+ * margins on the label and the last child centre the group while still letting
+ * it scroll from the top if it ever overflows — `justify-content: center` would
+ * clip the top instead.
+ */
+.spotlight {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--dimension-space-400);
+  padding-inline: var(--dimension-space-600);
+  padding-block: var(--dimension-space-600);
+  flex: 1;
+  text-align: center;
+}
+
+.spotlight > :first-child {
+  margin-block-start: auto;
+}
+
+.spotlight > :last-child {
+  margin-block-end: auto;
+}
+
+.label,
+.body,
+.footnote {
+  margin-inline: var(--dimension-space-0);
+}
+
+.label,
+.footnote {
+  margin-block: var(--dimension-space-0);
+}
+
+/* In accent/brand/bold at every size. Unaffected by the body's size. */
+.label {
+  color: var(--color-accent-brand-bold);
+}
+
+/* Greed/Caption M Bold — 12/16, +1%. */
+.labelS {
+  font: var(--typography-text-style-caption-mbold), Arial, Helvetica, sans-serif;
+  letter-spacing: calc(var(--number-font-tracking-loose) * 0.01em);
+}
+
+/* Greed/Headline XS Bold — 18/20, +1%. */
+.labelM {
+  font: var(--typography-text-style-headline-xs-bold), Arial, Helvetica, sans-serif;
+  letter-spacing: calc(var(--number-font-tracking-loose) * 0.01em);
+}
+
+/* Greed/Headline S — 21/24, 0%. */
+.labelL {
+  font: var(--typography-text-style-headline-s), Arial, Helvetica, sans-serif;
+  letter-spacing: calc(var(--number-font-tracking-none) * 0.01em);
+}
+
+.body {
+  margin-block: var(--dimension-space-0);
+  color: var(--color-text-primary);
+  text-wrap: pretty;
+}
+
+/* Focus lands here on mount; it is not a tab stop, so it needs no ring. */
+.body:focus {
+  outline: none;
+}
+
+/* ----------------------------------------------------------------- size --- */
+/* Each step is one of tokens.json's headline text styles, whole — the size
+   class carries the full shorthand, so .body sets no weight of its own. */
+
+/* Greed/Headline XL — 44/44, −1%. */
+.sizeXl {
+  font: var(--typography-text-style-headline-xl), Arial, Helvetica, sans-serif;
+  letter-spacing: calc(var(--number-font-tracking-tight) * 0.01em);
+}
+
+/* Greed/Headline L — 33/36, −1%. */
+.sizeL {
+  font: var(--typography-text-style-headline-l), Arial, Helvetica, sans-serif;
+  letter-spacing: calc(var(--number-font-tracking-tight) * 0.01em);
+}
+
+/* Greed/Headline M — 28/28, −1%. */
+.sizeM {
+  font: var(--typography-text-style-headline-m), Arial, Helvetica, sans-serif;
+  letter-spacing: calc(var(--number-font-tracking-tight) * 0.01em);
+}
+
+/* Greed/Headline S — 21/24, 0%. */
+.sizeS {
+  font: var(--typography-text-style-headline-s), Arial, Helvetica, sans-serif;
+  letter-spacing: calc(var(--number-font-tracking-none) * 0.01em);
+}
+
+/* Greed/Caption M Regular in text/secondary — stated quietly. */
+.footnote {
+  color: var(--color-text-secondary);
+  font: var(--typography-text-style-caption-mregular), Arial, Helvetica, sans-serif;
+  letter-spacing: calc(var(--number-font-tracking-loose) * 0.01em);
+}

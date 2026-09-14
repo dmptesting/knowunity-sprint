@@ -1,0 +1,46 @@
+/*
+ * knowieSays — every value resolves to a custom property from
+ * build/css/tokens.css. No raw hex, no raw pixel dimensions.
+ *
+ * Geometry read off Figma screen 03, which draws the row at Space/400 insets
+ * with a Space/200 gap, mascot first. The insets stay with the screen, so the
+ * component only sets the gaps.
+ */
+
+.knowieSays {
+  display: flex;
+  flex-direction: column;
+  gap: var(--dimension-space-200);
+  inline-size: 100%;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--dimension-space-200);
+  inline-size: 100%;
+}
+
+/*
+ * Aligned to the bubble body's left edge — not the tail's, and not the
+ * mascot's. That edge sits at the sum of four tokens, each owned by a part
+ * this component already composes:
+ *
+ *   Illustration/1500   the 2XL mascot
+ * + Space/200           the row's gap
+ * + Icon/250            calloutBubble's tail
+ * + Space/Negative 200  the bubble's overlap onto its tail
+ * = 140px
+ *
+ * If any of those four change — the mascot size, this gap, or calloutBubble's
+ * tail geometry — this inset has to change with them.
+ */
+.attachment {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--dimension-space-200);
+  padding-inline-start: calc(
+    var(--dimension-illustration-1500) + var(--dimension-space-200) +
+      var(--dimension-icon-250) + var(--dimension-space-negative-200)
+  );
+}

@@ -126,6 +126,23 @@
   min-inline-size: var(--progress-indicator-dot);
   border-radius: var(--dimension-radius-full);
   background-color: var(--progress-indicator-fill);
+
+  /*
+   * Fills rather than jumps when progress steps up. Each `progress` class only
+   * changes --progress-indicator-value, which changes the computed width, so
+   * the transition runs on its own with no JavaScript.
+   *
+   * Timed to the result sheet's rise — the moment a correct answer lands is
+   * when the bar moves — with the same deceleration. The duration is unbound:
+   * tokens.json carries no motion tokens.
+   */
+  transition: inline-size 280ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .progress {
+    transition: none;
+  }
 }
 
 /* -------------------------------------------------------- Unit Progress ---- */
@@ -172,24 +189,17 @@
 /*
  * Figma text style "Greed/Caption S Bold", centred on the bar. Always the
  * bar's full width (100cqi) whatever its wrapper's width, so both copies land
- * in exactly the same spot. Set from the individual tokens rather than the
- * --typography-text-style-* shorthand, because that shorthand carries the
- * Figma keyword "semi-bold", which is not a valid CSS font-weight.
+ * in exactly the same spot.
  */
 .unitProgress {
   flex: none;
   inline-size: 100cqi;
   display: grid;
   place-items: center;
-  font-family: var(--font-family-default), Arial, Helvetica, sans-serif;
-  font-size: var(--dimension-font-size-2xs);
-  line-height: var(--dimension-font-line-height-2xs);
-  /* CSS spelling of font/weight/semibold — same presentational mapping already
-     used by stories/foundations/TypeFoundations.tsx, not a design value. */
-  font-weight: 600;
-  /* Greed/Caption S Bold is +1% in Figma. tokens.json's textStyle tokens omit
-     letterSpacing, so it is read off the style and bound to the tracking token
-     here. 1% of the font size is 0.01em. */
+  font: var(--typography-text-style-caption-sbold), Arial, Helvetica, sans-serif;
+  /* Greed/Caption S Bold is +1% in Figma. The font shorthand can't
+     carry letterSpacing, so it is bound to the tracking token here.
+     1% of the font size is 0.01em. */
   letter-spacing: calc(var(--number-font-tracking-loose) * 0.01em);
   white-space: nowrap;
 }

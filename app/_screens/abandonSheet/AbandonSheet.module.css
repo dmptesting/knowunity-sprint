@@ -1,0 +1,97 @@
+/*
+ * AbandonSheet — every value resolves to a custom property from
+ * build/css/tokens.css. No raw hex, no raw pixel dimensions.
+ *
+ * Geometry read off Figma screen 10: the sheet is a vertical stack with
+ * Space/300 of top padding, Space/600 on the sides and bottom, and Space/400
+ * between blocks.
+ */
+
+.abandonSheet {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+/*
+ * Figma's "Bottom-sheet background". background/scrim's own description says
+ * what it is for: "Semi-transparent overlay dimming content behind a modal,
+ * used behind modals, dialogs, and bottom sheets."
+ */
+.scrim {
+  position: absolute;
+  inset: 0;
+  background-color: var(--color-background-scrim);
+}
+
+/*
+ * Figma leaves the sheet unfilled, so screen 10 dims it along with everything
+ * behind it. Painting it is right — otherwise the sheet has no edge — but
+ * *not* in background/surface, which is what the token's own description
+ * ("cards, bottom sheets, modals") first suggested: button's Secondary variant
+ * is also background/surface, so "leave anyway" lost its pill entirely and
+ * read as bare text.
+ *
+ * background/page instead. The scrim dims everything behind, so an undimmed
+ * page-coloured sheet still reads as lifted, and every control on it has the
+ * same contrast it has on any other screen. Figma's composition relies on the
+ * same thing; it just leaves the surface implicit.
+ */
+.sheet {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--dimension-space-400);
+
+  padding-block-start: var(--dimension-space-300);
+  padding-inline: var(--dimension-space-600);
+  /* Space/600 of Figma's padding, plus the home-indicator strip Screen
+     reserves elsewhere — the sheet covers that region itself. */
+  padding-block-end: var(--dimension-space-1600);
+
+  background-color: var(--color-background-page);
+  /* Radius/600 matches the sheet's own Space/600 inset and the card radius the
+     rest of the file uses. Figma's frame reports a radius of 0, which is the
+     drift that comes with the sheet having no fill either. */
+  border-start-start-radius: var(--dimension-radius-600);
+  border-start-end-radius: var(--dimension-radius-600);
+}
+
+/*
+ * Figma's grabber: a 36×4 bar, centred. 36 is not a token step; snapped to the
+ * nearest real one, Space/800 (32), and disclosed here per design-system.md.
+ * The 4 is Space/100 exactly.
+ */
+.grabber {
+  align-self: center;
+  inline-size: var(--dimension-space-800);
+  block-size: var(--dimension-space-100);
+  border-radius: var(--dimension-radius-full);
+  background-color: var(--color-text-tertiary);
+}
+
+/*
+ * Figma text style "Greed/Headline XS Bold".
+ */
+.heading {
+  margin: var(--dimension-space-0);
+  color: var(--color-text-primary);
+  font: var(--typography-text-style-headline-xs-bold), Arial, Helvetica, sans-serif;
+  /* Greed/Headline XS Bold is +1% in Figma. 1% of the font size is 0.01em. */
+  letter-spacing: calc(var(--number-font-tracking-loose) * 0.01em);
+  text-align: center;
+}
+
+/*
+ * Eight rows. Figma sets Space/400 between them, but its rows hug their text
+ * at 24-32px; checkboxRow carries Target/Minimum instead, which already
+ * supplies the breathing room, so the gap closes to Space/0 and the rows stay
+ * on screen without scrolling.
+ */
+.reasons {
+  display: flex;
+  flex-direction: column;
+  gap: var(--dimension-space-0);
+}

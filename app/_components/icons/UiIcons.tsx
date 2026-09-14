@@ -1,11 +1,14 @@
 import {
   ADD_PATH,
   ARROW_BACK_PATH,
+  BOLT_PATH,
   CHECK_PATH,
   CLOSE_PATH,
   IOS_SHARE_PATH,
   MORE_VERT_PATH,
   SEND_PATH,
+  TARGET_PATH,
+  TIMER_PATH,
   MIC_PATH,
   VIEW_BOX,
 } from './paths';
@@ -94,4 +97,19 @@ export function MoreVertIcon({ size }: IconProps) {
 /** Material Symbols `ios_share` — the file's `share-02`, appBar's share action. */
 export function ShareIcon({ size }: IconProps) {
   return <Glyph size={size} d={IOS_SHARE_PATH} />;
+}
+
+/** Material Symbols `bolt` — statTile's XP stat. */
+export function BoltIcon({ size }: IconProps) {
+  return <Glyph size={size} d={BOLT_PATH} />;
+}
+
+/** Material Symbols `target` — statTile's correct-answers stat. */
+export function TargetIcon({ size }: IconProps) {
+  return <Glyph size={size} d={TARGET_PATH} />;
+}
+
+/** Material Symbols `timer`, a stopwatch — statTile's time stat. */
+export function TimerIcon({ size }: IconProps) {
+  return <Glyph size={size} d={TIMER_PATH} />;
 }

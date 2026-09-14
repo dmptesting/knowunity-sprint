@@ -1,17 +1,17 @@
+/* Design tokens (generated from tokens/tokens.json — see build/css/tokens.css).
+   Never edit tokens.css by hand; edit the source token and run `npm run tokens`. */
 @import "../build/css/tokens.css";
 @import "./fonts.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+/*
+ * This prototype is dark-mode-only (CLAUDE.md): tokens.css defines a single
+ * (dark) palette with no light variant, so applying it directly is all "dark
+ * mode only" requires. There is deliberately no `prefers-color-scheme` block —
+ * the page must render on background/page under either OS setting.
+ *
+ * Mirrors .storybook/preview.css, so a screen looks the same under `next dev`
+ * as it does in Storybook.
+ */
 
 html {
   height: 100%;
@@ -27,9 +27,13 @@ body {
   min-height: 100%;
   display: flex;
   flex-direction: column;
-  color: var(--foreground);
-  background: var(--background);
+  /* PhoneFrame centres itself in whatever height the body has. */
+  margin: 0;
+  padding: 0;
+  background: var(--color-background-page);
+  color: var(--color-text-primary);
   font-family: var(--font-family-default), Arial, Helvetica, sans-serif;
+  color-scheme: dark;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -43,10 +47,4 @@ body {
 a {
   color: inherit;
   text-decoration: none;
-}
-
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
 }

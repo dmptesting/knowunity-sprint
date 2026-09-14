@@ -153,7 +153,7 @@ export const AsAPath: Story = {
         flexDirection: 'column',
         gap: 'var(--dimension-space-400)',
         padding: 'var(--dimension-space-400)',
-        margin: 0,
+        margin: 'var(--dimension-space-0)',
       }}
     >
       {[

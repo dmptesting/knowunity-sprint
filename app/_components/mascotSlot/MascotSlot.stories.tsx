@@ -190,10 +190,9 @@ export const Expressions: Story = {
           <span
             style={{
               color: 'var(--color-text-secondary)',
-              fontFamily: 'var(--font-family-default), Arial, Helvetica, sans-serif',
-              fontSize: 'var(--dimension-font-size-2xs)',
-              lineHeight: 'var(--dimension-font-line-height-2xs)',
-              fontWeight: 600,
+              // Greed/Caption S Bold.
+              font: 'var(--typography-text-style-caption-sbold), Arial, Helvetica, sans-serif',
+              letterSpacing: 'calc(var(--number-font-tracking-loose) * 0.01em)',
             }}
           >
             {expression}
