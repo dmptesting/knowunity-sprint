@@ -90,6 +90,6 @@ export const LongLine: Story = {
   args: {
     requestMicrophone: grants,
     knowieLine:
-      "Nice work finishing Network Foundations — that was the long one. Let's talk through what actually stuck before you move on.",
+      "Nice work finishing Network Basics — that was the long one. Let's talk through what actually stuck before you move on.",
   },
 };

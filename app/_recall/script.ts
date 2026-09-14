@@ -80,7 +80,7 @@ export type RecallQuestion = {
 };
 
 /** The study-plan section this recall step follows. */
-export const SECTION_TITLE = 'Network Foundations';
+export const SECTION_TITLE = 'Network Basics';
 
 /**
  * Knowie's line on the reveal screen. Generous on purpose: the student reached
