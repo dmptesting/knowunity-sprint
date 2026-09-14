@@ -218,6 +218,8 @@ export function RecallSession() {
       summary: session.feedback.detail,
       // `giggling` on a pass, as chosen for the result screen this replaced.
       expression: 'giggling',
+      // No next question after the last one: the button leads to the summary.
+      lastQuestion: session.index === QUESTION_COUNT - 1,
       onContinue: session.nextQuestion,
     };
   } else if (session.phase === 'result' && session.feedback && verdict) {

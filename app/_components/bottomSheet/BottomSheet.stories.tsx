@@ -19,7 +19,7 @@ const meta = {
         component: [
           '### What it is',
           '',
-          'The sheet that rises after a quiz answer is checked: Knowie beside the verdict and a short summary of why. A correct answer gets one button, "Next question". An incorrect one gets "Try again" above "View hint 1" or "View hint 2". An unsure one gets "Try again" above "Skip question". A reveal one gets a single "Reveal answer".',
+          'The sheet that rises after a quiz answer is checked: Knowie beside the verdict and a short summary of why. A correct answer gets one button, "Next question" — or "View results" on the session\'s last question. An incorrect one gets "Try again" above "View hint 1" or "View hint 2". An unsure one gets "Try again" above "Skip question". A reveal one gets a single "Reveal answer".',
           '',
           '**USE:** correct or incorrect feedback on a checked answer; `unsure` when a voice recording came through too distorted to judge; `reveal` when both hints are spent and the student still missed, so the answer has to be shown.',
           '',
@@ -59,6 +59,10 @@ const meta = {
     title: { control: 'text', description: 'The verdict. Not a Figma property.' },
     summary: { control: 'text', description: 'Why, in a sentence or two. Not a Figma property.' },
     ctaLabel: { control: 'text', description: "The main button's label. Not a Figma property." },
+    lastQuestion: {
+      control: 'boolean',
+      description: 'Correct only: the last question, so the button reads "View results". Not a Figma property.',
+    },
     hint: {
       control: 'inline-radio',
       options: [1, 2],
@@ -104,6 +108,26 @@ export const Correct: Story = {
     const next = canvas.getByRole('button', { name: 'Next question' });
     await expect(getComputedStyle(next).backgroundColor).toBe(resolveColor('--color-interactive-primary'));
     await userEvent.click(next);
+    await expect(args.onContinue).toHaveBeenCalledTimes(1);
+  },
+};
+
+/**
+ * result=correct on the session's last question. There is no next question, so
+ * the button reads "View results" and leads to the summary's stat tiles.
+ */
+export const CorrectLastQuestion: Story = {
+  name: 'result=correct, last question',
+  args: {
+    lastQuestion: true,
+    title: 'You are right!',
+    summary: "That's the last one. Let's see how the section went.",
+  },
+  play: async ({ canvas, args }) => {
+    await expect(canvas.queryByRole('button', { name: 'Next question' })).toBeNull();
+    const results = canvas.getByRole('button', { name: 'View results' });
+    await expect(getComputedStyle(results).backgroundColor).toBe(resolveColor('--color-interactive-primary'));
+    await userEvent.click(results);
     await expect(args.onContinue).toHaveBeenCalledTimes(1);
   },
 };

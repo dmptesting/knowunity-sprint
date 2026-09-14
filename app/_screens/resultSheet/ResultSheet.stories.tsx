@@ -41,7 +41,7 @@ const meta = {
           '',
           '| Result | When | Actions |',
           '|---|---|---|',
-          '| `correct` | A pass | Next question |',
+          '| `correct` | A pass | Next question, or View results on the last question |',
           '| `incorrect` | A miss, with a hint still to spend | Try again · View hint 1 or 2 |',
           '| `unsure` | Nothing usable came through (empty or garbled) | Try again · Skip question |',
           '| `reveal` | A miss with both hints spent | Reveal answer |',
