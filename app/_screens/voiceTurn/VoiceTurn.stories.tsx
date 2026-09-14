@@ -127,7 +127,10 @@ export const SlideAwayCancels: Story = {
     const pointer = { pointerId: 1, pointerType: 'touch', isPrimary: true };
 
     await fireEvent.pointerDown(control, { ...pointer, clientX: cx, clientY: cy });
-    await expect(canvas.getByText('Release to send · slide away to cancel')).toBeVisible();
+    // findByText, not getByText: a raw fireEvent dispatch runs outside act(),
+    // so the state update it triggers is not guaranteed to have flushed by
+    // the very next line. findByText polls instead of checking once.
+    await expect(await canvas.findByText('Release to send · slide away to cancel')).toBeVisible();
 
     // Well outside the circle, upward — any direction arms it.
     await fireEvent.pointerMove(control, {
@@ -135,7 +138,7 @@ export const SlideAwayCancels: Story = {
       clientX: cx,
       clientY: cy - box.height,
     });
-    await expect(canvas.getByText('Release to cancel')).toBeVisible();
+    await expect(await canvas.findByText('Release to cancel')).toBeVisible();
 
     await fireEvent.pointerUp(control, {
       ...pointer,
@@ -145,7 +148,7 @@ export const SlideAwayCancels: Story = {
     await expect(args.onCancel).toHaveBeenCalled();
     await expect(args.onSend).not.toHaveBeenCalled();
     // And it returns to rest, ready for another go.
-    await expect(canvas.getByText('Hold to speak')).toBeVisible();
+    await expect(await canvas.findByText('Hold to speak')).toBeVisible();
   },
 };
 
@@ -170,7 +173,7 @@ export const ReleaseSends: Story = {
 
     await fireEvent.pointerDown(control, at);
     // Still held, and staying held: nothing has been sent.
-    await expect(canvas.getByText('Release to send · slide away to cancel')).toBeVisible();
+    await expect(await canvas.findByText('Release to send · slide away to cancel')).toBeVisible();
     await expect(args.onSend).not.toHaveBeenCalled();
 
     // A long, silent hold. No endpointing anywhere, so this submits nothing.

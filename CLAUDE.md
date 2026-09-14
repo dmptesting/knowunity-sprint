@@ -13,6 +13,7 @@ Mobile-only (iOS, 390px, dark mode) design prototype for a voice-based active-re
 - Every required action needs a way out (skip, text fallback, or save-and-resume). Never trap the student.
 - Build only the screens/states in the Voice UX Reference's "States to design" table. Must-column first, If-time sketched, Out-of-scope noted not built.
 - Use only components documented in design-system.md, bound to real tokens/tokens.json values. No ad hoc components, no raw hex/pixel values.
+- After building or changing anything in `app/`, run `npm run check:tokens`, which fails on any raw hex color, and fix every line it reports before calling the work done.
 - Sentence case on every label/button/heading (proper nouns excepted).
 
 ## Never

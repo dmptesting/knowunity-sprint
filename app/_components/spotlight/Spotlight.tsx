@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, type HTMLAttributes, type ReactNode } from 'react';
+import { useLayoutEffect, useRef, type HTMLAttributes, type ReactNode } from 'react';
 import styles from './Spotlight.module.css';
 
 /**
@@ -77,7 +77,11 @@ export function Spotlight({
 }: SpotlightProps) {
   const bodyRef = useRef<HTMLParagraphElement>(null);
 
-  useEffect(() => {
+  // useLayoutEffect, not useEffect: focus has to land synchronously in the
+  // commit, before paint — deferred to a normal effect, a screen reader (or
+  // Storybook's own play functions) can observe a beat where focus is still
+  // on body.
+  useLayoutEffect(() => {
     if (focusOnMount) bodyRef.current?.focus();
   }, [focusOnMount]);
 

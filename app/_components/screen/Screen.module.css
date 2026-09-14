@@ -3,8 +3,10 @@
  * build/css/tokens.css. No raw hex, no raw pixel dimensions.
  *
  * Region names mirror the loose frames Figma leaves on every flow screen:
- * Panel Header (Status Bar), topNavigation, the free middle area, and
- * bottomContent / bottomSheetOnly.
+ * topNavigation, the free middle area, and bottomContent / bottomSheetOnly.
+ * Figma's Panel Header (the iOS status bar) is not drawn: no mocked clock,
+ * signal or battery. On a real phone the OS draws its own, and the safe-area
+ * inset keeps the app bar clear of it.
  */
 
 .screen {
@@ -21,12 +23,15 @@
   inline-size: 100%;
 
   /*
-   * The container owns the height: the phone frame under `next dev`, the
+   * The container owns the height: the browser window under `next dev`, the
    * viewport iframe in Storybook. Figma's frames are 844 tall, but 844 is not
    * a token and a screen should fill whatever device it is on rather than
    * carry a device's dimensions itself.
    */
   min-block-size: 100%;
+
+  /* Zero everywhere but a device with a notch or status bar over the page. */
+  padding-block-start: env(safe-area-inset-top);
 
   background-color: var(--color-background-page);
   color: var(--color-text-primary);
@@ -62,8 +67,7 @@
   min-block-size: 0;
   overflow-y: auto;
   /* Scrolls, but paints no scrollbar. This is an iPhone mock, and iOS shows no
-     persistent bar; a desktop browser's bar would sit inside the phone frame
-     and eat into the 390px layout. Wheel, trackpad, touch and keyboard
+     persistent bar; a desktop browser's bar would eat into the layout. Wheel, trackpad, touch and keyboard
      scrolling all still work. */
   scrollbar-width: none;
 }

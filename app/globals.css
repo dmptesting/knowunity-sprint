@@ -23,11 +23,18 @@ body {
   overflow-x: hidden;
 }
 
+/*
+ * The app fills the browser window — there is no phone frame around it. The
+ * body is exactly the window, not at least it: every screen is a flex child of
+ * it, and a definite height is what lets Screen's middle region scroll inside
+ * while its action row stays pinned to the bottom edge. `dvh` follows a mobile
+ * browser's toolbar as it shows and hides.
+ */
 body {
-  min-height: 100%;
+  block-size: 100dvh;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  /* PhoneFrame centres itself in whatever height the body has. */
   margin: 0;
   padding: 0;
   background: var(--color-background-page);

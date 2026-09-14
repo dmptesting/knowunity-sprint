@@ -1,11 +1,10 @@
 import type { HTMLAttributes, ReactNode } from 'react';
 import styles from './Screen.module.css';
-import { StatusBar } from '../statusBar/StatusBar';
 
 export type ScreenProps = {
   /**
-   * Figma's `topNavigation` region — the appBar, pinned below the status bar
-   * and never scrolling.
+   * Figma's `topNavigation` region — the appBar, pinned to the top and never
+   * scrolling.
    */
   top?: ReactNode;
   /**
@@ -28,9 +27,9 @@ export type ScreenProps = {
 } & Omit<HTMLAttributes<HTMLDivElement>, 'children' | 'title'>;
 
 /**
- * The phone-frame shell every recall screen composes inside: a status-bar
- * inset, a pinned top region, a scrolling content region, and a pinned bottom
- * action region above the home indicator.
+ * The phone-frame shell every recall screen composes inside: a pinned top
+ * region, a scrolling content region, and a pinned bottom action region above
+ * the home indicator.
  *
  * USE: (unverified) as the outermost element of any screen in this prototype.
  *
@@ -61,9 +60,6 @@ export function Screen({
 
   return (
     <div className={classes} {...rest}>
-      {/* Figma's "Panel Header", holding the Status Bar. */}
-      <StatusBar />
-
       {top ? <div className={styles.top}>{top}</div> : null}
 
       <main className={styles.content} inert={locked}>

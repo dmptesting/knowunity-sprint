@@ -1,6 +1,5 @@
 import { Suspense } from 'react';
 import { RecallSession } from './_recall/RecallSession';
-import { PhoneFrame } from './_prototype/PhoneFrame';
 
 /**
  * The recall step.
@@ -12,10 +11,8 @@ import { PhoneFrame } from './_prototype/PhoneFrame';
  */
 export default function Page() {
   return (
-    <PhoneFrame>
-      <Suspense fallback={null}>
-        <RecallSession />
-      </Suspense>
-    </PhoneFrame>
+    <Suspense fallback={null}>
+      <RecallSession />
+    </Suspense>
   );
 }

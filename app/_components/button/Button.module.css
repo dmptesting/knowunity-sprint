@@ -155,7 +155,7 @@
 }
 
 /* Tertiary's Pressed state in Figma is a 10%-white overlay on the label, which
-   over text/primary (#f4f2ff) is imperceptible. Left visually identical to
+   over text/primary, already near-white, is imperceptible. Left visually identical to
    Default rather than inventing a stronger treatment. */
 
 .variantPrimary.stateDisabled,
@@ -185,7 +185,7 @@
 }
 
 /* Figma binds Secondary's hidden Loading label to interactive/onPrimary
-   (#090c18), which would be near-invisible on background/surface. Reading that
+   (near-black), which would be near-invisible on background/surface. Reading that
    as leftover from duplicating the Primary variant, the spinner uses
    text/primary — the colour Secondary's label actually has when visible. */
 .variantSecondary.stateLoading {

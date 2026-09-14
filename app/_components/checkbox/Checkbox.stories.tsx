@@ -32,7 +32,7 @@ const meta = {
           '',
           '### Departures from Figma',
           '',
-          "- **The selected fill uses `highlight/border`.** Figma binds it to `highlight/indicator`, a variable that is no longer in the file's semantic collection and was never exported to `tokens.json`. `highlight/border` is the token for \"edge of a chosen element\", so it covers both the ring and the fill — the selected circle becomes the unselected ring filled in. It is a shade darker than Figma's current value (#7b65e0 against #9d85ff), which also lifts the check glyph's contrast.",
+          "- **The selected fill uses `highlight/border`.** Figma binds it to `highlight/indicator`, a variable that is no longer in the file's semantic collection and was never exported to `tokens.json`. `highlight/border` is the token for \"edge of a chosen element\", so it covers both the ring and the fill — the selected circle becomes the unselected ring filled in. It is a shade darker than Figma's current value, which also lifts the check glyph's contrast.",
           '- **The selected error fill uses `feedback/error/subtle`.** Figma binds `feedback/errorSurface`, also missing from `tokens.json`. `feedback/error/subtle` is the token for a tinted error background.',
           '- **A real `<input type="checkbox">` sits behind the drawing.** Figma has no interactive semantics; this keeps native keyboard operation, the checked state, and screen-reader announcement. `Error` sets `aria-invalid`, `Disabled` sets `disabled`.',
           '- **A focus ring was added,** from `Stroke/Heavy Border` and `border/focus`. Figma defines none, and the control is not operable without one.',

@@ -23,7 +23,7 @@ const meta = {
         component: [
           '### What it is',
           '',
-          'A status-bar inset, a pinned top region, a scrolling content region, and a pinned bottom action region above the home indicator.',
+          'A pinned top region, a scrolling content region, and a pinned bottom action region above the home indicator.',
           '',
           '**USE:** as the outermost element of any screen in this prototype.',
           '',
@@ -35,7 +35,7 @@ const meta = {
           '',
           '### Departures from Figma',
           '',
-          "- **The status bar is reserved, not drawn.** Figma's `Status Bar` is an instance from an external library, it has no React build, and it is OS chrome rather than product UI. The region keeps its real 48px (`Space/1200`) height and stays blank.",
+          "- **No status bar.** Figma's `Panel Header` holds an iOS `Status Bar` instance (clock, signal, battery). It is OS chrome, not product UI, so it is not drawn and its 48px is not reserved; on a real phone the safe-area inset keeps the app bar clear of the OS bar.",
           '- **The home indicator strip is 32px, not 34.** 34 is not a token step; snapped to the nearest real one, `Space/800`.',
           "- **The scrim is painted on the bottom region, not pinned at 151px.** Figma draws a 390×151 gradient rectangle from transparent to `background/page`, ending exactly where `bottomContent` begins. 151 is not a token, so the gradient is painted on the action row and extended above it by its own height — same effect, no invented value.",
           '- **No fixed 390px width.** Nothing in tokens.json holds 390: `Responsive/Device Width` is 1200 / 768 / 375. The shell fills its container instead.',

@@ -80,9 +80,7 @@ Most of these exist only in `app/_components/`, promoted through `component-gaps
 
 **chatInput** — the text answer bar, variant `status`: `Inactive` / `Typing` / `Ready to send` / `Recording` / `Loading` / `Long input`. Reach for it on the text fallback turn. Send is always explicit (`onSend`); the mic shows only when nothing is typed. Its icon buttons are `buttonIcon`, not Figma's nested "OLD Icon Button".
 
-**screen** — the shell every screen composes inside: status bar, pinned `top` (appBar), scrolling middle, pinned `bottom` action row over a scrim. `lockBody` makes the middle and bottom inert while `top` stays live, for a sheet over the lower screen. Not a Figma component — Figma leaves these regions as loose frames on each screen.
-
-**statusBar** — iOS device chrome (clock, signal, wi-fi, battery), rendered by screen. Decorative only; nothing in it reports real state. Don't place it yourself.
+**screen** — the shell every screen composes inside: pinned `top` (appBar), scrolling middle, pinned `bottom` action row over a scrim. `lockBody` makes the middle and bottom inert while `top` stays live, for a sheet over the lower screen. Not a Figma component — Figma leaves these regions as loose frames on each screen.
 
 **knowieSays** — mascotSlot `2XL` beside a calloutBubble, mascot on the left so the bubble's fixed tail points at him. Reach for it whenever Knowie says a line inside the recall loop. `children` renders in a row under the bubble for things attached to his line (hintChips). Never put the student's words in it.
 

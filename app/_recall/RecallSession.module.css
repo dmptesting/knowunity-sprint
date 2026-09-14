@@ -4,11 +4,11 @@
  */
 
 /*
- * Anchors the abandon sheet, which covers the turn behind it.
+ * Anchors the abandon sheet and the result sheet, which cover the turn behind.
  *
- * Height comes from the container, never from the viewport: this sits inside
- * the 390×844 phone frame, and a `100dvh` here made Screen size to the browser
- * window instead — clipping the action row off the bottom of the device.
+ * Height comes from the body, which is exactly the browser window (globals.css)
+ * — never from `100dvh` here, or the screens rendered outside the session (the
+ * study path, the primer) would size differently from the ones inside it.
  */
 .session {
   position: relative;
