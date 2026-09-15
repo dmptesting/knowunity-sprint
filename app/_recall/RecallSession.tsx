@@ -154,6 +154,14 @@ export function RecallSession() {
           // primer — it routes to the denied screen, which routes to text.
           setStarted(true);
         }}
+        onTypeInstead={() => {
+          // Text from the first question, and no prompt spent on a student
+          // who has said they don't want the mic.
+          session.switchToText();
+          setStarted(true);
+        }}
+        tapMode={session.tapMode}
+        onTapModeChange={session.setTapMode}
       />
     );
   }

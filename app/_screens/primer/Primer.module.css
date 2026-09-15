@@ -2,14 +2,13 @@
  * Primer — composition only. Every value resolves to a custom property from
  * build/css/tokens.css; no component is restyled here.
  *
- * Frame 02's middleContent: a vertical stack with Space/400 of side padding,
- * mascot centred above the copy.
+ * Frame 02's middleContent — mascot centred above the copy — with SPEC.md §3's
+ * explanation and tap-mode toggle stacked under it, left aligned as body copy.
  */
 
 .content {
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
   gap: var(--dimension-space-800);
   padding-inline: var(--dimension-space-600);
@@ -17,14 +16,22 @@
   flex: 1;
 }
 
-.mascot {
-  flex: none;
+.intro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--dimension-space-600);
+}
+
+.explainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--dimension-space-400);
 }
 
 /*
  * Figma text style "Greed/Headline S" — the one style in the scale set to 0%
- * tracking. The screen has exactly one line of copy, so it carries the whole
- * message and is sized to.
+ * tracking. Knowie's line carries the greeting; the explainer carries the how.
  */
 .line {
   margin: var(--dimension-space-0);
