@@ -27,13 +27,13 @@ const meta = {
           '',
           'The prompt fires from the tap on "let\'s get started" — **never on mount**. You get one per feature, and a request the student did not ask for is the one most likely to be refused (Voice UX Reference, principle 3, and its Babbel precedent).',
           '',
-          '### What it explains',
+          '### Deliberately bare',
           '',
-          'SPEC.md §3: Knowie\'s line, then a `TextBlock` M saying what the mic is for and how the gesture works, then the tap-mode toggle (`CheckboxRow`). This is the only screen that explains the hold, so the alternative to it sits right beside the explanation — and the gesture caption switches to the tap wording as soon as the box is ticked, matching the voice turn\'s own hint line.',
+          'Mascot, one line, one button — Figma 02 exactly.',
           '',
-          '### Two ways forward',
+          'It previously carried a primer explanation ("4 questions, answered out loud…"), an "I\'d rather type" escape and a tap-mode toggle. All three were removed on the designer\'s instruction. The text path is still reachable from the turn itself and from a refused permission, so nobody is trapped by their absence — but note this is a **departure from SPEC.md**, which lists a `ButtonGroup` with `secondaryCTA="I\'d rather type"` here and makes this the one screen that explains the hold gesture.',
           '',
-          '`ButtonGroup` Vertical: "Let\'s get started" fires the prompt; "I\'d rather type" never asks for the mic and starts the session in text. Nobody has to say yes to the mic to begin.',
+          'With the toggle gone, tap mode is reached only automatically — a click with no pointer behind it (`detail === 0`, which is what Enter, Space and a screen reader\'s activate gesture produce) always behaves as a tap on the voice turn.',
           '',
           '### The message is not a bubble',
           '',
@@ -46,7 +46,7 @@ const meta = {
       },
     },
   },
-  args: { onPermission: fn(), onTypeInstead: fn(), onTapModeChange: fn() },
+  args: { onPermission: fn(), onClose: fn() },
 } satisfies Meta<typeof Primer>;
 
 export default meta;
@@ -59,11 +59,6 @@ export const Default: Story = {
     await expect(
       canvas.getByRole('button', { name: "Let's get started" }),
     ).toBeVisible();
-    await expect(canvas.getByRole('button', { name: "I'd rather type" })).toBeVisible();
-    await expect(
-      canvas.getByRole('checkbox', { name: 'Tap to start and stop instead of holding' }),
-    ).not.toBeChecked();
-    await expect(canvas.getByText(/let go to send/)).toBeVisible();
     // Nothing has asked for the microphone yet.
     await expect(args.onPermission).not.toHaveBeenCalled();
   },
@@ -89,38 +84,14 @@ export const PermissionRefused: Story = {
   },
 };
 
-/** The student opts out of voice before the prompt is ever shown. */
-export const TypeInstead: Story = {
-  name: "Choosing to type",
+/** Close takes the student back to the path without asking for the mic. */
+export const Closing: Story = {
+  name: 'Closing',
   args: { requestMicrophone: grants },
   play: async ({ canvas, args }) => {
-    await userEvent.click(canvas.getByRole('button', { name: "I'd rather type" }));
-    await expect(args.onTypeInstead).toHaveBeenCalled();
+    await userEvent.click(canvas.getByRole('button', { name: 'Close' }));
+    await expect(args.onClose).toHaveBeenCalled();
     await expect(args.onPermission).not.toHaveBeenCalled();
-  },
-};
-
-/** Ticking the toggle reports it; the session owns the value. */
-export const TurningOnTapMode: Story = {
-  name: 'Turning on tap mode',
-  args: { requestMicrophone: grants },
-  play: async ({ canvas, args }) => {
-    await userEvent.click(
-      canvas.getByRole('checkbox', { name: 'Tap to start and stop instead of holding' }),
-    );
-    await expect(args.onTapModeChange).toHaveBeenCalledWith(true);
-  },
-};
-
-/** Tap mode on: the gesture caption switches to the tap wording. */
-export const TapModeOn: Story = {
-  name: 'Tap mode on',
-  args: { requestMicrophone: grants, tapMode: true },
-  play: async ({ canvas }) => {
-    await expect(
-      canvas.getByRole('checkbox', { name: 'Tap to start and stop instead of holding' }),
-    ).toBeChecked();
-    await expect(canvas.getByText(/tap again to send/)).toBeVisible();
   },
 };
 
