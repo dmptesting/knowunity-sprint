@@ -1,0 +1,822 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Voice recall scorecard 01</title>
+<meta name="description" content="Critic panel review of the primer, voice turn, hint overlay and result sheet screens.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=Schibsted+Grotesk:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+  /* Dark-first, in the prototype's own palette. Light is the considered second theme. */
+  :root {
+    --ground: #090c18;
+    --surface: #121523;
+    --raised: #22242f;
+    --rule: #2a2d3d;
+    --text: #f4f2ff;
+    --muted: #aeaac6;
+    --faint: #7d7a96;
+    --accent: #9178e6;
+    --accent-soft: #1b1541;
+    --pass: #00c386;
+    --pass-soft: #0a2e22;
+    --fail: #ff6b6b;
+    --fail-soft: #3d1f27;
+    --warn: #f5b53d;
+    --warn-soft: #33280c;
+    --code-bg: #1a1d2c;
+    --magenta: #ff00ff;
+    color-scheme: dark;
+
+    --display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+    --body: "Schibsted Grotesk", "Helvetica Neue", Arial, system-ui, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+    --s-1: 0.25rem; --s-2: 0.5rem; --s-3: 0.75rem; --s-4: 1rem; --s-5: 1.5rem; --s-6: 2rem; --s-7: 3rem; --s-8: 4.5rem;
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --ground: #f5f4fa;
+      --surface: #ffffff;
+      --raised: #ecebf4;
+      --rule: #dcd9e8;
+      --text: #15132b;
+      --muted: #55526f;
+      --faint: #7a7792;
+      --accent: #5f45cf;
+      --accent-soft: #ebe6fc;
+      --pass: #00774f;
+      --pass-soft: #dcf3ea;
+      --fail: #c3303a;
+      --fail-soft: #fbe3e5;
+      --warn: #8f5f00;
+      --warn-soft: #fbefd4;
+      --code-bg: #eeecf5;
+      color-scheme: light;
+    }
+  }
+  :root[data-theme="light"] {
+    --ground: #f5f4fa;
+    --surface: #ffffff;
+    --raised: #ecebf4;
+    --rule: #dcd9e8;
+    --text: #15132b;
+    --muted: #55526f;
+    --faint: #7a7792;
+    --accent: #5f45cf;
+    --accent-soft: #ebe6fc;
+    --pass: #00774f;
+    --pass-soft: #dcf3ea;
+    --fail: #c3303a;
+    --fail-soft: #fbe3e5;
+    --warn: #8f5f00;
+    --warn-soft: #fbefd4;
+    --code-bg: #eeecf5;
+    color-scheme: light;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--text);
+    font: 400 1rem/1.6 var(--body);
+    padding-inline: max(1rem, 4vw);
+    padding-block: var(--s-7) var(--s-8);
+  }
+  .wrap { max-width: 68rem; margin-inline: auto; display: grid; gap: var(--s-8); }
+
+  h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; line-height: 1.15; }
+  h1 { font-size: clamp(2rem, 4.5vw, 2.9rem); font-weight: 700; letter-spacing: -0.02em; }
+  h2 { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.01em; }
+  h3 { font-size: 1.15rem; font-weight: 500; }
+  p { margin: 0; }
+  code, .mono { font-family: var(--mono); font-size: 0.84em; }
+  code { background: var(--code-bg); padding: 0.05em 0.35em; border-radius: 4px; overflow-wrap: anywhere; }
+  a { color: var(--accent); text-underline-offset: 3px; }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
+  .eyebrow { font: 500 0.72rem/1 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); }
+  .muted { color: var(--muted); }
+
+  /* ---------- header ---------- */
+  header { display: grid; gap: var(--s-4); }
+  .meta { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-5); color: var(--muted); font-size: 0.9rem; }
+  .meta b { color: var(--text); font-weight: 600; }
+
+  /* ---------- summary band ---------- */
+  .summary {
+    display: grid;
+    grid-template-columns: minmax(15rem, 1fr) 2.2fr;
+    gap: var(--s-6);
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 14px;
+    padding: var(--s-6);
+  }
+  @media (max-width: 760px) { .summary { grid-template-columns: 1fr; padding: var(--s-5); } }
+  .total { display: grid; gap: var(--s-4); align-content: start; }
+  .total-num { font: 700 4.6rem/0.9 var(--display); letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
+  .total-num small { font-size: 1.4rem; color: var(--faint); font-weight: 500; letter-spacing: 0; }
+  .total p { font-size: 0.9rem; color: var(--muted); max-width: 30ch; }
+  .blocker {
+    display: flex; gap: var(--s-3); align-items: start;
+    background: var(--fail-soft); color: var(--text);
+    border-radius: 10px; padding: var(--s-3) var(--s-4); font-size: 0.92rem;
+  }
+  .blocker .glyph { color: var(--fail); font-weight: 700; font-family: var(--mono); }
+
+  /* dimension bars — one grid so the scale row and every track share columns */
+  .dims { display: grid; grid-template-columns: 8.5rem 1fr 2.2rem 4.2rem; column-gap: var(--s-4); row-gap: var(--s-3); align-items: center; }
+  @media (max-width: 480px) { .dims { grid-template-columns: 6.5rem 1fr 2rem; } .dims .w { display: none; } }
+  .dims .name { font-weight: 600; font-size: 0.95rem; }
+  .dims .name span { display: block; font: 400 0.72rem/1.3 var(--mono); color: var(--faint); }
+  .track { position: relative; height: 12px; background: var(--raised); border-radius: 99px; }
+  .fill { position: absolute; inset-block: 0; inset-inline-start: 0; border-radius: 99px; background: var(--accent); }
+  .tick { position: absolute; inset-block: -4px; width: 1px; background: var(--faint); opacity: 0.7; }
+  .score { font: 500 1.05rem/1 var(--mono); font-variant-numeric: tabular-nums; text-align: end; }
+  .w { font: 400 0.75rem/1 var(--mono); color: var(--faint); }
+  .scale { position: relative; height: 1rem; font: 400 0.68rem/1 var(--mono); color: var(--faint); }
+  .scale span { position: absolute; transform: translateX(-50%); }
+  .dims-note { grid-column: 1 / -1; font-size: 0.8rem; color: var(--faint); margin-top: var(--s-2); }
+
+  /* ---------- gates ---------- */
+  .gates { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--s-3); }
+  @media (max-width: 860px) { .gates { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 440px) { .gates { grid-template-columns: 1fr; } }
+  .gate { border: 1px solid var(--rule); border-radius: 10px; padding: var(--s-4); display: grid; gap: var(--s-2); align-content: start; background: var(--surface); }
+  .gate.is-fail { border-color: var(--fail); background: var(--fail-soft); }
+  .gate-head { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s-2); }
+  .gate-name { font-weight: 600; }
+  .verdict { font: 500 0.72rem/1 var(--mono); letter-spacing: 0.08em; padding: 0.3em 0.55em; border-radius: 99px; white-space: nowrap; }
+  .verdict.pass { color: var(--pass); background: var(--pass-soft); }
+  .verdict.fail { color: var(--ground); background: var(--fail); }
+  .gate p { font-size: 0.85rem; color: var(--muted); }
+  .gate .owner { font: 400 0.72rem/1.3 var(--mono); color: var(--faint); }
+
+  /* ---------- nav ---------- */
+  nav ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--s-2); }
+  nav a { display: inline-block; text-decoration: none; color: var(--muted); border: 1px solid var(--rule); border-radius: 99px; padding: 0.3rem 0.8rem; font-size: 0.85rem; }
+  nav a:hover { color: var(--text); border-color: var(--accent); }
+
+  section { display: grid; gap: var(--s-5); scroll-margin-top: var(--s-5); }
+  .section-head { display: grid; gap: var(--s-2); max-width: 65ch; }
+  .section-head p { color: var(--muted); }
+
+  /* ---------- render pairs ---------- */
+  .pairs { display: grid; grid-template-columns: repeat(auto-fill, minmax(19rem, 1fr)); gap: var(--s-4); }
+  .pair { background: var(--surface); border: 1px solid var(--rule); border-radius: 12px; padding: var(--s-4); display: grid; gap: var(--s-3); align-content: start; }
+  .pair-head { display: flex; justify-content: space-between; gap: var(--s-2); align-items: baseline; }
+  .pair-id { font: 500 0.8rem/1 var(--mono); color: var(--faint); }
+  .kind { font: 500 0.7rem/1 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; padding: 0.3em 0.55em; border-radius: 99px; white-space: nowrap; }
+  .kind.identical { background: var(--fail); color: var(--ground); }
+  .kind.never { background: var(--warn-soft); color: var(--warn); }
+  .kind.near { background: var(--raised); color: var(--muted); }
+  .shots { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-2); }
+  .shots figure { margin: 0; display: grid; gap: var(--s-1); }
+  .shots img { width: 100%; max-width: 100%; height: auto; aspect-ratio: 390 / 844; object-fit: cover; border-radius: 6px; border: 1px solid var(--rule); background: #090c18; display: block; }
+  .shots figcaption { font: 400 0.68rem/1.35 var(--mono); color: var(--faint); overflow-wrap: anywhere; }
+  .diff { font: 500 0.8rem/1 var(--mono); font-variant-numeric: tabular-nums; }
+  .pair p { font-size: 0.88rem; color: var(--muted); }
+
+  /* ---------- convergence table ---------- */
+  .table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 12px; background: var(--surface); }
+  table { border-collapse: collapse; width: 100%; min-width: 40rem; font-size: 0.9rem; }
+  th, td { text-align: start; padding: var(--s-3) var(--s-4); vertical-align: top; border-bottom: 1px solid var(--rule); }
+  tr:last-child td { border-bottom: 0; }
+  th { font: 500 0.7rem/1.2 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); }
+  .count { font: 500 0.85rem/1 var(--mono); color: var(--accent); white-space: nowrap; }
+
+  /* ---------- findings ---------- */
+  .dim { display: grid; gap: var(--s-4); padding-block-start: var(--s-5); border-top: 1px solid var(--rule); }
+  .dim-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--s-2) var(--s-4); }
+  .dim-head .score-chip { font: 500 0.95rem/1 var(--mono); background: var(--accent-soft); color: var(--accent); padding: 0.35em 0.6em; border-radius: 6px; }
+  .dim-head .by { font: 400 0.8rem/1 var(--mono); color: var(--faint); }
+  .verified { font-size: 0.85rem; color: var(--muted); max-width: 75ch; }
+  .verified b { color: var(--text); font-weight: 600; }
+  ol.findings { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-3); counter-reset: f; }
+  ol.findings > li {
+    counter-increment: f;
+    display: grid; grid-template-columns: 2rem 1fr; gap: 0 var(--s-3);
+    background: var(--surface); border: 1px solid var(--rule); border-radius: 10px;
+    padding: var(--s-4);
+  }
+  ol.findings > li::before { content: counter(f); font: 500 0.85rem/1.6 var(--mono); color: var(--faint); }
+  .f-body { display: grid; gap: var(--s-2); min-width: 0; }
+  .f-title { font-weight: 600; max-width: 70ch; }
+  .f-line { font-size: 0.88rem; color: var(--muted); max-width: 80ch; display: grid; grid-template-columns: 4.6rem 1fr; gap: var(--s-2); }
+  @media (max-width: 480px) { .f-line { grid-template-columns: 1fr; gap: 0; } }
+  .f-line .k { font: 500 0.68rem/1.9 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); }
+  .f-line.fix .k { color: var(--accent); }
+  .tags { display: flex; flex-wrap: wrap; gap: var(--s-1); }
+  .tag { font: 400 0.7rem/1 var(--mono); padding: 0.35em 0.55em; border-radius: 99px; border: 1px solid var(--rule); color: var(--muted); }
+  .tag.gate-tag { border-color: var(--fail); color: var(--fail); }
+  .holds { font-size: 0.88rem; color: var(--muted); background: var(--pass-soft); border-radius: 10px; padding: var(--s-3) var(--s-4); max-width: 80ch; }
+  .holds b { color: var(--pass); font-weight: 600; }
+
+  /* ---------- blind spots ---------- */
+  .spots { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: var(--s-3); }
+  .spot { border-left: 2px solid var(--rule); padding-inline-start: var(--s-4); display: grid; gap: var(--s-2); align-content: start; }
+  .spot .who { font: 500 0.8rem/1 var(--mono); color: var(--text); }
+  .spot p { font-size: 0.88rem; color: var(--muted); }
+
+  /* ---------- ambition, set apart ---------- */
+  .ambition { border: 1px dashed var(--accent); border-radius: 16px; padding: var(--s-6); display: grid; gap: var(--s-5); background: var(--accent-soft); }
+  @media (max-width: 480px) { .ambition { padding: var(--s-4); } }
+  .ambition .not-counted { font: 500 0.72rem/1 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+  .amb-top { display: flex; flex-wrap: wrap; gap: var(--s-4) var(--s-6); align-items: end; }
+  .amb-score { font: 700 3.2rem/0.9 var(--display); letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+  .amb-score small { font-size: 1.1rem; color: var(--faint); font-weight: 500; }
+  .amb-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-5); }
+  @media (max-width: 760px) { .amb-grid { grid-template-columns: 1fr; } }
+  .amb-list { margin: 0; padding-inline-start: 1.1rem; display: grid; gap: var(--s-3); font-size: 0.9rem; color: var(--muted); }
+  .amb-list b { color: var(--text); font-weight: 600; }
+  .proposal { background: var(--surface); border-radius: 10px; padding: var(--s-4); display: grid; gap: var(--s-2); }
+  .proposal h3 { font-size: 1.02rem; }
+  .proposal p { font-size: 0.88rem; color: var(--muted); }
+  .proposals { display: grid; gap: var(--s-3); }
+
+  footer { font-size: 0.82rem; color: var(--faint); border-top: 1px solid var(--rule); padding-top: var(--s-4); }
+</style>
+
+<div class="wrap">
+
+  <header>
+    <span class="eyebrow">Critic panel · review 01</span>
+    <h1>Voice recall scorecard 01</h1>
+    <div class="meta">
+      <span><b>Screens</b> Primer · Voice turn · Hint overlay · Result sheet</span>
+      <span><b>Date</b> 2026-09-15</span>
+      <span><b>Branch</b> <span class="mono">component-library-and-spec</span></span>
+      <span><b>Rubric</b> <span class="mono">eval/rubric.md</span></span>
+      <span><b>Renders</b> 64 PNGs at 390×844, dark</span>
+    </div>
+  </header>
+
+  <!-- ================= SUMMARY ================= -->
+  <div class="summary" aria-label="Summary">
+    <div class="total">
+      <span class="eyebrow">Weighted total</span>
+      <div class="total-num">5.2<small> / 10</small></div>
+      <p>From the three adversarial critics. Weights High = 3, Medium = 2, Low = 1 (assumed; the rubric names weights but not numbers). 78 ÷ 15.</p>
+      <div class="blocker" role="note">
+        <span class="glyph" aria-hidden="true">✕</span>
+        <span><b>Blocked.</b> 1 of 4 hard gates failed: partial and fail render identically.</span>
+      </div>
+    </div>
+
+    <div class="dims" role="table" aria-label="Scores by dimension">
+      <span></span>
+      <div class="scale" aria-hidden="true">
+        <span style="left:40%">4</span><span style="left:60%">6</span><span style="left:90%">9</span>
+      </div>
+      <span></span><span class="w"></span>
+
+      <div class="name" role="rowheader">System fidelity<span>critic-system</span></div>
+      <div class="track" role="img" aria-label="5 out of 10"><div class="fill" style="width:50%"></div><i class="tick" style="left:40%"></i><i class="tick" style="left:60%"></i><i class="tick" style="left:90%"></i></div>
+      <div class="score">5</div><div class="w">High ×3</div>
+
+      <div class="name" role="rowheader">Coherence<span>critic-system</span></div>
+      <div class="track" role="img" aria-label="5 out of 10"><div class="fill" style="width:50%"></div><i class="tick" style="left:40%"></i><i class="tick" style="left:60%"></i><i class="tick" style="left:90%"></i></div>
+      <div class="score">5</div><div class="w">High ×3</div>
+
+      <div class="name" role="rowheader">Craft<span>critic-craft</span></div>
+      <div class="track" role="img" aria-label="5 out of 10"><div class="fill" style="width:50%"></div><i class="tick" style="left:40%"></i><i class="tick" style="left:60%"></i><i class="tick" style="left:90%"></i></div>
+      <div class="score">5</div><div class="w">High ×3</div>
+
+      <div class="name" role="rowheader">UX judgment<span>critic-ux</span></div>
+      <div class="track" role="img" aria-label="5 out of 10"><div class="fill" style="width:50%"></div><i class="tick" style="left:40%"></i><i class="tick" style="left:60%"></i><i class="tick" style="left:90%"></i></div>
+      <div class="score">5</div><div class="w">High ×3</div>
+
+      <div class="name" role="rowheader">Accessibility<span>critic-ux</span></div>
+      <div class="track" role="img" aria-label="6 out of 10"><div class="fill" style="width:60%"></div><i class="tick" style="left:40%"></i><i class="tick" style="left:60%"></i><i class="tick" style="left:90%"></i></div>
+      <div class="score">6</div><div class="w">Med ×2</div>
+
+      <div class="name" role="rowheader">Structure<span>critic-craft</span></div>
+      <div class="track" role="img" aria-label="6 out of 10"><div class="fill" style="width:60%"></div><i class="tick" style="left:40%"></i><i class="tick" style="left:60%"></i><i class="tick" style="left:90%"></i></div>
+      <div class="score">6</div><div class="w">Low ×1</div>
+
+      <p class="dims-note">Ticks mark the rubric's anchors: 4 broken · 6 legible, nothing broken · 9 survives senior critique. No dimension reached 8, so no score needed its verification checked.</p>
+    </div>
+  </div>
+
+  <nav aria-label="Sections">
+    <ul>
+      <li><a href="#gates">Hard gates</a></li>
+      <li><a href="#render">Render pass</a></li>
+      <li><a href="#converged">Where critics agreed</a></li>
+      <li><a href="#findings">All findings</a></li>
+      <li><a href="#blind">Blind spots</a></li>
+      <li><a href="#ambition">Ambition (not counted)</a></li>
+    </ul>
+  </nav>
+
+  <!-- ================= GATES ================= -->
+  <section id="gates">
+    <div class="section-head">
+      <span class="eyebrow">Pass / fail</span>
+      <h2>Hard gates</h2>
+      <p>Any failure here blocks the work, whatever the weighted total says.</p>
+    </div>
+    <div class="gates">
+      <div class="gate">
+        <div class="gate-head"><span class="gate-name">Contrast ≥ 4.5:1</span><span class="verdict pass">✓ PASS</span></div>
+        <p>Lowest is 4.65:1: <code>text/tertiary</code> on <code>background/page</code>, the 12px hint line (<code>VoiceTurn.module.css:56</code>). Others: notice 7.99, “Type instead” 8.40, overlay label 5.60, chips 6.77 / 6.64, sheet body 13.31, CTAs 17.63 / 10.24.</p>
+        <span class="owner">critic-ux</span>
+      </div>
+      <div class="gate">
+        <div class="gate-head"><span class="gate-name">Touch targets ≥ 44pt</span><span class="verdict pass">✓ PASS</span></div>
+        <p>“Type instead”: painted 85×20, hit 86×44. Chips: painted 54×32, hit 56×44. Retry 92×44. Close and Skip 48×48. Circle 161×161. Sheet CTAs 56 tall. Overlay CTA 132×56.</p>
+        <span class="owner">critic-ux · confirmed by critic-craft</span>
+      </div>
+      <div class="gate">
+        <div class="gate-head"><span class="gate-name">No raw hex</span><span class="verdict pass">✓ PASS</span></div>
+        <p><code>npm run check:tokens</code> printed “No raw hex colours in app/.” and exited 0.</p>
+        <span class="owner">critic-system</span>
+      </div>
+      <div class="gate is-fail">
+        <div class="gate-head"><span class="gate-name">No identical states</span><span class="verdict fail">✕ FAIL</span></div>
+        <p>Partial vs fail (<code>app_q3_partial</code> vs <code>app_q3_fail</code>): title, panel, mascot and buttons are pixel-identical. Only rows 575–637, the summary sentence, differ, and that sentence doesn't encode the verdict.</p>
+        <span class="owner">critic-ux</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= RENDER PASS ================= -->
+  <section id="render">
+    <div class="section-head">
+      <span class="eyebrow">Before any critic ran</span>
+      <h2>Render pass</h2>
+      <p>Every state was screenshotted at 390×844 in dark mode, then compared in pairs. A pixel counts as changed when its RGB delta is over 24. None of these flags was passed to a critic.</p>
+    </div>
+    <div class="pairs">
+
+      <article class="pair">
+        <div class="pair-head"><span class="pair-id">R1 · Primer</span><span class="kind identical">Identical</span></div>
+        <div class="shots">
+          <figure><img src="renders-01/sb_primer__permission-granted.png" alt="Primer story after tapping start with the stub granting" loading="lazy"><figcaption>sb · granted</figcaption></figure>
+          <figure><img src="renders-01/sb_primer__permission-refused.png" alt="Primer story after tapping start with the stub refusing, identical to granted" loading="lazy"><figcaption>sb · refused</figcaption></figure>
+        </div>
+        <span class="diff">0 px</span>
+        <p>The refusal is never shown in Storybook: the stub's result only goes to a mock callback. The app does show it (<code>app_primer_refused_next</code>).</p>
+      </article>
+
+      <article class="pair">
+        <div class="pair-head"><span class="pair-id">R2 · Voice turn, timeout</span><span class="kind identical">Identical over time</span></div>
+        <div class="shots">
+          <figure><img src="renders-01/app_q3_timeoutSoft_4.8s.png" alt="Soft timeout notice at 4.8 seconds" loading="lazy"><figcaption>app · soft @ 4.8s</figcaption></figure>
+          <figure><img src="renders-01/app_q3_timeoutSoft_8.8s.png" alt="Soft timeout notice at 8.8 seconds, unchanged" loading="lazy"><figcaption>app · soft @ 8.8s</figcaption></figure>
+        </div>
+        <span class="diff">0 px (retry pair also 0 px)</span>
+        <p>Both notices appear at the fixed 2s judge mark (<code>useRecallSession.ts:211-226</code>), so the 4s soft → 8s retry sequence never plays.</p>
+      </article>
+
+      <article class="pair">
+        <div class="pair-head"><span class="pair-id">R3 · Voice turn, empty</span><span class="kind never">Never in session</span></div>
+        <div class="shots">
+          <figure><img src="renders-01/sb_voice-turn__notice-empty.png" alt="Nothing-heard status notice in Storybook" loading="lazy"><figcaption>sb · notice</figcaption></figure>
+          <figure><img src="renders-01/app_q2_unsure_empty.png" alt="Unsure result sheet the app shows instead" loading="lazy"><figcaption>app · unsure sheet</figcaption></figure>
+        </div>
+        <span class="diff">different treatment</span>
+        <p>The “nothing heard” and “garbled” notices exist only in Storybook. The session sends both to the unsure sheet (<code>RecallSession.tsx:206-210</code>).</p>
+      </article>
+
+      <article class="pair">
+        <div class="pair-head"><span class="pair-id">R4 · Voice turn, timeout</span><span class="kind never">Story ≠ app</span></div>
+        <div class="shots">
+          <figure><img src="renders-01/sb_voice-turn__notice-timeout-retry.png" alt="Retry timeout story with the processing dot" loading="lazy"><figcaption>sb · retry</figcaption></figure>
+          <figure><img src="renders-01/app_q3_timeoutRetry_4.8s.png" alt="Retry timeout in app with a faded idle mic" loading="lazy"><figcaption>app · retry</figcaption></figure>
+        </div>
+        <span class="diff">1.8%</span>
+        <p>The stories pass <code>processing: true</code>, which draws the processing dot. The session never does, so it shows a faded idle mic.</p>
+      </article>
+
+      <article class="pair">
+        <div class="pair-head"><span class="pair-id">R5 · Hint overlay</span><span class="kind near">Tier not shown</span></div>
+        <div class="shots">
+          <figure><img src="renders-01/sb_hint-overlay__default.png" alt="Hint 1 story labelled Hint" loading="lazy"><figcaption>sb · hint 1</figcaption></figure>
+          <figure><img src="renders-01/sb_hint-overlay__second-hint.png" alt="Hint 2 story also labelled Hint" loading="lazy"><figcaption>sb · hint 2</figcaption></figure>
+        </div>
+        <span class="diff">3.4% (body only)</span>
+        <p>Both labels read “Hint”. The app labels “Hint 1” and “Hint 2” correctly.</p>
+      </article>
+
+      <article class="pair">
+        <div class="pair-head"><span class="pair-id">R6 · Result sheet</span><span class="kind identical">Gate failure</span></div>
+        <div class="shots">
+          <figure><img src="renders-01/app_q3_partial.png" alt="Incorrect sheet after a partial answer" loading="lazy"><figcaption>app · partial</figcaption></figure>
+          <figure><img src="renders-01/app_q3_fail.png" alt="Incorrect sheet after a failed answer, same title and layout" loading="lazy"><figcaption>app · fail</figcaption></figure>
+        </div>
+        <span class="diff">0.97%</span>
+        <p>Title, Knowie, colours and buttons are the same; only the summary sentence changes. Critic-ux later failed the gate on this pair.</p>
+      </article>
+
+      <article class="pair">
+        <div class="pair-head"><span class="pair-id">R7 · Result sheet</span><span class="kind near">Near-identical</span></div>
+        <div class="shots">
+          <figure><img src="renders-01/app_q3_empty.png" alt="Unsure sheet after an empty recording" loading="lazy"><figcaption>app · empty</figcaption></figure>
+          <figure><img src="renders-01/app_q3_garbled.png" alt="Unsure sheet after a garbled recording" loading="lazy"><figcaption>app · garbled</figcaption></figure>
+        </div>
+        <span class="diff">0.93%</span>
+        <p>Summary sentence only.</p>
+      </article>
+
+      <article class="pair">
+        <div class="pair-head"><span class="pair-id">R8 · Voice turn</span><span class="kind near">Near-identical</span></div>
+        <div class="shots">
+          <figure><img src="renders-01/sb_voice-turn__holding.png" alt="Holding: release to send" loading="lazy"><figcaption>sb · holding</figcaption></figure>
+          <figure><img src="renders-01/sb_voice-turn__armed-to-cancel.png" alt="Armed to cancel: release to cancel" loading="lazy"><figcaption>sb · armed</figcaption></figure>
+        </div>
+        <span class="diff">0.33%</span>
+        <p>The circle doesn't change. Only the 12px caption above it does, and releasing does the opposite thing.</p>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ================= CONVERGED ================= -->
+  <section id="converged">
+    <div class="section-head">
+      <span class="eyebrow">Highest confidence</span>
+      <h2>Where critics agreed</h2>
+      <p>Critics working blind reached these independently. Codes point to findings below: <span class="mono">SF</span> system fidelity, <span class="mono">CO</span> coherence, <span class="mono">CR</span> craft, <span class="mono">UX</span> UX judgment, <span class="mono">A11Y</span> accessibility, <span class="mono">ST</span> structure.</p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Defect</th><th>Raised by</th><th>Render pass</th></tr></thead>
+        <tbody>
+          <tr><td>Partial and fail render the same (title hard-coded to “Not quite…”, <code>RecallSession.tsx:230</code>)</td><td><span class="count">3</span> SF 2 · CO 6 · UX 1 + gate</td><td>R6</td></tr>
+          <tr><td>Empty/garbled shown as <code>statusNotice</code> in stories but as the unsure <code>bottomSheet</code> in the app</td><td><span class="count">4</span> SF 3 · CO 5 · ST 4 · UX 6</td><td>R3</td></tr>
+          <tr><td>Timeout notices fire at 2s, lose the processing look, and never escalate; <code>TIMEOUT_*_MS</code> never imported</td><td><span class="count">2</span> CR 3 · UX 3</td><td>R2, R4</td></tr>
+          <tr><td>Tap mode can't be reached: <code>setTapMode</code> never called, primer toggle removed</td><td><span class="count">3</span> CO 8 · ST 5 · A11Y 1</td><td>none</td></tr>
+          <tr><td>“Try again” is full-width with a lip on the sheet, but a hugging <code>Button</code> on the overlay</td><td><span class="count">2</span> CO 1 · CR 4</td><td>none</td></tr>
+          <tr><td>Progress bar changes length when Skip drops as a sheet rises</td><td><span class="count">2</span> CO 4 · CR 6</td><td>none</td></tr>
+          <tr><td>Stale geometry comments (200px box / 320px halo, missing <code>.hint</code>, primer alignment)</td><td><span class="count">3</span> SF 8 · CO 7 · CR 9</td><td>none</td></tr>
+          <tr><td>Armed-to-cancel differs from holding only by a 12px caption</td><td><span class="count">2</span> UX 4 · A11Y 4</td><td>R8</td></tr>
+          <tr><td>“Hint 2” story renders the label “Hint”</td><td><span class="count">1</span> CO 8</td><td>R5</td></tr>
+          <tr><td>Hint XP cost never shown to the student</td><td><span class="count">1</span> UX 5 · also ambition</td><td>none</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ================= FINDINGS ================= -->
+  <section id="findings">
+    <div class="section-head">
+      <span class="eyebrow">Ranked worst first, as each critic reported them</span>
+      <h2>All findings</h2>
+    </div>
+
+    <!-- SYSTEM FIDELITY -->
+    <div class="dim" id="sf">
+      <div class="dim-head"><h3>System fidelity</h3><span class="score-chip">5 / 10</span><span class="by">critic-system · SF</span></div>
+      <p class="verified"><b>Verified via</b> <code>npm run check:tokens</code> (exit 0); grep for fallbacks, primitives and raw px; <code>docs-show</code> on every prop passed. Token binding is clean. The score comes down because components are used against their own documented contracts.</p>
+      <ol class="findings">
+        <li><div class="f-body">
+          <p class="f-title">The result sheet uses <code>bottomSheet</code> for the recall verdict, which is explicitly forbidden.</p>
+          <p class="f-line"><span class="k">Evidence</span><span><code>design-system.md:69</code> (“DON'T: use it for the voice-recall verdict”) and <code>BottomSheet.tsx:112-113</code>. <code>RecallSession.tsx:214-239</code> sends every verdict through <code>ResultSheet</code>. <code>verdictHeader</code> is unused, and <code>app/_screens/result/Result.tsx</code> is imported nowhere.</span></p>
+          <p class="f-line fix"><span class="k">Fix</span><span>Make docs and code agree: compose from <code>verdictHeader</code>, or remove the DON'T and document the mapping as a decision.</span></p>
+        </div></li>
+        <li><div class="f-body">
+          <p class="f-title">Partial and fail collapse into <code>incorrect</code> with the same title.</p>
+          <p class="f-line"><span class="k">Evidence</span><span><code>RecallSession.tsx:226-231</code>; <code>app_q3_partial</code> vs <code>app_q3_fail</code>. <code>design-system.md:93</code> says they “differ only in copy”, but the heading copy is identical too.</span></p>
+          <p class="f-line fix"><span class="k">Fix</span><span>Different titles for partial and fail, or <code>verdictHeader</code> with <code>partial</code>/<code>fail</code>.</span></p>
+          <div class="tags"><span class="tag gate-tag">Gate failure</span><span class="tag">CO 6</span><span class="tag">UX 1</span></div>
+        </div></li>
+        <li><div class="f-body">
+          <p class="f-title">Empty and garbled go to the <code>unsure</code> sheet instead of <code>statusNotice</code>.</p>
+          <p class="f-line"><span class="k">Evidence</span><span><code>design-system.md:91</code> scopes <code>statusNotice</code> to “nothing heard, heard badly, slow, offline”. <code>RecallSession.tsx:206-247</code> reroutes them. <code>VoiceTurn.stories.tsx:233-247</code> still shows the notice.</span></p>
+          <p class="f-line fix"><span class="k">Fix</span><span>Restore <code>statusNotice</code>, or narrow the doc and delete those stories.</span></p>
+        </div></li>
+        <li><div class="f-body">
+          <p class="f-title">Undocumented props are passed to library components.</p>
+          <p class="f-line"><span class="k">Evidence</span><span><code>className</code> on <code>Button</code> (<code>VoiceTurn.tsx:187</code>), used to recolour Tertiary (<code>VoiceTurn.module.css:127-129</code>). <code>className</code> on <code>MascotSlot</code> (<code>Primer.tsx:75</code>) and <code>KnowieSays</code> (<code>VoiceTurn.tsx:197</code>). <code>aria-label</code> on <code>Chips</code> (<code>HintChips.tsx:47</code>).</span></p>
+          <p class="f-line fix"><span class="k">Fix</span><span>Wrap in screen-owned elements, or document a quiet Tertiary option.</span></p>
+        </div></li>
+        <li><div class="f-body">
+          <p class="f-title">Mascot expressions disagree across spec, code and docs.</p>
+          <p class="f-line"><span class="k">Evidence</span><span><code>SPEC.md:274</code>: <code>approving</code> on pass, <code>standby</code> on misses, <code>thinking</code> on reveal. Code: <code>giggling</code> (<code>RecallSession.tsx:220</code>), <code>confused</code> (<code>BottomSheet.tsx:24</code>), <code>standby</code> (<code>:30</code>). Docs: <code>excited</code> (<code>design-system.md:71</code>).</span></p>
+          <p class="f-line fix"><span class="k">Fix</span><span>Align all three sources.</span></p>
+        </div></li>
+        <li><div class="f-body">
+          <p class="f-title">Hint chips add hue-named variants to known token debt.</p>
+          <p class="f-line"><span class="k">Evidence</span><span><code>design-system.md:110</code> calls <code>accent/blue</code> and <code>accent/magenta</code> debt; <code>design-system.md:95</code> and <code>HintChips.tsx:9</code> add <code>magenta</code>/<code>blue</code> chip variants.</span></p>
+          <p class="f-line fix"><span class="k">Fix</span><span>Name them for meaning (<code>hintTier1</code>/<code>hintTier2</code>), or use Primary <code>active</code>.</span></p>
+        </div></li>
+        <li><div class="f-body">
+          <p class="f-title">A promotion that has already triggered was never done.</p>
+          <p class="f-line"><span class="k">Evidence</span><span><code>component-gaps.md:31</code>: “Promotion rule has fired, not yet promoted”. <code>Primer.module.css:29-36</code> <code>.line</code> is one of three inline copies.</span></p>
+          <p class="f-line fix"><span class="k">Fix</span><span>Promote it and replace the copies.</span></p>
+        </div></li>
+        <li><div class="f-body">
+          <p class="f-title">Sizing disclosures are stale.</p>
+          <p class="f-line"><span class="k">Evidence</span><span><code>VoiceTurn.module.css:26-30</code> and <code>VoiceTurn.tsx:155-158</code> assume a 320px halo on a 200px box; the real box is 160px with a 224px halo (<code>VoiceCircle.module.css:10-11, 45-55</code>). <code>component-gaps.md:22</code> repeats it. <code>VoiceTurn.module.css:51-54</code> refers to a missing <code>.hint</code>.</span></p>
+          <p class="f-line fix"><span class="k">Fix</span><span>Re-derive the gap (nearest step <code>Space/800</code>) or re-justify 64px, and correct the comments.</span></p>
+          <div class="tags"><span class="tag">CO 7</span><span class="tag">CR 9</span></div>
+        </div></li>
+        <li><div class="f-body">
+          <p class="f-title">Two literals have no disclosure.</p>
+          <p class="f-line"><span class="k">Evidence</span><span><code>VoiceTurn.module.css:150</code> <code>opacity: 0</code>; <code>ResultSheet.module.css:14</code> <code>z-index: 1</code>.</span></p>
+          <p class="f-line fix"><span class="k">Fix</span><span>Add one-line disclosure comments.</span></p>
+        </div></li>
+        <li><div class="f-body">
+          <p class="f-title">Spotlight's documented label style doesn't match its use.</p>
+          <p class="f-line"><span class="k">Evidence</span><span><code>design-system.md:89</code> says Caption M Bold; <code>HintOverlay.tsx:77</code> uses <code>labelSize="L"</code> (Headline S).</span></p>
+          <p class="f-line fix"><span class="k">Fix</span><span>Document <code>labelSize</code>.</span></p>
+        </div></li>
+      </ol>
+    </div>
+
+    <!-- COHERENCE -->
+    <div class="dim" id="co">
+      <div class="dim-head"><h3>Coherence</h3><span class="score-chip">5 / 10</span><span class="by">critic-system · CO</span></div>
+      <p class="verified"><b>Verified via</b> in-app render sequences walked side by side (<code>app_primer</code> → <code>app_q1_*</code>, then the hint ladder through <code>app_q3h2_reveal</code>) and <code>stories-preview</code>. Idle, recording and processing are consistent; the seams start at the verdict.</p>
+      <ol class="findings">
+        <li><div class="f-body">
+          <p class="f-title">“Try again” looks different one tap apart.</p>
+          <p class="f-line"><span class="k">Evidence</span><span>Full width with a lip on the sheet (<code>BottomSheet.module.css:141-164</code>, <code>app_q3_partial</code>); a hugging library <code>Button</code> L on the overlay (<code>HintOverlay.tsx:63</code>, <code>app_q2_hint1_overlay</code>). The primer CTA matches the overlay.</span></p>
+          <p class="f-line fix"><span class="k">Fix</span><span>One primary-action treatment across the loop.</span></p>
+          <div class="tags"><span class="tag">CR 4</span></div>
+        </div></li>
+        <li><div class="f-body">
+          <p class="f-title">Hint 1 has two colours.</p>
+          <p class="f-line"><span class="k">Evidence</span><span>The chip is magenta (<code>app_q3h1_idle_chip</code>, <code>HintChips.tsx:9</code>); the overlay label is brand violet for both tiers (<code>app_q2_hint1_overlay</code>, <code>Spotlight.module.css:43-45</code>), despite the comment at <code>HintOverlay.tsx:67-69</code>.</span></p>
+          <p class="f-line fix"><span class="k">Fix</span><span>One tier treatment on both surfaces.</span></p>
+        </div></li>
+        <li><div class="f-body">
+          <p class="f-title">The hint overlay drops the loop's scaffold.</p>
+          <p class="f-line"><span class="k">Evidence</span><span><code>app_q2_hint1_overlay</code> has no progress, Skip or Knowie. The ladder runs sheet → full-screen replacement → turn with chips.</span></p>
+          <p class="f-line fix"><span class="k">Fix</span><span>Keep <code>AppBar</code> <code>leftAndRightButton</code> with <code>ProgressIndicator</code> on the overlay (<code>HintOverlay.tsx:55-60</code>).</span></p>
+        </div></li>
+        <li><div class="f-body">
+          <p class="f-title">The header reflows when a sheet rises.</p>
+          <p class="f-line"><span class="k">Evidence</span><span><code>VoiceTurn.tsx:139</code> switches to <code>leftIconButtonOnly</code>. The track ends at x≈316 in <code>app_q1_idle</code> and x≈374 in <code>app_q1_correct</code>, <code>app_q2_unsure_empty</code>, <code>app_q3h2_reveal</code>.</span></p>
+          <p class="f-line fix"><span class="k">Fix</span><span>Keep the Skip slot's width, or disclose the jump.</span></p>
+          <div class="tags"><span class="tag">CR 6</span></div>
+        </div></li>
+        <li><div class="f-body">
+          <p class="f-title">“Couldn't judge” has two treatments, and Storybook disagrees with the app.</p>
+          <p class="f-line"><span class="k">Evidence</span><span><code>app_q3_garbled</code> (sheet) vs <code>app_q3_network</code> (inline) vs <code>sb_voice-turn__notice-garbled</code> (inline).</span></p>
+          <p class="f-line fix"><span class="k">Fix</span><span>See SF 3.</span></p>
+        </div></li>
+        <li><div class="f-body">
+          <p class="f-title">Partial and fail are visually identical.</p>
+          <p class="f-line"><span class="k">Evidence</span><span><code>app_q3_partial</code> vs <code>app_q3_fail</code>.</span></p>
+          <p class="f-line fix"><span class="k">Fix</span><span>See SF 2.</span></p>
+          <div class="tags"><span class="tag gate-tag">Gate failure</span></div>
+        </div></li>
+        <li><div class="f-body">
+          <p class="f-title">Knowie speaks in three layouts.</p>
+          <p class="f-line"><span class="k">Evidence</span><span>Primer: 3XL, centred, bare text (<code>Primer.tsx:75-83</code>). Turn: 2XL with a bubble. Sheet: 2XL, no bubble. <code>design-system.md:85</code> says <code>knowieSays</code> throughout the loop; <code>component-gaps.md:19</code> says the primer left-aligns Knowie, but <code>app_primer</code> shows him centred.</span></p>
+          <p class="f-line fix"><span class="k">Fix</span><span>Correct the ledger and document the exceptions.</span></p>
+        </div></li>
+        <li><div class="f-body">
+          <p class="f-title">Labels and wiring drift from the shipped flow.</p>
+          <p class="f-line"><span class="k">Evidence</span><span>The “Hint 2” story renders “Hint” (<code>sb_hint-overlay__second-hint</code>, default at <code>HintOverlay.tsx:42</code>). <code>VoiceTurn.tsx:52</code> says tap mode is “Set from the primer's toggle”, but the toggle was removed (<code>Primer.tsx:36-40</code>) and <code>setTapMode</code> is never called, against <code>SPEC.md:279</code>.</span></p>
+          <p class="f-line fix"><span class="k">Fix</span><span>Pass <code>label</code> in the story; restore the toggle or remove tap mode.</span></p>
+          <div class="tags"><span class="tag">ST 5</span><span class="tag">A11Y 1</span></div>
+        </div></li>
+      </ol>
+    </div>
+
+    <!-- CRAFT -->
+    <div class="dim" id="cr">
+      <div class="dim-head"><h3>Craft</h3><span class="score-chip">5 / 10</span><span class="by">critic-craft · CR</span></div>
+      <p class="verified"><b>Verified via</b> Playwright measurements on live Storybook at 390×844 (bounding boxes, computed <code>::after</code> sizes, opacity, visibility) across 11 stories, plus every render. Hit areas are correct and there is no placeholder copy. The score is low for visible layout seams, some of which break the code's own comments.</p>
+      <ol class="findings">
+        <li><div class="f-body">
+          <p class="f-title">The voice circle moves 58px during one continuous wait.</p>
+          <p class="f-line"><span class="k">Evidence</span><span>The comment at <code>VoiceTurn.tsx:176-180</code> says it must not move. Circle top: 408 processing → 426 soft timeout → 466 retry timeout (<code>sb_voice-turn__processing</code> → <code>notice-timeout-soft</code> → <code>notice-timeout-retry</code>).</span></p>
+          <p class="f-line fix"><span class="k">Fix</span><span>Fixed block-size on <code>.notice</code> (<code>VoiceTurn.module.css:70</code>), or position it absolutely.</span></p>
+        </div></li>
+        <li><div class="f-body">
+          <p class="f-title">Tap mode moves the circle 12px when a take starts.</p>
+          <p class="f-line"><span class="k">Evidence</span><span>Tertiary “Type instead” swaps for Secondary “Cancel”: circle centre 487 → 475, hint line 335 → 323 (<code>sb_voice-turn__tap-mode</code> vs <code>tap-mode-recording</code>). The reserve at <code>VoiceTurn.tsx:186-192</code> only covers the hold path.</span></p>
+          <p class="f-line fix"><span class="k">Fix</span><span>Shared min block-size for both branches, or one grid cell with visibility toggled.</span></p>
+        </div></li>
+        <li><div class="f-body">
+          <p class="f-title">In the app, soft timeout loses its processing look and never escalates.</p>
+          <p class="f-line"><span class="k">Evidence</span><span><code>useRecallSession.ts:217-225</code> sets <code>phase='notice'</code>, so the circle shows a faded idle mic and “Type instead” returns (<code>app_q3_timeoutSoft_4.8s</code>, <code>_8.8s</code>). The story shows the processing dot (<code>VoiceTurn.stories.tsx:251</code>). The notice appears at 2s, not 4s. <code>TIMEOUT_SOFT_MS</code>/<code>TIMEOUT_RETRY_MS</code> (<code>notices.ts:75-76</code>) are never imported.</span></p>
+          <p class="f-line fix"><span class="k">Fix</span><span>Stay in <code>processing</code>, with timers driving the soft and retry copy.</span></p>
+          <div class="tags"><span class="tag">UX 3</span><span class="tag">R2</span><span class="tag">R4</span></div>
+        </div></li>
+        <li><div class="f-body">
+          <p class="f-title">The same “Try again” has two treatments.</p>
+          <p class="f-line"><span class="k">Evidence</span><span>334×56 with a lip on the sheet (<code>BottomSheet.module.css:141-164</code>) vs 131×56 hugging on the overlay (<code>app_q2_incorrect_partial</code> vs <code>app_q2_hint1_overlay</code>). The stated reason for bypassing <code>Button</code> (“no verdict colours”, <code>:130-132</code>) no longer applies (<code>:166-170</code>).</span></p>
+          <p class="f-line fix"><span class="k">Fix</span><span>One Primary L treatment.</span></p>
+        </div></li>
+        <li><div class="f-body">
+          <p class="f-title">Two side insets on one screen.</p>
+          <p class="f-line"><span class="k">Evidence</span><span>Knowie row Space/400 (<code>VoiceTurn.module.css:20</code>, bubble right edge 374); stage and notice Space/600 (<code>:39</code>, notice right edge 366). <code>sb_voice-turn__notice-empty</code>.</span></p>
+          <p class="f-line fix"><span class="k">Fix</span><span>Use one inset.</span></p>
+        </div></li>
+        <li><div class="f-body">
+          <p class="f-title">Progress fill changes length for the same value.</p>
+          <p class="f-line"><span class="k">Evidence</span><span>Skip drops on correct, unsure and reveal (<code>RecallSession.tsx:273</code>), so the bar stretches 316 → 374 and the 50% fill moves about 28px (<code>app_q3h1_incorrect_hint2</code> vs <code>app_q3_garbled</code>).</span></p>
+          <p class="f-line fix"><span class="k">Fix</span><span>Keep the right slot's width.</span></p>
+        </div></li>
+        <li><div class="f-body">
+          <p class="f-title">The result sheet's text column is 198px for 18px body copy.</p>
+          <p class="f-line"><span class="k">Evidence</span><span>Widows “go.” (<code>app_q2_unsure_empty</code>) and “more.” (<code>app_q3h1_incorrect_hint2</code>).</span></p>
+          <p class="f-line fix"><span class="k">Fix</span><span><code>text-wrap: pretty</code> at <code>BottomSheet.module.css:112</code>; consider Space/400 for the content inset (<code>:89</code>).</span></p>
+        </div></li>
+        <li><div class="f-body">
+          <p class="f-title">“Let's get started” gives no feedback while the OS prompt is up.</p>
+          <p class="f-line"><span class="k">Evidence</span><span><code>Primer.tsx:47-58</code> tracks <code>asking</code> but always renders <code>Default</code> (<code>:64-69</code>). <code>Button</code> documents <code>Loading</code>.</span></p>
+          <p class="f-line fix"><span class="k">Fix</span><span><code>state={asking ? 'Loading' : 'Default'}</code>.</span></p>
+        </div></li>
+        <li><div class="f-body">
+          <p class="f-title">Stale geometry comments.</p>
+          <p class="f-line"><span class="k">Evidence</span><span><code>VoiceTurn.module.css:26-31</code> and <code>component-gaps.md:22</code> (200/320); <code>VoiceTurn.module.css:51-54</code> (missing <code>.hint</code>); <code>Primer.module.css:5</code> says Space/400 but <code>:15</code> uses 600; <code>component-gaps.md:19</code> (left-aligned Knowie).</span></p>
+          <p class="f-line fix"><span class="k">Fix</span><span>Rewrite to match the rendered values.</span></p>
+        </div></li>
+        <li><div class="f-body">
+          <p class="f-title">Close-button focus ring is clipped at the viewport top.</p>
+          <p class="f-line"><span class="k">Evidence</span><span><code>sb_hint-overlay__close-button-dismisses</code>, <code>sb_voice-turn__locked-under-sheet</code>.</span></p>
+          <p class="f-line fix"><span class="k">Fix</span><span>Space/100 block-start padding on <code>Screen</code> <code>.top</code>, or a negative <code>outline-offset</code>.</span></p>
+        </div></li>
+      </ol>
+    </div>
+
+    <!-- UX -->
+    <div class="dim" id="ux">
+      <div class="dim-head"><h3>UX judgment</h3><span class="score-chip">5 / 10</span><span class="by">critic-ux · UX</span></div>
+      <p class="verified"><b>Verified via</b> the renders plus Playwright runs against the app at 390×844 in dark mode: pixel diffs of state pairs, keyboard walk, timeouts sampled over 9.5s.</p>
+      <ol class="findings">
+        <li><div class="f-body">
+          <p class="f-title">Partial and fail look the same, and the transcript is gone.</p>
+          <p class="f-line"><span class="k">Evidence</span><span>Hard-coded <code>'Not quite…'</code> (<code>RecallSession.tsx:230</code>); script headlines like “Close, you named complexity.” go unused. The diff covers only rows 575–637, and both summaries mean the same thing. Transcript dropped (<code>ResultSheet.stories.tsx:64</code>), breaking principle 4 and <code>SPEC.md:218</code>: a fail can no longer read as “it misheard me”.</span></p>
+          <p class="f-line fix"><span class="k">Fix</span><span><code>title: session.feedback.headline</code>; show the transcript, and log the missing <code>bottomSheet</code> slot in <code>component-gaps.md</code>.</span></p>
+          <div class="tags"><span class="tag gate-tag">Gate failure</span><span class="tag">SF 2</span><span class="tag">R6</span></div>
+        </div></li>
+        <li><div class="f-body">
+          <p class="f-title">The primer doesn't explain the mic and has no way out.</p>
+          <p class="f-line"><span class="k">Evidence</span><span><code>Primer.tsx:36-40, 64-71</code> removed the explanation, “I'd rather type” and the tap toggle required by <code>SPEC.md:116-127</code>. <code>app_primer</code> never mentions speaking and has no close button. Under <code>?mic=real</code> the only control fires the OS prompt (principles 3 and 5).</span></p>
+          <p class="f-line fix"><span class="k">Fix</span><span>Restore <code>ButtonGroup</code> with <code>secondaryCTA="I'd rather type"</code>, add an explanation line, and restore the toggle.</span></p>
+        </div></li>
+        <li><div class="f-body">
+          <p class="f-title">The timeout state says it's thinking but shows an idle mic, and never moves on.</p>
+          <p class="f-line"><span class="k">Evidence</span><span>Notice at 2s (<code>useRecallSession.ts:215-227</code>); processing false, so the circle fades with the idle mic (<code>VoiceTurn.tsx:232</code>, <code>VoiceTurn.module.css:109</code>). At 9.5s the name was still “Ready to record”. <code>_4.8s</code> and <code>_8.8s</code> identical, against <code>SPEC.md:173</code>. Not a trap, but a dead state.</span></p>
+          <p class="f-line fix"><span class="k">Fix</span><span>Hold <code>processing</code> and drive copy from the timeout constants.</span></p>
+        </div></li>
+        <li><div class="f-body">
+          <p class="f-title">Armed-to-cancel differs from holding by one 12px caption.</p>
+          <p class="f-line"><span class="k">Evidence</span><span><code>app_q1_holding</code> vs <code>app_q1_armed</code>: caption rows 330–341 plus waveform noise. A finger sliding up covers the caption.</span></p>
+          <p class="f-line fix"><span class="k">Fix</span><span>Change the circle while armed (e.g. <code>.unavailable</code> opacity); raise the caption to <code>text/primary</code>.</span></p>
+          <div class="tags"><span class="tag">A11Y 4</span><span class="tag">R8</span></div>
+        </div></li>
+        <li><div class="f-body">
+          <p class="f-title">Nothing says a hint costs XP.</p>
+          <p class="f-line"><span class="k">Evidence</span><span>“View hint 1/2” (<code>app_q3_partial</code>, <code>app_q3h1_incorrect_hint2</code>) and the overlay are silent, against <code>sprint-context.md:23-24</code>.</span></p>
+          <p class="f-line fix"><span class="k">Fix</span><span><code>bottomSheet</code> <code>hintLabel</code> (<code>BottomSheet.tsx:77</code>), or a line in the summary.</span></p>
+        </div></li>
+        <li><div class="f-body">
+          <p class="f-title">Stories and the session show empty/garbled differently.</p>
+          <p class="f-line"><span class="k">Evidence</span><span><code>sb_voice-turn__notice-empty</code> vs <code>app_q2_unsure_empty</code> (diff covers rows 270–843).</span></p>
+          <p class="f-line fix"><span class="k">Fix</span><span>Drop or relabel those stories.</span></p>
+        </div></li>
+        <li><div class="f-body">
+          <p class="f-title">The hint overlay hides the question.</p>
+          <p class="f-line"><span class="k">Evidence</span><span><code>app_q2_hint1_overlay</code>: “One of the two changes…” appears with its question off screen.</span></p>
+          <p class="f-line fix"><span class="k">Fix</span><span>Show the question as secondary text.</span></p>
+        </div></li>
+      </ol>
+      <p class="holds"><b>Holds up:</b> idle, recording and processing each have a distinct glyph · denied routes to text · Skip is live on the incorrect sheet · no auto-endpointing in code or copy.</p>
+    </div>
+
+    <!-- A11Y -->
+    <div class="dim" id="a11y">
+      <div class="dim-head"><h3>Accessibility</h3><span class="score-chip">6 / 10</span><span class="by">critic-ux · A11Y</span></div>
+      <p class="verified"><b>Verified via</b> computed contrast on every text node in 9 states, 44×44 hit sampling on every live control in 6 states, keyboard Tab/Enter/Escape walks, and ARIA inspection. Held below 8 by defects, not by missing verification.</p>
+      <ol class="findings">
+        <li><div class="f-body">
+          <p class="f-title">Tap mode can't be reached by touch or mouse users.</p>
+          <p class="f-line"><span class="k">Evidence</span><span><code>setTapMode</code> is never called; <code>RecallSession.tsx:329</code> only passes the value through. <code>SPEC.md:193</code> and verification step 9 can't be carried out.</span></p>
+          <p class="f-line fix"><span class="k">Fix</span><span>Wire the primer toggle.</span></p>
+        </div></li>
+        <li><div class="f-body">
+          <p class="f-title">Processing isn't announced, and keyboard focus is lost.</p>
+          <p class="f-line"><span class="k">Evidence</span><span>After a keyboard send the circle becomes <code>disabled</code> (<code>VoiceTurn.tsx:236</code>) and focus falls to <code>&lt;body&gt;</code>. There is no live region, and the name stays “Hold to record your answer” (<code>:241</code>).</span></p>
+          <p class="f-line fix"><span class="k">Fix</span><span><code>aria-disabled</code> plus a polite live region when processing starts.</span></p>
+        </div></li>
+        <li><div class="f-body">
+          <p class="f-title">Closing the hint overlay drops focus.</p>
+          <p class="f-line"><span class="k">Evidence</span><span>After Escape, focus is on <code>&lt;body&gt;</code> (<code>RecallSession.tsx:284</code>).</span></p>
+          <p class="f-line fix"><span class="k">Fix</span><span>Return focus to the opener.</span></p>
+        </div></li>
+        <li><div class="f-body">
+          <p class="f-title">The armed state depends on a 12px caption at 4.65:1 that a finger can cover.</p>
+          <p class="f-line"><span class="k">Evidence</span><span><code>VoiceTurn.module.css:56</code>.</span></p>
+          <p class="f-line fix"><span class="k">Fix</span><span>See UX 4.</span></p>
+        </div></li>
+        <li><div class="f-body">
+          <p class="f-title">The result sheet announces only its title.</p>
+          <p class="f-line"><span class="k">Evidence</span><span><code>ResultSheet.tsx</code> uses <code>aria-label={props.title}</code> with no <code>aria-describedby</code>.</span></p>
+          <p class="f-line fix"><span class="k">Fix</span><span>Point <code>aria-describedby</code> at the summary.</span></p>
+        </div></li>
+      </ol>
+      <p class="holds"><b>Holds up:</b> <code>lockBody</code> inert keeps Tab out of the locked turn · focus moves into the sheet · keyboard Enter/Enter records without a hold · <code>statusNotice</code> has <code>role=status</code> · chips carry text as well as colour.</p>
+    </div>
+
+    <!-- STRUCTURE -->
+    <div class="dim" id="st">
+      <div class="dim-head"><h3>Structure</h3><span class="score-chip">6 / 10</span><span class="by">critic-craft · ST</span></div>
+      <p class="verified"><b>Verified via</b> Storybook <code>test-run</code> on all 31 stories (all pass); every render read at 390×844 with no overflow or clipping; <code>screens-result-sheet--incorrect</code> rendered with real-length copy and <code>scrollHeight</code> measured.</p>
+      <ol class="findings">
+        <li><div class="f-body">
+          <p class="f-title">The fixed-height result sheet clips at real content lengths.</p>
+          <p class="f-line"><span class="k">Evidence</span><span>A two-line title with a three-line summary needs 200px in a 196px space, and <code>overflow: hidden</code> (<code>BottomSheet.module.css:87</code>) hides the rest. The session avoids this only by hard-coding “Not quite…” (<code>RecallSession.tsx:230</code>) and discarding script headlines (<code>script.ts:179</code>).</span></p>
+          <p class="f-line fix"><span class="k">Fix</span><span>Shrink the mascot or scroll above the pinned actions, or cap titles at one line in the copy spec.</span></p>
+        </div></li>
+        <li><div class="f-body">
+          <p class="f-title">Layout is held together by one-off patches rather than the scaffold.</p>
+          <p class="f-line"><span class="k">Evidence</span><span>The overlay needs <code>position:absolute; inset:0</code> (<code>HintOverlay.module.css:11-24</code>). The action row is reserved with <code>visibility:hidden</code> (<code>VoiceTurn.tsx:174-192</code>), which fails in tap mode. The sheet is positioned outside <code>Screen</code> (<code>RecallSession.tsx:344-347</code>).</span></p>
+          <p class="f-line fix"><span class="k">Fix</span><span>A stable bottom-slot contract and an overlay region on <code>Screen</code>.</span></p>
+        </div></li>
+        <li><div class="f-body">
+          <p class="f-title">The documented hint layer was replaced.</p>
+          <p class="f-line"><span class="k">Evidence</span><span>The scaffold names <code>hintCard</code>; the build uses a full-screen <code>Spotlight</code> plus chips (<code>HintOverlay.tsx:29-39</code>), and <code>hintCard</code> is unused.</span></p>
+          <p class="f-line fix"><span class="k">Fix</span><span>Update the Scaffold section, or restore <code>hintCard</code>.</span></p>
+        </div></li>
+        <li><div class="f-body">
+          <p class="f-title">Stories show states the session never produces.</p>
+          <p class="f-line"><span class="k">Evidence</span><span><code>notice-empty</code>/<code>notice-garbled</code> vs <code>RecallSession.tsx:206-210, 240-247</code>. Timeout stories pass <code>processing: true</code> (<code>VoiceTurn.stories.tsx:251, 257</code>).</span></p>
+          <p class="f-line fix"><span class="k">Fix</span><span>Make the stories match the session, or delete the unreachable variants.</span></p>
+        </div></li>
+        <li><div class="f-body">
+          <p class="f-title">Tap-mode wiring is dead.</p>
+          <p class="f-line"><span class="k">Evidence</span><span><code>setTapMode</code> is exported (<code>useRecallSession.ts:370</code>) and never called; the doc at <code>VoiceTurn.tsx:52</code> is stale; the Cancel branch (<code>:161-172</code>) can't be reached.</span></p>
+          <p class="f-line fix"><span class="k">Fix</span><span>Wire it, or remove it.</span></p>
+        </div></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ================= BLIND SPOTS ================= -->
+  <section id="blind">
+    <div class="section-head">
+      <span class="eyebrow">What each reviewer couldn't see</span>
+      <h2>Blind spots</h2>
+    </div>
+    <div class="spots">
+      <div class="spot"><span class="who">critic-system</span><p>Couldn't check the compositions against the Figma frames: 06/07 parity and <code>bottomSheet</code>'s real variant set are known only from <code>design-system.md</code>. Didn't walk the ladder's end state (the Reveal page) side by side.</p></div>
+      <div class="spot"><span class="who">critic-craft</span><p>No real notched iPhone: safe-area insets and the iOS touch path were simulated. The 280ms sheet rise and 180ms stage fade weren't checked frame by frame.</p></div>
+      <div class="spot"><span class="who">critic-ux</span><p>No real iOS VoiceOver, where a double-tap may not produce the <code>detail === 0</code> click the keyboard fallback relies on. Couldn't test a finger covering the armed caption, OS reduced motion, or the text turn.</p></div>
+      <div class="spot"><span class="who">Render pass</span><p>Captured at 1× and at fixed times, so animation mid-states were sampled, not compared frame by frame. The primer's pending-prompt state wasn't captured because the mock resolves instantly.</p></div>
+    </div>
+  </section>
+
+  <!-- ================= AMBITION ================= -->
+  <section id="ambition" class="ambition">
+    <div class="amb-top">
+      <div style="display:grid; gap: var(--s-2);">
+        <span class="not-counted">Informational · not counted in the 5.2 total</span>
+        <h2>Ambition</h2>
+        <span class="by mono muted" style="font-size:0.8rem">critic-ambition</span>
+      </div>
+      <div class="amb-score">6<small> / 10</small></div>
+    </div>
+
+    <p class="verified"><b>Verified via</b> the renders; <code>docs-show</code> for StatTile, Spotlight (including “With a footnote”), KnowieSays, MascotSlot, BottomSheet, HintChips, VoiceCircle and Summary; <code>stories-preview</code> URLs. The proposals themselves were not rendered.</p>
+
+    <div class="amb-grid">
+      <div style="display:grid; gap: var(--s-3); align-content:start;">
+        <span class="eyebrow">Why 6, not 5</span>
+        <ul class="amb-list">
+          <li>Spent hints hang off Knowie's line as reopenable <code>HintChips</code> (<code>VoiceTurn.tsx:197-200</code>).</li>
+          <li>The result sheet rises over a turn that stays visible, with expression varying by result (<code>BottomSheet.tsx:22-31</code>).</li>
+          <li><b>Why not higher:</b> the hint-for-XP trade <code>sprint-context.md</code> says the student should see appears nowhere on these four screens.</li>
+        </ul>
+        <span class="eyebrow" style="margin-top: var(--s-3)">What the work is settling for</span>
+        <ul class="amb-list">
+          <li><b>Hint overlay:</b> <code>Spotlight</code>'s documented <code>footnote</code> is left empty, though its own story uses it for XP copy (<code>HintOverlay.tsx:73-80</code>).</li>
+          <li><b>Incorrect sheet:</b> default “View hint 1/2” label; the 10 → 6 → 3 XP cut (<code>useRecallSession.ts:34-36</code>) is never stated.</li>
+          <li><b>Correct sheet:</b> no per-question XP; it first appears as a session total on Summary (<code>Summary.tsx:78</code>).</li>
+          <li><b>Voice turn:</b> Knowie stays on <code>standby</code> through idle, holding and processing (<code>VoiceTurn.tsx:197</code>).</li>
+          <li><b>Primer:</b> nothing previews the interaction; recorded as the designer's call, so noted, not proposed.</li>
+        </ul>
+      </div>
+
+      <div class="proposals">
+        <span class="eyebrow">Proposals, strongest first</span>
+        <div class="proposal">
+          <h3>1 · Show the hint trade at both ends of the tap</h3>
+          <p>Before: <code>BottomSheet</code> <code>hintLabel</code>, e.g. “View hint 1 (−4 XP)”. After: <code>Spotlight</code> <code>footnote</code>, e.g. “This question is now worth 6 XP”. Two strings on two documented props.</p>
+        </div>
+        <div class="proposal">
+          <h3>2 · Show what a correct answer earned</h3>
+          <p>A <code>StatTile</code> (<code>stat="xp"</code>, <code>label="This question"</code>, <code>value="+6"</code>) in the ~270px the faded stage leaves empty, directly under the <code>HintChips</code> that caused any reduction. <code>design-system.md:47</code> names this use.</p>
+        </div>
+        <div class="proposal">
+          <h3>3 · Let Knowie be the one thinking</h3>
+          <p><code>KnowieSays</code> <code>expression="thinking"</code> only while <code>processing</code>, alongside <code>VoiceCircle</code> <code>mode="processing"</code>.</p>
+        </div>
+        <p class="verified"><b>Blind spot:</b> none were rendered. #2 may crowd the chips or sheet edge at real copy lengths. #3 reuses <code>thinking</code>, which the unsure sheet already wears, and could blur processing and “I missed that”.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Source of record: <span class="mono">eval/scorecard-01.md</span> · Screenshots: <span class="mono">eval/renders-01/</span> (see <span class="mono">INDEX.md</span>) · Nothing was fixed in this review.
+  </footer>
+</div>

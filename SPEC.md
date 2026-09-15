@@ -23,12 +23,13 @@ None of these exist yet. They must be built before any screen below.
   `scaffold` is not in design-system.md either — it is undocumented *and* unbuilt. Nothing
   currently pins an app bar to the top and an action row to the bottom of a 390px frame.
 - `app/_components/textBlock/TextBlock.tsx` — body copy. Documented in design-system.md,
-  never built. Reveal needs it for the answer, Result for the transcript and the feedback,
-  the primer for its explanation. Figma 06/07/08 use raw TEXT nodes, so there is no
-  precedent to copy either.
+  never built. Reveal needs it for the answer, the primer for its explanation. Figma
+  06/07/08 use raw TEXT nodes, so there is no precedent to copy either.
 - `app/_components/verdictHeader/VerdictHeader.tsx` — the icon-plus-word pairing Figma 06
   draws with a bare Icon Slot. `iconSlot` has no standalone component, and design-system.md
-  says a bare one placed on a screen "is a sign you're missing a component".
+  says a bare one placed on a screen "is a sign you're missing a component". Built, but
+  **no longer used in the app**: it opened the full-page Result screen, which was removed
+  when the result sheet became the verdict design (see screen 2).
 - Fix `app/globals.css`. It is still the create-next-app scaffold — `--background: #ffffff`,
   `--foreground: #171717`, and a `prefers-color-scheme` block. This prototype is dark-only,
   so components render correctly in Storybook and on a white page under `next dev`. Those
@@ -60,7 +61,7 @@ Then, easiest first:
 | # | Screen / state | Why it's here |
 |---|---|---|
 | 1 | Reveal | Static panel, one action |
-| 2 | Result: fail | Copy variant of the partial panel already drawn on Figma 07 |
+| 2 | Result sheet: pass, partial, fail | `bottomSheet` over the turn; partial and fail differ by title |
 | 3 | Entry + mic primer | Extends Figma 02; triggers the real permission prompt |
 | 4 | Permission denied → text | Static panel that routes into the text path |
 | 5 | Skip | No new component — `AppBar`'s `rightCTA`, wired to advance |
@@ -88,27 +89,35 @@ overflow button, which this screen has no use for.
 **Student can:** read the answer, tap "next question". Scores zero XP.
 Reached only by exhausting the ladder — never by skipping.
 
-### 2. Result: fail
+### 2. Result sheet — pass, partial, fail
 
-**States:** two — fail, and partial (already drawn, same structure, different copy).
+**Decided 2026-09-15:** the verdict is a sheet that rises over the turn, not a separate
+screen. The question stays in view behind it. The full-page Result screen this section used
+to specify (`VerdictHeader` + `TextBlock` ×2 + `ButtonGroup`) was removed.
 
-**Components:** the same recall header, `VerdictHeader`, `TextBlock` ×2 (what was heard,
-then the feedback), `ButtonGroup` (`variant="Vertical"`, `size="L"`,
-`primaryCTA="Try again"`, `secondaryCTA="View hint"`).
+**States:** three verdicts on two `bottomSheet` results.
 
-`CalloutBubble` is **not** used for the transcript. It is Knowie's speech bubble — a tail
-plus a bubble, its prop documented as "the copy Knowie is 'saying'" — so putting the
-student's words in it makes Knowie say them, on the one screen whose whole job is showing
-what we heard *the student* say.
+| Verdict | `result` | Title | Summary | Actions |
+|---|---|---|---|---|
+| Pass | `correct` | The feedback headline | The feedback detail | "Next question", or "View results" on the last question |
+| Partial | `incorrect` | "Almost…" | The feedback detail | "Try again" · "View hint 1" or "View hint 2" |
+| Fail | `incorrect` | "Not quite…" | The feedback detail | "Try again" · "View hint 1" or "View hint 2" |
 
-Both verdicts sit on the neutral surface. `feedback/success/subtle` is used only behind a
-**pass** — no error or warning panel is ever painted behind a miss, so the distinction stays
-in copy exactly as decided, while the one feedback token that can only feel good gets used.
-Knowie stays on `standby` here; expression is reserved for the pass state.
+**Components:** `ResultSheet` (`app/_screens/resultSheet/`) wrapping `bottomSheet`, over the
+voice or text turn with its body locked and its header live. The miss titles live in
+`MISS_TITLE` in `script.ts`.
 
-**Student can:** read what was heard and the feedback, then "try again" or "view hint".
-Partial acknowledges what was right; fail stays encouraging without inventing credit.
-Same components, same layout — the distinction is copy only.
+A pass sits on `feedback/success/subtle`; both misses sit on the neutral surface — no error or
+warning panel is ever painted behind a miss. Partial and fail share one layout, and **the
+title is what tells them apart**: partial acknowledges they were close, fail stays
+encouraging without inventing credit. Titles stay short, because the sheet has a fixed
+height and never scrolls.
+
+The header keeps skip on a miss (the escape from being funnelled into "try again" or "view
+hint") and drops it on a pass (the question is answered).
+
+**Student can:** read the verdict and the nudge, then "try again", "view hint" or skip on a
+miss, or move on after a pass.
 
 ### 3. Entry + mic primer
 
@@ -215,11 +224,11 @@ elapsed with processing and hint-reading paused out.
   retry), then partial, then passes after hint 1 · **Q3** rides the full ladder to reveal ·
   **Q4** passes. Every state appears once, difficulty peaks in the middle, and the session
   ends on a win.
-- **Every verdict ships a canned transcript**, shown on all result states. The **partial**
-  transcript is coherent but incomplete — the student got part of it. The **fail** transcript
-  shows visible speech-to-text mangling. That split is deliberate: it separates "you were
-  close" from "we didn't hear you properly", which is the distinction that stops a miss
-  reading as "I failed".
+- **Every verdict ships a canned transcript.** The **partial** transcript is coherent but
+  incomplete — the student got part of it. The **fail** transcript shows visible
+  speech-to-text mangling. That split is deliberate: it separates "you were close" from "we
+  didn't hear you properly", which is the distinction that stops a miss reading as "I
+  failed". **Not currently shown** — the result sheet has nowhere to put it (see Open).
 - **Processing is a fixed ~2s delay.** Long enough to evaluate the state, short enough to
   click through.
 - **The dev control is a query param only** — `?verdict=fail` and so on. No in-screen
@@ -254,8 +263,14 @@ entry after the last quiz is not modelled — node tap only.
 
 ## Open
 
-Nothing outstanding. All eleven questions from the first draft are settled and folded into the
-sections above.
+All eleven questions from the first draft are settled and folded into the sections above.
+Two came back open when the result sheet replaced the Result screen (2026-09-15):
+
+- **The transcript isn't shown.** The Voice UX Reference's fourth principle leans on "what we
+  heard" so a miss reads as "it misheard me". `bottomSheet` has no slot for it. Bringing it
+  back means changing the component.
+- **Knowie's expression on a miss.** Resolved item 4 says `standby` on partial and fail; the
+  sheet shows `bottomSheet`'s default, `confused`. Either the item or the sheet should change.
 
 One thing remains to be *produced* rather than decided: the copy itself — four question
 prompts for the Network Foundations section, each with an answer, two hints and three
@@ -283,7 +298,8 @@ written, `script.ts` is the only thing blocking screens 1 and 2.
 10. **Skip** — lives in `AppBar`'s `rightCTA`, as the library already ships it. Not under
     the circle.
 11. **Partial vs fail** — copy-only distinction stands, but `feedback/success/subtle` is
-    used behind a pass. No error or warning panel behind a miss.
+    used behind a pass. No error or warning panel behind a miss. On the result sheet the
+    copy that differs is the title: "Almost…" / "Not quite…".
 
 </details>
 
@@ -313,7 +329,7 @@ End to end, in order:
 8. **Explicit send only:** hold for 10 seconds in silence and confirm nothing submits until
    release. No auto-endpointing anywhere.
 9. **Accessibility:** with tap mode on, complete a full turn without a sustained hold.
-10. `prefers-reduced-motion: reduce` — the circle morph and result cross-fade degrade cleanly.
+10. `prefers-reduced-motion: reduce` — the circle morph and the result sheet's slide degrade cleanly.
 11. `npm run build` — confirm no prerender error from `useSearchParams` sitting outside a
     `<Suspense>` boundary.
 12. Load the app under both light and dark OS settings and confirm the page renders on

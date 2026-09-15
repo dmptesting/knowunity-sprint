@@ -189,3 +189,74 @@ export const RecallHeader: Story = {
     await expect(canvas.getByRole('button', { name: 'Skip' })).toBeVisible();
   },
 };
+
+/**
+ * `rightCTAHidden` keeps skip's box in the header instead of removing it, for
+ * a screen where the same header sometimes offers skip and sometimes doesn't
+ * (a correct result sheet drops it; the next question brings it back).
+ * Removing the button by switching to `leftIconButtonOnly` instead would let
+ * the Slot's `flex: 1` grow into the freed space — the two bars below would
+ * render at different widths for the same 25% progress, which is exactly the
+ * "the bar shifted" bug this prop fixes.
+ */
+export const RecallHeaderSkipReserved: Story = {
+  name: 'Real usage — skip hidden keeps the header steady',
+  render: () => (
+    <div>
+      <AppBar
+        aria-label="Skip on offer"
+        variant="leftAndRightButton"
+        leftIcon={<CloseIcon />}
+        leftLabel="Close"
+        rightCTA="Skip"
+        onLeftClick={fn()}
+        onRightCTAClick={fn()}
+      >
+        <ProgressIndicator
+          variant="Primary"
+          thickness="16"
+          progress="25"
+          aria-label="Recall progress, skip on offer"
+        />
+      </AppBar>
+      {/* role="presentation": a comparison fixture, not a second real header —
+          no screen in the app ever mounts two appBars at once, and two real
+          `banner` landmarks on one page is its own, unrelated a11y violation. */}
+      <AppBar
+        role="presentation"
+        variant="leftAndRightButton"
+        leftIcon={<CloseIcon />}
+        leftLabel="Close"
+        rightCTA="Skip"
+        rightCTAHidden
+        onLeftClick={fn()}
+        onRightCTAClick={fn()}
+      >
+        <ProgressIndicator
+          variant="Primary"
+          thickness="16"
+          progress="25"
+          aria-label="Recall progress, skip hidden"
+        />
+      </AppBar>
+    </div>
+  ),
+  play: async ({ canvas }) => {
+    // Skip reachable when offered; present but inert — not painted, not
+    // tabbable, not announced (visibility:hidden empties its accessible
+    // name, so it drops out of a name-filtered role query entirely) —
+    // when it isn't. `getByText` matches on raw text content regardless
+    // of visibility, so it still finds both.
+    const skipButtons = canvas.getAllByText('Skip');
+    await expect(skipButtons).toHaveLength(2);
+    await expect(skipButtons[0]).toBeVisible();
+    await expect(skipButtons[1]).not.toBeVisible();
+
+    // Same 25% progress, same pixel width either way — the bar does not
+    // shift when skip disappears and does not shift back when it returns.
+    const [offered, hidden] = canvas.getAllByRole('progressbar');
+    await expect(offered.getBoundingClientRect().width).toBe(
+      hidden.getBoundingClientRect().width,
+    );
+  },
+};

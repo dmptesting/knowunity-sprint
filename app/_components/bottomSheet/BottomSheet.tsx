@@ -105,12 +105,14 @@ export type BottomSheetProps = {
  * hints spent, still missed — gets one button, "Reveal answer": the only way on
  * is forward.
  *
- * USE: correct or incorrect feedback on a checked answer; `unsure` when a
- * voice recording came through too distorted to judge; `reveal` when the hint
- * ladder is spent and the answer has to be shown.
+ * USE: the voice-recall verdict — `correct` for a pass, `incorrect` for a
+ * partial or a fail, told apart by the title; `unsure` when a voice recording
+ * came through too distorted to judge; `reveal` when the hint ladder is spent
+ * and the answer has to be shown.
  *
- * DON'T: use it for the voice-recall verdict — recall is judged
- * pass/partial/fail, and SPEC.md forbids an error treatment behind a miss.
+ * DON'T: paint anything red or warning-coloured on `incorrect` — SPEC.md
+ * forbids an error treatment behind a miss — and don't collapse partial and
+ * fail into one title; sprint-context.md keeps the three-way judgment.
  */
 export function BottomSheet({
   result = 'correct',

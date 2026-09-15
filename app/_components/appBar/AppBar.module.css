@@ -124,6 +124,15 @@
   white-space: nowrap;
 }
 
+/* Holds the rightCTA's box in the header while it isn't offered — see
+   `rightCTAHidden` in AppBar.tsx. Same idiom as VoiceTurn's "reserved"
+   type-instead button: visibility:hidden keeps the layout width (and takes
+   the button out of the tab order and the accessibility tree) instead of
+   collapsing the space a removed element would free up. */
+.rightCTAReserved {
+  visibility: hidden;
+}
+
 /* Figma wraps two trailing actions in their own frame, gap Space/0, with
    Space/100 of end padding in the icon + text pairing. */
 .rightGroup {

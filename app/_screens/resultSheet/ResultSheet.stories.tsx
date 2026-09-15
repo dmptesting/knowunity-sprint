@@ -3,7 +3,7 @@ import { expect, fn, userEvent } from 'storybook/test';
 
 import { ResultSheet, type ResultSheetProps } from './ResultSheet';
 import { VoiceTurn } from '../voiceTurn/VoiceTurn';
-import { RECALL_SCRIPT, REVEAL_LINE } from '../../_recall/script';
+import { MISS_TITLE, RECALL_SCRIPT, REVEAL_LINE } from '../../_recall/script';
 import { NOTICES } from '../../_recall/notices';
 
 const Q1 = RECALL_SCRIPT[0];
@@ -55,13 +55,17 @@ const meta = {
           '### Copy and expression, as the session sets them',
           '',
           '- **Correct:** the feedback headline and detail, Knowie `giggling`.',
-          '- **Incorrect:** always "Not quite…", with the feedback detail as the summary. Knowie wears the component\'s default, `confused`.',
+          '- **Incorrect:** partial and fail share this sheet and are told apart by the title — "Almost…" on a partial, "Not quite…" on a fail (`MISS_TITLE` in `script.ts`) — with the feedback detail as the summary. Knowie wears the component\'s default, `confused`.',
           '- **Unsure:** "Hmm, I missed that", with the empty or garbled notice\'s line as the summary. This replaces the status notice for those two; timeouts and network failures keep theirs. The header\'s skip is hidden, since the sheet carries its own.',
           '- **Reveal:** "Let\'s look at the answer", with the reveal line. "Reveal answer" opens the answer page. The header\'s skip is hidden — the question is over.',
           '',
           '### What was lost',
           '',
-          '**"What we heard" — the transcript — is no longer shown.** The Voice UX Reference\'s fourth principle leans on it so a miss reads as "it misheard me" rather than "I failed". `bottomSheet` has nowhere to put it.',
+          '**"What we heard" — the transcript — is no longer shown.** The Voice UX Reference\'s fourth principle leans on it so a miss reads as "it misheard me" rather than "I failed". `bottomSheet` has nowhere to put it. Logged as open in SPEC.md.',
+          '',
+          '### Why a sheet and not a screen',
+          '',
+          'This is the verdict design (decided 2026-09-15). The full-page Result screen it replaced was removed. Figma\'s `bottomSheet` description still says not to use it for the recall verdict; code overrides that on purpose — see design-system.md.',
         ].join('\n'),
       },
     },
@@ -113,16 +117,38 @@ export const Correct: Story = {
   },
 };
 
-/** The first miss. "Not quite…" whatever the question, and the first hint on offer. */
+/**
+ * A pass on the session's last question: no next question to move to, so the
+ * button reads "View results" and leads to the summary's stat tiles instead.
+ */
+export const CorrectLastQuestion: Story = {
+  name: 'Correct, last question',
+  args: {
+    lastQuestion: true,
+  },
+  play: async ({ canvas, args }) => {
+    await expect(
+      canvas.queryByRole('button', { name: 'Next question' }),
+    ).not.toBeInTheDocument();
+    const results = canvas.getByRole('button', { name: 'View results' });
+    await expect(results).toBeVisible();
+    await userEvent.click(results);
+    await expect(args.onContinue).toHaveBeenCalled();
+  },
+};
+
+/** The first miss, a fail: "Not quite…", and the first hint on offer. */
 export const Incorrect: Story = {
+  name: 'Incorrect, fail',
   args: {
     result: 'incorrect',
-    title: 'Not quite…',
+    title: MISS_TITLE.fail,
     summary: Q3.attempts[0].feedback!.detail,
     expression: undefined,
     hint: 1,
   },
   play: async ({ canvas, args }) => {
+    await expect(canvas.getByText('Not quite…')).toBeVisible();
     // Skip stays in the header on a miss.
     await expect(canvas.getByRole('button', { name: 'Skip' })).toBeVisible();
     await userEvent.click(canvas.getByRole('button', { name: 'Try again' }));
@@ -132,17 +158,23 @@ export const Incorrect: Story = {
   },
 };
 
-/** The second miss: the same title, and now the second hint. */
+/**
+ * The second miss, a partial: the same sheet, told apart from a fail by its
+ * title — "Almost…" — and now the second hint.
+ */
 export const IncorrectSecondHint: Story = {
-  name: 'Incorrect, second hint',
+  name: 'Incorrect, partial, second hint',
   args: {
     result: 'incorrect',
-    title: 'Not quite…',
+    title: MISS_TITLE.partial,
     summary: Q3.attempts[1].feedback!.detail,
     expression: undefined,
     hint: 2,
   },
   play: async ({ canvas, args }) => {
+    await expect(canvas.getByText('Almost…')).toBeVisible();
+    // A partial must never open on a fail's words.
+    await expect(canvas.queryByText('Not quite…')).not.toBeInTheDocument();
     await userEvent.click(canvas.getByRole('button', { name: 'View hint 2' }));
     await expect(args.onViewHint).toHaveBeenCalledWith(2);
   },

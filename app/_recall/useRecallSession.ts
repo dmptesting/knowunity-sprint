@@ -228,7 +228,7 @@ export function useRecallSession({
       }
 
       if (verdict === 'pass') {
-        // The result screen holds until the student taps on; advancing here
+        // The result sheet holds until the student taps on; advancing here
         // would skip past their own win.
         setPhase('result');
         return;

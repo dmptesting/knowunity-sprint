@@ -36,9 +36,9 @@ between sessions.
 | SPEC screen | Figma frame | What that means |
 |---|---|---|
 | Reveal | none | Design it |
-| Result: pass | `06 — Correct answer` | Match it |
-| Result: partial | `07 — Miss, hint offered` | Match it |
-| Result: fail | none | Design it, structurally matching 07 |
+| Result sheet: pass | `06 — Correct answer` | Reference only — the verdict is `bottomSheet` over the turn, not 06's full screen (SPEC.md screen 2) |
+| Result sheet: partial | `07 — Miss, hint offered` | Reference only — same sheet as fail, title "Almost…"; 07's lines are the copy source |
+| Result sheet: fail | none | Same sheet as partial, title "Not quite…" |
 | Entry + mic primer | `02 — Entry, tapped the node` | Match the frame; the primer copy is new |
 | Permission denied | none | Design it |
 | Skip | n/a | `AppBar`'s `rightCTA`; the header is drawn in 03–08 |

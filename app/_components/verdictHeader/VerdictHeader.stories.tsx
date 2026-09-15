@@ -20,6 +20,8 @@ const meta = {
           '',
           'The verdict that opens a result screen: the word, coloured by how it went.',
           '',
+          '**Not used anywhere in the app.** It was built for the full-page Result screen, which was removed on 2026-09-15 when the result sheet (`bottomSheet`) became the verdict design. Kept as a documented component; its `Verdict` type is still the one definition of pass/partial/fail.',
+          '',
           '**USE:** at the top of a result state, above the transcript and the feedback.',
           '',
           "**DON'T:** reach for it to label anything that isn't a judgement of an attempt. It is the recall loop's verdict, not a generic status chip.",

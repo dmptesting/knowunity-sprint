@@ -27,7 +27,7 @@ const meta = {
           '',
           "SPEC.md's verification is explicit — *\"the hint stays visible on screen while re-recording\"* — and a recall answer composed **out loud** is the worst possible moment to make someone hold a sentence in working memory. The overlay is how the hint is read; the card is how it stays available.",
           '',
-          'It also means the hint is never unreachable after the XP has been spent on it: "View hint" lives on the result screen, which is behind them by then.',
+          'It also means the hint is never unreachable after the XP has been spent on it: "View hint" lives on the result sheet, which is behind them by then.',
           '',
           '### One way out, twice',
           '',

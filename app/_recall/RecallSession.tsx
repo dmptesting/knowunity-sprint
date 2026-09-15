@@ -17,7 +17,7 @@ import { StudyPath } from '../_screens/studyPath/StudyPath';
 import { AbandonSheet } from '../_screens/abandonSheet/AbandonSheet';
 import { useRecallSession } from './useRecallSession';
 import { microphoneFor, readMicMode } from './microphone';
-import { QUESTION_COUNT, REVEAL_LINE } from './script';
+import { MISS_TITLE, QUESTION_COUNT, REVEAL_LINE } from './script';
 import { NOTICES } from './notices';
 import type { ChatInputStatus } from '../_components/chatInput/ChatInput';
 import styles from './RecallSession.module.css';
@@ -225,9 +225,10 @@ export function RecallSession() {
   } else if (session.phase === 'result' && session.feedback && verdict) {
     sheet = {
       result: 'incorrect',
-      // The same words for every miss, partial or fail. What was missing is
-      // the summary's job.
-      title: 'Not quite…',
+      // Partial and fail share the sheet, so the title is what tells them
+      // apart (SPEC.md: "the distinction is copy only"). Short on purpose — the
+      // sheet never scrolls, and a title that wraps costs the summary a line.
+      title: MISS_TITLE[verdict === 'partial' ? 'partial' : 'fail'],
       summary: session.feedback.detail,
       // The next hint on the ladder: 1 after the first miss, 2 after the second.
       hint: session.hintsUsed >= 1 ? 2 : 1,

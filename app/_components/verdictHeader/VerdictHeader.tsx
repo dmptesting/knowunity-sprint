@@ -27,6 +27,11 @@ export type VerdictHeaderProps = {
 /**
  * The verdict that opens a result screen: the word, coloured by how it went.
  *
+ * **Not used anywhere in the app.** It was built for the full-page Result
+ * screen, which was removed on 2026-09-15 when the result sheet became the
+ * verdict design. Kept as a documented component; its `Verdict` type is still
+ * the one definition of pass/partial/fail.
+ *
  * USE: (unverified) at the top of a result state, above the transcript and the
  * feedback.
  *

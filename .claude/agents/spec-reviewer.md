@@ -117,7 +117,7 @@ not ask for. If it is a preference, leave it out.
    → Spec: "Use only components documented in design-system.md, bound to real
      tokens/tokens.json values."
 
-## Result — app/_screens/result/
+## Result sheet — app/_screens/resultSheet/
 
 2. ...
 ```

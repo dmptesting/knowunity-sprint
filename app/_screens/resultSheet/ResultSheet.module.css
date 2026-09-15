@@ -17,9 +17,16 @@
   /*
    * Slides up from below the phone's bottom edge. The duration and easing are
    * unbound — tokens.json carries no motion tokens, the same as voiceCircle's
-   * waveform. Decelerating, so the sheet arrives rather than stops.
+   * waveform.
+   *
+   * 340ms with iOS's own sheet-presentation curve (a heavy decelerate that
+   * front-loads the travel, then settles slowly) rather than 280ms's
+   * quicker, more even ease-out — that combination read as a pop rather than
+   * an arrival. Transform only, so the sheet (and its dialog contents) are
+   * visible and operable for the tests and for assistive tech from the first
+   * frame, exactly as before — only how it gets there changed.
    */
-  animation: rise 280ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  animation: rise 340ms cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 @keyframes rise {

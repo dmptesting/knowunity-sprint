@@ -19,27 +19,28 @@ import type { Verdict as JudgedVerdict } from '../_components/verdictHeader/Verd
  * The three judged values come from verdictHeader, so there is one definition
  * of them. `empty` is not a judgement — nothing was heard, so the hint ladder
  * is not charged and the student gets a free retry (SPEC.md, status notices),
- * and no result screen is shown.
+ * and no result sheet is shown.
  */
 export type Verdict = JudgedVerdict | 'empty';
 
 /**
- * The word verdictHeader shows for each judged verdict. One line of copy per
- * verdict, shared across every question — the per-question difference lives in
- * the feedback below, not here.
+ * The result sheet's title on a miss. Partial and fail share the `incorrect`
+ * sheet, so this is the copy that tells them apart — one line per verdict,
+ * shared across every question. Short, because the sheet never scrolls and a
+ * wrapped title costs the summary a line. A pass takes its feedback headline
+ * instead.
  */
-export const VERDICT_LABEL: Record<JudgedVerdict, string> = {
-  pass: 'Correct',
-  /* Not "Close": screen 07's feedback headline already opens with that word,
-     and the two stacked read as a stutter. */
-  partial: 'Almost',
-  fail: 'Not quite',
+export const MISS_TITLE: Record<Exclude<JudgedVerdict, 'pass'>, string> = {
+  /* Acknowledges they were close without inventing credit. */
+  partial: 'Almost…',
+  fail: 'Not quite…',
 };
 
 /**
- * What Knowie says about the attempt, split the way textBlock is shaped: the
- * judgement itself, then the nudge. The nudge points without solving — that is
- * the hint ladder's job, not this screen's.
+ * What Knowie says about the attempt: the judgement itself, then the nudge.
+ * The nudge points without solving — that is the hint ladder's job, not the
+ * result sheet's. On a pass the sheet shows both; on a miss the title comes
+ * from MISS_TITLE and the nudge is the summary.
  */
 export type Feedback = {
   headline: string;
@@ -49,17 +50,19 @@ export type Feedback = {
 export type ScriptedAttempt = {
   verdict: Verdict;
   /**
-   * What the mock speech-to-text "heard", shown on every result state so a
-   * miss reads as "it misheard me" rather than "I failed" (Voice UX Reference,
-   * principle 4). Empty string when the verdict is `empty`.
+   * What the mock speech-to-text "heard". Written so a miss could read as "it
+   * misheard me" rather than "I failed" (Voice UX Reference, principle 4).
+   * Empty string when the verdict is `empty`.
+   *
+   * **Not currently shown.** The result sheet has nowhere to put it — see
+   * SPEC.md's Open section. Kept so the copy is ready if it comes back.
    *
    * The split is deliberate: `partial` transcripts are coherent but
    * incomplete; `fail` transcripts show visible speech-to-text mangling.
    */
   transcript: string;
   /**
-   * Shown on the result screen under the transcript. Absent on `empty`, which
-   * never reaches a result screen.
+   * Shown on the result sheet. Absent on `empty`, which never reaches one.
    */
   feedback?: Feedback;
 };
@@ -174,7 +177,8 @@ export const RECALL_SCRIPT: RecallQuestion[] = [
         verdict: 'partial',
         transcript: 'you make it complicated so there are more options to get through',
         /* Figma screen 07's copy, kept verbatim — it is the one piece of
-           result-screen writing the file already contains. */
+           result writing the file already contains. The sheet shows the
+           detail as its summary; the headline is not shown on a miss. */
         feedback: {
           headline: 'Close, you named complexity.',
           detail: "There's another factor that matters even more here.",
@@ -185,7 +189,7 @@ export const RECALL_SCRIPT: RecallQuestion[] = [
         transcript: 'more carrot ters and mixed case gives you more combinations',
         /* Both hints are spent by the time this lands, so the ladder goes
            straight to the reveal and this copy is never shown on the result
-           screen. Written anyway, so the attempt is not a special case. */
+           sheet. Written anyway, so the attempt is not a special case. */
         feedback: {
           headline: 'Still not the one.',
           detail: "That's the same idea again, and it isn't what matters most.",

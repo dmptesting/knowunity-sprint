@@ -95,6 +95,17 @@ export type AppBarProps = {
    */
   rightCTA?: string;
   onRightCTAClick?: () => void;
+  /**
+   * Keeps the rightCTA's box in the header — invisible and out of the tab
+   * order — instead of removing it. `leftAndRightButton`'s Slot is
+   * `flex: 1`, so dropping the button by switching to `leftIconButtonOnly`
+   * lets the Slot (and whatever fills it, e.g. a progressIndicator) grow into
+   * the freed space; on a screen where the same header alternates between
+   * offering skip and not, that reads as the bar shifting. Same idiom as
+   * `VoiceTurn`'s "reserved" type-instead button: `visibility: hidden` holds
+   * the layout, so the width stays constant either way.
+   */
+  rightCTAHidden?: boolean;
 } & Omit<HTMLAttributes<HTMLElement>, 'children'>;
 
 /**
@@ -120,12 +131,30 @@ export function AppBar({
   onSecondRightClick,
   rightCTA = 'Skip',
   onRightCTAClick,
+  rightCTAHidden = false,
   className,
   ...rest
 }: AppBarProps) {
   const classes = [styles.appBar, VARIANT_CLASS[variant], className]
     .filter(Boolean)
     .join(' ');
+
+  const rightCTAButton = HAS_RIGHT_CTA[variant] ? (
+    <button
+      type="button"
+      className={[
+        buttonStyles.button,
+        buttonStyles.variantTertiary,
+        styles.textButton,
+        rightCTAHidden ? styles.rightCTAReserved : '',
+      ]
+        .filter(Boolean)
+        .join(' ')}
+      onClick={onRightCTAClick}
+    >
+      {rightCTA}
+    </button>
+  ) : null;
 
   // In the two-icon variant Figma leads with share; everywhere else the single
   // trailing icon is the overflow menu.
@@ -186,28 +215,12 @@ export function AppBar({
       {HAS_SECOND_RIGHT_ICON[variant] || (HAS_RIGHT_ICON[variant] && HAS_RIGHT_CTA[variant]) ? (
         <div className={styles.rightGroup}>
           {rightIcons}
-          {HAS_RIGHT_CTA[variant] ? (
-            <button
-              type="button"
-              className={`${buttonStyles.button} ${buttonStyles.variantTertiary} ${styles.textButton}`}
-              onClick={onRightCTAClick}
-            >
-              {rightCTA}
-            </button>
-          ) : null}
+          {rightCTAButton}
         </div>
       ) : (
         <>
           {rightIcons}
-          {HAS_RIGHT_CTA[variant] ? (
-            <button
-              type="button"
-              className={`${buttonStyles.button} ${buttonStyles.variantTertiary} ${styles.textButton}`}
-              onClick={onRightCTAClick}
-            >
-              {rightCTA}
-            </button>
-          ) : null}
+          {rightCTAButton}
         </>
       )}
     </header>

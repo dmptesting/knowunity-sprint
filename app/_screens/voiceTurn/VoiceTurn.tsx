@@ -134,12 +134,20 @@ export function VoiceTurn({
       lockBody={locked}
       top={
         <AppBar
-          /* Close-only while skip is not on offer — one of appBar's own
-             variants, so the header component itself is unchanged. */
-          variant={canSkip ? 'leftAndRightButton' : 'leftIconButtonOnly'}
+          /*
+           * Always the same variant, so the header's width never changes.
+           * Switching to `leftIconButtonOnly` when skip isn't offered let the
+           * Slot's `flex: 1` grow into the freed space, which shifted
+           * progressIndicator inside it — the bar looked like it jumped
+           * between a correct answer's sheet (skip gone) and the next
+           * question (skip back). `rightCTAHidden` keeps the button's box in
+           * place and only hides it.
+           */
+          variant="leftAndRightButton"
           leftIcon={<CloseIcon />}
           leftLabel="Close"
           rightCTA="Skip"
+          rightCTAHidden={!canSkip}
           onLeftClick={onClose}
           onRightCTAClick={onSkip}
         >
