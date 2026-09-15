@@ -39,8 +39,15 @@ export function ResultSheet(props: ResultSheetProps) {
 
   // The sheet arrived without the student's focus moving, so move it —
   // otherwise a screen reader is still sitting on the circle underneath.
+  //
+  // `preventScroll` matters here: the sheet is `position: absolute` and
+  // still sliding up from `translateY(100%)` when this runs. Without it,
+  // the browser's default focus behaviour scrolls the nearest scroll
+  // container into view to reveal the not-yet-arrived element — `body`
+  // still counts as one even with `overflow: hidden` — which reads as the
+  // whole page lurching instead of the sheet alone gliding up.
   useEffect(() => {
-    sheet.current?.focus();
+    sheet.current?.focus({ preventScroll: true });
   }, []);
 
   return (

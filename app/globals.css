@@ -29,9 +29,17 @@ body {
  * it, and a definite height is what lets Screen's middle region scroll inside
  * while its action row stays pinned to the bottom edge. `dvh` follows a mobile
  * browser's toolbar as it shows and hides.
+ *
+ * `--app-height` overrides it once `useViewportHeight` (RecallSession) can
+ * read `visualViewport.height` — on a browser that doesn't shrink the layout
+ * viewport for the keyboard (see that hook's comment), `100dvh` alone would
+ * stay taller than what's actually on screen once the keyboard opens, and the
+ * OS would pan the page to compensate, dragging content above the input off
+ * the top edge. Falls back to `100dvh` before that effect runs and in every
+ * context that never mounts it (e.g. Storybook).
  */
 body {
-  block-size: 100dvh;
+  block-size: var(--app-height, 100dvh);
   overflow: hidden;
   display: flex;
   flex-direction: column;

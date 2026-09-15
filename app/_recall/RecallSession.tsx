@@ -16,6 +16,7 @@ import { Summary } from '../_screens/summary/Summary';
 import { StudyPath } from '../_screens/studyPath/StudyPath';
 import { AbandonSheet } from '../_screens/abandonSheet/AbandonSheet';
 import { useRecallSession } from './useRecallSession';
+import { useViewportHeight } from './useViewportHeight';
 import { microphoneFor, readMicMode } from './microphone';
 import { MISS_TITLE, QUESTION_COUNT, REVEAL_LINE } from './script';
 import { NOTICES } from './notices';
@@ -67,6 +68,8 @@ function readForcedVerdict(value: string | null): Forceable | undefined {
  * state has a linkable URL for review.
  */
 export function RecallSession() {
+  useViewportHeight();
+
   const params = useSearchParams();
   const forcedVerdict = readForcedVerdict(params.get('verdict'));
   /*
