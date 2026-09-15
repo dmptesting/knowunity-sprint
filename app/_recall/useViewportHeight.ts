@@ -18,6 +18,14 @@ import { useEffect } from 'react';
  * that pan exists to compensate for: once the page is exactly as tall as
  * what is actually visible, there is nothing left above the keyboard for
  * the OS to scroll to reveal.
+ *
+ * `window.scrollTo(0, 0)` alongside it cancels any pan that already
+ * happened before this ran — iOS Safari can still shift the document's
+ * scroll position when focusing an input even with `overflow: hidden` on
+ * `body` (a long-standing Safari quirk: that CSS stops the user scrolling
+ * it, not the OS). Nothing in this app scrolls at the window level — each
+ * scrollable region (`Screen`'s middle) owns its own `overflow` — so
+ * forcing the window back to (0, 0) is always safe here.
  */
 export function useViewportHeight() {
   useEffect(() => {
@@ -26,10 +34,15 @@ export function useViewportHeight() {
 
     const sync = () => {
       document.documentElement.style.setProperty('--app-height', `${viewport.height}px`);
+      if (window.scrollX !== 0 || window.scrollY !== 0) window.scrollTo(0, 0);
     };
 
     sync();
     viewport.addEventListener('resize', sync);
-    return () => viewport.removeEventListener('resize', sync);
+    viewport.addEventListener('scroll', sync);
+    return () => {
+      viewport.removeEventListener('resize', sync);
+      viewport.removeEventListener('scroll', sync);
+    };
   }, []);
 }

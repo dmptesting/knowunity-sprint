@@ -70,8 +70,17 @@
 /* ---------------------------------------------------------------- text ---- */
 /*
  * Figma's placeholder is Inter SemiBold 14 with no text style attached — the
- * only text in the component set that isn't on the Greed scale. Snapped to
- * "Greed/Body S Bold", the nearest real style at the same weight.
+ * only text in the component set that isn't on the Greed scale. The nearest
+ * real style at the same weight is "Greed/Body S Bold" (15px), used
+ * everywhere else `<input>`/`<textarea>` text needs setting.
+ *
+ * DEVIATION: bumped a step further, to "Greed/Body M Bold" (18px). Below the
+ * 16px line, iOS Safari auto-zooms the whole page on focus to make a small
+ * input legible — which fights `useViewportHeight`'s own layout-height sync,
+ * reads as the header and Knowie snapping around instead of just the
+ * keyboard opening, and can leave the page zoomed in (scrollable
+ * horizontally) after the field blurs. 18px is the first token step clear of
+ * that threshold; there is no 16px step on the scale to land on exactly.
  */
 .input {
   flex: 1;
@@ -85,8 +94,8 @@
   border: none;
   background: none;
   color: var(--color-text-primary);
-  font: var(--typography-text-style-body-sbold), Arial, Helvetica, sans-serif;
-  /* Greed/Body S Bold is +1% in Figma; the font shorthand can't
+  font: var(--typography-text-style-body-mbold), Arial, Helvetica, sans-serif;
+  /* Greed/Body M Bold is +1% in Figma; the font shorthand can't
      carry letterSpacing. 1% of the font size is 0.01em. */
   letter-spacing: calc(var(--number-font-tracking-loose) * 0.01em);
 }
