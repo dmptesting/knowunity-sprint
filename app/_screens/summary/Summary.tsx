@@ -1,9 +1,10 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { Screen } from '../../_components/screen/Screen';
 import { Button } from '../../_components/button/Button';
 import { StatTile } from '../../_components/statTile/StatTile';
-import { MascotSlot } from '../../_components/mascotSlot/MascotSlot';
+import { MascotSlot, type MascotExpression } from '../../_components/mascotSlot/MascotSlot';
 import { CalloutBubble } from '../../_components/calloutBubble/CalloutBubble';
 import {
   QUESTION_COUNT,
@@ -11,6 +12,49 @@ import {
   SUMMARY_FALLBACK_LINE,
 } from '../../_recall/script';
 import styles from './Summary.module.css';
+
+/** How long the closed-eye frame holds — quick enough to read as a blink, not a wink. */
+const BLINK_HOLD_MS = 150;
+/** A person blinks roughly every 2-6s; this samples the same range. */
+const BLINK_MIN_DELAY_MS = 2500;
+const BLINK_MAX_DELAY_MS = 5000;
+
+/**
+ * Swaps `expression` to `sad` for one short beat every few seconds, standing
+ * in for a closed-eye frame that doesn't exist yet (component-gaps.md).
+ * Skipped entirely under `prefers-reduced-motion`, since the blink is purely
+ * decorative — the mascot just holds its normal expression.
+ */
+function useBlink(expression: MascotExpression): MascotExpression {
+  const [blinking, setBlinking] = useState(false);
+
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    let holdTimeout: ReturnType<typeof setTimeout>;
+    let nextBlinkTimeout: ReturnType<typeof setTimeout>;
+
+    const scheduleBlink = () => {
+      const delay =
+        BLINK_MIN_DELAY_MS + Math.random() * (BLINK_MAX_DELAY_MS - BLINK_MIN_DELAY_MS);
+      nextBlinkTimeout = setTimeout(() => {
+        setBlinking(true);
+        holdTimeout = setTimeout(() => {
+          setBlinking(false);
+          scheduleBlink();
+        }, BLINK_HOLD_MS);
+      }, delay);
+    };
+
+    scheduleBlink();
+    return () => {
+      clearTimeout(nextBlinkTimeout);
+      clearTimeout(holdTimeout);
+    };
+  }, []);
+
+  return blinking ? 'sad' : expression;
+}
 
 export type SummaryProps = {
   /** How many questions were answered unaided or with hints — never `x/5`. */
@@ -58,6 +102,8 @@ export function Summary({
   section = SECTION_TITLE,
   onContinue,
 }: SummaryProps) {
+  const expression = useBlink(correct > 0 ? 'excited' : 'standby');
+
   return (
     <Screen
       bottom={
@@ -105,7 +151,7 @@ export function Summary({
           <MascotSlot
             className={styles.mascot}
             size="3XL"
-            expression={correct > 0 ? 'excited' : 'standby'}
+            expression={expression}
           />
           <CalloutBubble className={styles.recall} body={recallLine} showTail={false} />
         </div>

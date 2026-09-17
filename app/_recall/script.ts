@@ -107,7 +107,7 @@ export const REVEAL_LINE = "No shame in this one. Here's the answer, so you've g
  * which is the opposite of what the recall line is for.
  */
 export const SUMMARY_FALLBACK_LINE =
-  'Thanks for talking these through with me. Every explanation makes the next one easier.';
+  'Thanks for talking these through with me. Every explanation makes the next one easier!';
 
 export const RECALL_SCRIPT: RecallQuestion[] = [
   /* Q1 — passes first try. The session opens on a win. */
@@ -132,7 +132,7 @@ export const RECALL_SCRIPT: RecallQuestion[] = [
       },
     ],
     recall:
-      'You said a router sends traffic between networks, and a switch just moves it around inside one. That’s the whole difference.',
+      'You said a router sends traffic between networks, and a switch just moves it around inside one. That’s the whole difference!',
   },
 
   /* Q2 — empty first (a free retry), then partial, then passes after hint 1. */
@@ -166,7 +166,7 @@ export const RECALL_SCRIPT: RecallQuestion[] = [
       },
     ],
     recall:
-      'I liked how you split the jobs: the IP address gets it to the right network, and the MAC address picks out the device.',
+      'I liked how you split the jobs: the IP address gets it to the right network, and the MAC address picks out the device!',
   },
 
   /*
@@ -218,7 +218,7 @@ export const RECALL_SCRIPT: RecallQuestion[] = [
     ],
     /* The script never passes this one; only a forced verdict can. */
     recall:
-      'You got to the heart of it: every extra character means far more guesses to get through.',
+      'You got to the heart of it: every extra character means far more guesses to get through!',
   },
 
   /* Q4 — passes. The session ends on a win. */
@@ -243,7 +243,7 @@ export const RECALL_SCRIPT: RecallQuestion[] = [
       },
     ],
     recall:
-      'You put DNS perfectly: it takes the name you type and looks up the address your computer needs.',
+      'You put DNS perfectly: it takes the name you type and looks up the address your computer needs!',
   },
 ];
 

@@ -2,11 +2,8 @@
 
 import { Chips, type ChipsColor } from '../chips/Chips';
 
-/**
- * One colour per hint tier, in order. Distinct fills so two spent hints never
- * read as the same thing twice.
- */
-const TIER_COLOR: ChipsColor[] = ['magenta', 'blue'];
+/** Same fill for every hint tier — the label, not the colour, tells them apart. */
+const TIER_COLOR: ChipsColor[] = ['magenta', 'magenta'];
 
 export type HintChipsProps = {
   /** The hints spent on this question, in order. Renders nothing when empty. */
@@ -16,8 +13,8 @@ export type HintChipsProps = {
 };
 
 /**
- * The spent hints, as chips — "Hint 1" in `accent/magenta/bold`, "Hint 2" in
- * `accent/blue/bold` — each reopening its own hint overlay.
+ * The spent hints, as chips — both in `accent/magenta/bold` — each reopening
+ * its own hint overlay.
  *
  * USE: (unverified) under Knowie's question on a turn, via knowieSays'
  * attachment row, once a hint has been spent.
