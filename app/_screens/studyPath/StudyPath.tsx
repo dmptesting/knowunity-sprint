@@ -10,6 +10,7 @@ import {
   EXPLAIN_STEP,
   NEXT_SECTION,
   NEXT_SECTION_STEPS,
+  SECTION_GROUP,
   PLAN_META,
   PLAN_MODE,
   PLAN_TITLE,
@@ -76,6 +77,13 @@ export function StudyPath({
           both lines up; the divider heading between them spans the full row.
         */}
         <div className={styles.path}>
+          {/*
+            The section's own group heading, so the first four nodes are
+            introduced the same way the next section's are, rather than
+            starting straight under the title.
+          */}
+          <h3 className={styles.group}>{SECTION_GROUP}</h3>
+
           <ul className={styles.steps}>
             {SECTION_STEPS.map((step, i) => (
               <li key={step.id}>

@@ -279,6 +279,25 @@ export function useRecallSession({
   /** Straight on. No answer shown, no XP. */
   const skip = useCallback(() => advance('skipped', 0), [advance]);
 
+  /**
+   * Back to the first question with a clean slate — for a node tapped again
+   * after its session finished. The input mode, permission and tap-mode
+   * preference are the student's, not the session's, so they carry over.
+   */
+  const restart = useCallback(() => {
+    if (judging.current) clearTimeout(judging.current);
+    setIndex(0);
+    setPhase('idle');
+    setAttempt(0);
+    setHintsUsed(0);
+    setOutcomes([]);
+    setXp(0);
+    setNotice(undefined);
+    setFinished(false);
+    setReadingHint(false);
+    setElapsedMs(0);
+  }, []);
+
   const switchToText = useCallback(() => setMode('text'), []);
   const switchToVoice = useCallback(() => setMode('voice'), []);
 
@@ -365,6 +384,7 @@ export function useRecallSession({
       showAnswer,
       nextQuestion,
       skip,
+      restart,
       switchToText,
       switchToVoice,
       setTapMode,
@@ -373,7 +393,7 @@ export function useRecallSession({
     [
       question, index, phase, attempt, hintsUsed, shownAttempt, notice, mode,
       permission, tapMode, finished, xp, passed, outcomes, elapsedMs,
-      submit, retry, tryAgain, viewHint, showAnswer, nextQuestion, skip,
+      submit, retry, tryAgain, viewHint, showAnswer, nextQuestion, skip, restart,
       switchToText, switchToVoice, recordPermission,
     ],
   );

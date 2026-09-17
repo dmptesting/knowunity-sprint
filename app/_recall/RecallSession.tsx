@@ -122,6 +122,12 @@ export function RecallSession() {
    */
   const [hintOverlay, setHintOverlay] = useState<number | null>(null);
   const [draft, setDraft] = useState('');
+  /*
+   * Whether the node has ever been completed. Kept here rather than read off
+   * the session, because tapping a completed node restarts the session — and
+   * a fresh session has passed nothing yet, which would un-complete the node.
+   */
+  const [nodeCompleted, setNodeCompleted] = useState(false);
 
   const close = () => setAbandoning(true);
 
@@ -136,8 +142,27 @@ export function RecallSession() {
   if (place === 'path') {
     return (
       <StudyPath
-        explainProgress={session.pathNodeProgress}
-        onExplain={() => setPlace('session')}
+        explainProgress={
+          nodeCompleted || session.pathNodeProgress === 'completed'
+            ? 'completed'
+            : 'current'
+        }
+        onExplain={() => {
+          /*
+           * A finished session starts over from the primer — the node is
+           * always reachable, and a completed one is for another go, not a
+           * second look at the old summary. An unfinished one resumes where
+           * the student left it.
+           */
+          if (session.finished) {
+            if (session.pathNodeProgress === 'completed') setNodeCompleted(true);
+            session.restart();
+            setHintOverlay(null);
+            setDraft('');
+            setStarted(false);
+          }
+          setPlace('session');
+        }}
       />
     );
   }

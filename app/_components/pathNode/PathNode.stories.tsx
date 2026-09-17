@@ -120,7 +120,7 @@ export const CurrentExplainOutLoud: Story = {
   args: {
     progress: 'current',
     format: 'explainOutLoud',
-    label: 'Explain out loud',
+    label: 'Talk it through',
   },
 };
 
@@ -134,7 +134,7 @@ export const UpcomingExplainOutLoud: Story = {
   args: {
     progress: 'upcoming',
     format: 'explainOutLoud',
-    label: 'Explain out loud',
+    label: 'Talk it through',
   },
 };
 
@@ -159,7 +159,7 @@ export const AsAPath: Story = {
       {[
         { progress: 'completed', format: 'quiz', label: 'Network devices' },
         { progress: 'completed', format: 'explainOutLoud', label: 'Protocol layers' },
-        { progress: 'current', format: 'explainOutLoud', label: 'Explain out loud' },
+        { progress: 'current', format: 'explainOutLoud', label: 'Talk it through' },
         { progress: 'upcoming', format: 'quiz', label: 'Network weaknesses' },
         { progress: 'upcoming', format: 'explainOutLoud', label: 'Routing basics' },
       ].map((node) => (

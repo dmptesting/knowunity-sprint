@@ -58,13 +58,13 @@ export type BottomSheetProps = {
   summary: string;
   /**
    * The main button's label. Defaults to "Next question" on a correct sheet
-   * ("View results" when `lastQuestion`), "Try again" on an incorrect or unsure
+   * ("Finish" when `lastQuestion`), "Try again" on an incorrect or unsure
    * one, and "Reveal answer" on a reveal one. Sentence case.
    */
   ctaLabel?: string;
   /**
    * Correct sheet only: this was the session's last question, so there is no
-   * next one — the button reads "View results" and leads to the summary with
+   * next one — the button reads "Finish" and leads to the summary with
    * the stat tiles. Same `onContinue`; only the words change.
    */
   lastQuestion?: boolean;
@@ -84,7 +84,7 @@ export type BottomSheetProps = {
    * use (design-system.md).
    */
   expression?: MascotExpression;
-  /** Correct sheet: tapped "Next question", or "View results" on the last question. */
+  /** Correct sheet: tapped "Next question", or "Finish" on the last question. */
   onContinue?: () => void;
   /** Incorrect or unsure sheet: tapped "Try again". */
   onTryAgain?: () => void;
@@ -99,7 +99,7 @@ export type BottomSheetProps = {
 /**
  * The sheet that rises after a quiz answer is checked: Knowie beside the
  * verdict and a short summary of why. A correct answer gets one button to move
- * on — "Next question", or "View results" after the last question; an incorrect one gets "Try again" above "View hint 1" or "View hint 2". An unsure sheet —
+ * on — "Next question", or "Finish" after the last question; an incorrect one gets "Try again" above "View hint 1" or "View hint 2". An unsure sheet —
  * the recording came through distorted — gets "Try again" above "Skip
  * question", so the student is never stuck re-recording. A reveal sheet — both
  * hints spent, still missed — gets one button, "Reveal answer": the only way on
@@ -142,7 +142,7 @@ export function BottomSheet({
 
   const primary =
     result === 'correct'
-      ? { label: lastQuestion ? 'View results' : 'Next question', onClick: onContinue }
+      ? { label: lastQuestion ? 'Finish' : 'Next question', onClick: onContinue }
       : result === 'reveal'
         ? { label: 'Reveal answer', onClick: onReveal }
         : { label: 'Try again', onClick: onTryAgain };
@@ -159,7 +159,6 @@ export function BottomSheet({
 
   return (
     <section className={classes} aria-labelledby={titleId} {...rest}>
-      <span className={styles.grabber} aria-hidden="true" />
 
       <div ref={contentRef} className={styles.content}>
         {/* Decorative: the title and summary carry every word. */}

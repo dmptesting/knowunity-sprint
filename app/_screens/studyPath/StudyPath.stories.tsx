@@ -31,7 +31,7 @@ const meta = {
           '- **The nodes are `pathNode` instances.** 01 hand-draws them as ellipses and a `checkbox` instance — the same class of drift as 09\'s hand-drawn stat tiles.',
           '- **"THIS FLOW STARTS HERE" is not built.** It is a designer\'s annotation to the reader of the Figma file, not product UI.',
           '- **Every quiz in the section is completed**, so the recall node is the one step left.',
-          '- **The next section is built out.** 01 shows only its title. Here the title is centred between two rules, and four steps follow in the same pattern as the section above — three quizzes and an explain-out-loud, all `upcoming`. Their titles are invented.',
+          '- **The next section is built out.** 01 shows only its title. Here the title is centred between two rules, and four steps follow in the same pattern as the section above — three quizzes and a talk-it-through, all `upcoming`. Their titles are invented.',
           '- **Labels are sentence case.** 01 sets the lesson titles in Title Case; `pathNode`\'s own stories already use sentence case, and CLAUDE.md requires it. `AP Cybersecurity Exam` stays as it is — it names a specific exam.',
           '- **The tabs are two spans, not one text node.** 01 draws `Plan          Materials` as a single string padded with spaces.',
         ].join('\n'),
@@ -46,21 +46,29 @@ type Story = StoryObj<typeof meta>;
 
 /*
  * pathNode spells its format and progress into the accessible name for screen
- * readers — "Explain out loud , explain out loud, current step" — so these
+ * readers — "Talk it through , talk it through, current step" — so these
  * queries match on a pattern rather than the visible label alone. That suffix
  * is what makes the progress assertions below meaningful.
  *
  * (The space before the first comma is pathNode's, not a typo here: the
  * accessible name joins its label span and its visually-hidden span with one.)
  */
-const recallNode = /^Explain out loud\b/;
-// The next section has an explain-out-loud step of its own, so two match —
+const recallNode = /^Talk it through\b/;
+// The next section has a talk-it-through step of its own, so two match —
 // this section's is the first.
 
 /** Every quiz done, the recall node current and waiting, the next section to come. */
 export const Default: Story = {
   name: 'Recall not yet done',
   play: async ({ canvas, args }) => {
+    // Both groups are introduced the same way: the section's own heading above
+    // its nodes, the next section's below them, in the same treatment.
+    const group = canvas.getByRole('heading', { name: 'Devices and protocols' });
+    const next = canvas.getByRole('heading', { name: 'Disruption and interception' });
+    await expect(group).toBeVisible();
+    await expect(getComputedStyle(group).fontSize).toBe(getComputedStyle(next).fontSize);
+    await expect(getComputedStyle(group).color).toBe(getComputedStyle(next).color);
+
     // Everything in the section but the recall node is done.
     for (const label of ['Network devices', 'Protocol layers', 'Network weaknesses']) {
       await expect(
@@ -68,10 +76,7 @@ export const Default: Story = {
       ).toHaveAccessibleName(/completed/);
     }
 
-    // The next section: its title, then four steps not yet started.
-    await expect(
-      canvas.getByRole('heading', { name: 'Disruption and interception' }),
-    ).toBeVisible();
+    // The next section: four steps not yet started.
     for (const label of ['Packet sniffing', 'Denial of service', 'Session hijacking']) {
       await expect(
         canvas.getByRole('button', { name: new RegExp(`^${label}\\b`) }),

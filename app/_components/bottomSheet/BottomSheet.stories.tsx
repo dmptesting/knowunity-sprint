@@ -19,7 +19,7 @@ const meta = {
         component: [
           '### What it is',
           '',
-          'The sheet that rises after a quiz answer is checked: Knowie beside the verdict and a short summary of why. A correct answer gets one button, "Next question" — or "View results" on the session\'s last question. An incorrect one gets "Try again" above "View hint 1" or "View hint 2". An unsure one gets "Try again" above "Skip question". A reveal one gets a single "Reveal answer".',
+          'The sheet that rises after a quiz answer is checked: Knowie beside the verdict and a short summary of why. A correct answer gets one button, "Next question" — or "Finish" on the session\'s last question. An incorrect one gets "Try again" above "View hint 1" or "View hint 2". An unsure one gets "Try again" above "Skip question". A reveal one gets a single "Reveal answer".',
           '',
           '**USE:** the voice-recall verdict — `correct` for a pass, `incorrect` for a partial or a fail; `unsure` when a voice recording came through too distorted to judge; `reveal` when both hints are spent and the student still missed, so the answer has to be shown.',
           '',
@@ -41,6 +41,7 @@ const meta = {
           '- **It never scrolls, and the title never shrinks.** The title is Headline S (`font/size/lg`, 21px) on every sheet. An earlier build stepped it down to 18px when copy ran long, which made two sheets side by side show different title sizes, so it was removed. Budget the summary at about six lines (roughly 130 characters) on a correct sheet, but only about three (roughly 65) on an incorrect or unsure one — its second button takes the room. A title that wraps costs a line. Leave slack, since browsers wrap slightly differently; copy that overflows is clipped and logs a warning in development.',
           '- **The title is `text/primary` in every result.**',
           '- **The result changes only the panel and Knowie.** A correct sheet has the green `feedback/success/subtle` panel and an excited Knowie; an incorrect one has the neutral surface and a confused Knowie; an unsure one, the neutral surface and a thinking Knowie; a reveal, the neutral surface and Knowie on standby. The buttons never change colour: the main action is always `interactive/primary` ("Next question", "Try again", "Reveal answer") and the second button always `interactive/secondary` ("View hint 1" / "View hint 2", "Skip question"). A button is an action, not a verdict, so it looks the same every time — and a miss has no red anywhere, as SPEC.md asks.',
+          '- **No handle.** Figma draws a 32×4 grabber centred at the top edge. It was removed: the sheet cannot be dragged, so the handle promised a gesture that does nothing.',
           '- **Figma drew the main button green on correct and red on incorrect.** Both were replaced with `interactive/primary`.',
           '- **mascotSlot is 2XL (120px).** 3XL (200px) would leave the text column under 120px wide at the 390px viewport.',
           "- **The button's lip is a 10% dark overlay, not 15% black.** No token holds black at 15%; snapped to `interactive/pressOverlayInverse`.",
@@ -61,7 +62,7 @@ const meta = {
     ctaLabel: { control: 'text', description: "The main button's label. Not a Figma property." },
     lastQuestion: {
       control: 'boolean',
-      description: 'Correct only: the last question, so the button reads "View results". Not a Figma property.',
+      description: 'Correct only: the last question, so the button reads "Finish". Not a Figma property.',
     },
     hint: {
       control: 'inline-radio',
@@ -114,7 +115,7 @@ export const Correct: Story = {
 
 /**
  * result=correct on the session's last question. There is no next question, so
- * the button reads "View results" and leads to the summary's stat tiles.
+ * the button reads "Finish" and leads to the summary's stat tiles.
  */
 export const CorrectLastQuestion: Story = {
   name: 'result=correct, last question',
@@ -125,7 +126,7 @@ export const CorrectLastQuestion: Story = {
   },
   play: async ({ canvas, args }) => {
     await expect(canvas.queryByRole('button', { name: 'Next question' })).toBeNull();
-    const results = canvas.getByRole('button', { name: 'View results' });
+    const results = canvas.getByRole('button', { name: 'Finish' });
     await expect(getComputedStyle(results).backgroundColor).toBe(resolveColor('--color-interactive-primary'));
     await userEvent.click(results);
     await expect(args.onContinue).toHaveBeenCalledTimes(1);

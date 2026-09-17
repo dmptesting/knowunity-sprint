@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Knowunity — explain out loud",
+  title: "Knowunity — talk it through",
   description:
     "Voice-based active recall: explain a concept out loud, Knowie judges in text.",
 };

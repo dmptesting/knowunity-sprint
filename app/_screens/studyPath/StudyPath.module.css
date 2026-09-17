@@ -82,11 +82,14 @@
 }
 
 /*
- * The section after this one: Greed/Caption M Bold in text/tertiary, centred
- * between two rules that fill the rest of the row. The rules are the heading's
- * own pseudo-elements, a Stroke/Border line in border/default — the same line
- * as the path's connector — with Space/300 between each and the text.
+ * Two headings, one treatment: the section's own group above the first nodes,
+ * and the section after this one below them. Greed/Caption M Bold in
+ * text/tertiary, centred between two rules that fill the rest of the row. The
+ * rules are the heading's own pseudo-elements, a Stroke/Border line in
+ * border/default — the same line as the path's connector — with Space/300
+ * between each and the text.
  */
+.group,
 .nextSection {
   display: flex;
   align-items: center;
@@ -98,6 +101,14 @@
   text-align: center;
 }
 
+/* Half the gap the divider between sections needs: this one follows the
+   section title rather than a finished list of nodes. */
+.group {
+  margin-block-start: var(--dimension-space-400);
+}
+
+.group::before,
+.group::after,
 .nextSection::before,
 .nextSection::after {
   content: '';
@@ -122,6 +133,7 @@
   margin: var(--dimension-space-0);
 }
 
+.path > .group,
 .path > .nextSection {
   grid-column: 1 / -1;
 }

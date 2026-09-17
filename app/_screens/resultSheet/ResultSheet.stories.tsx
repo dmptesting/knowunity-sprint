@@ -41,7 +41,7 @@ const meta = {
           '',
           '| Result | When | Actions |',
           '|---|---|---|',
-          '| `correct` | A pass | Next question, or View results on the last question |',
+          '| `correct` | A pass | Next question, or Finish on the last question |',
           '| `incorrect` | A miss, with a hint still to spend | Try again · View hint 1 or 2 |',
           '| `unsure` | Nothing usable came through (empty or garbled) | Try again · Skip question |',
           '| `reveal` | A miss with both hints spent | Reveal answer |',
@@ -119,7 +119,7 @@ export const Correct: Story = {
 
 /**
  * A pass on the session's last question: no next question to move to, so the
- * button reads "View results" and leads to the summary's stat tiles instead.
+ * button reads "Finish" and leads to the summary's stat tiles instead.
  */
 export const CorrectLastQuestion: Story = {
   name: 'Correct, last question',
@@ -130,7 +130,7 @@ export const CorrectLastQuestion: Story = {
     await expect(
       canvas.queryByRole('button', { name: 'Next question' }),
     ).not.toBeInTheDocument();
-    const results = canvas.getByRole('button', { name: 'View results' });
+    const results = canvas.getByRole('button', { name: 'Finish' });
     await expect(results).toBeVisible();
     await userEvent.click(results);
     await expect(args.onContinue).toHaveBeenCalled();

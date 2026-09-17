@@ -25,7 +25,8 @@ const PROGRESS_TEXT: Record<PathNodeProgress, string> = {
 /** Spoken for screen readers, since format is otherwise icon-only. */
 const FORMAT_TEXT: Record<PathNodeFormat, string> = {
   quiz: 'quiz',
-  explainOutLoud: 'explain out loud',
+  // The variant keeps Figma's name; what a student hears is the step's name.
+  explainOutLoud: 'talk it through',
 };
 
 export type PathNodeProps = {
@@ -44,7 +45,8 @@ export type PathNodeProps = {
 /**
  * A step in the study-plan learning path. Shows completion state
  * (completed/current/upcoming) and which flow tapping it opens (quiz or
- * explain-out-loud voice recall).
+ * talk-it-through voice recall — `format="explainOutLoud"`, Figma's variant
+ * name).
  *
  * Reach for it to build any path/roadmap list.
  *

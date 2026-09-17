@@ -99,7 +99,7 @@ to specify (`VerdictHeader` + `TextBlock` ×2 + `ButtonGroup`) was removed.
 
 | Verdict | `result` | Title | Summary | Actions |
 |---|---|---|---|---|
-| Pass | `correct` | The feedback headline | The feedback detail | "Next question", or "View results" on the last question |
+| Pass | `correct` | The feedback headline | The feedback detail | "Next question", or "Finish" on the last question |
 | Partial | `incorrect` | "Almost…" | The feedback detail | "Try again" · "View hint 1" or "View hint 2" |
 | Fail | `incorrect` | "Not quite…" | The feedback detail | "Try again" · "View hint 1" or "View hint 2" |
 
@@ -273,14 +273,14 @@ Two came back open when the result sheet replaced the Result screen (2026-09-15)
   sheet shows `bottomSheet`'s default, `confused`. Either the item or the sheet should change.
 
 One thing remains to be *produced* rather than decided: the copy itself — four question
-prompts for the Network Foundations section, each with an answer, two hints and three
+prompts for the Network Basics section, each with an answer, two hints and three
 transcripts. I draft these; you edit them before anyone sees the prototype. Until they are
 written, `script.ts` is the only thing blocking screens 1 and 2.
 
 <details>
 <summary>Resolved, for the record</summary>
 
-1. **The 4 questions** — I draft all four for the Network Foundations section, keeping the
+1. **The 4 questions** — I draft all four for the Network Basics section, keeping the
    existing brute-force question as one of them; you edit before anyone sees them.
 2. **Verdict sequence** — Q1 pass · Q2 empty, then partial, then pass after hint 1 · Q3 full
    ladder to reveal · Q4 pass.

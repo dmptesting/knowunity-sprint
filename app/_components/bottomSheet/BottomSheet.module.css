@@ -56,18 +56,6 @@
 
 /* ---------------------------------------------------------------- parts --- */
 
-/* Figma's "Handle": 32×4, 6px from the top edge, radius Stroke/Heavy Border. */
-.grabber {
-  position: absolute;
-  inset-block-start: var(--dimension-space-150);
-  inset-inline-start: 50%;
-  translate: -50% 0;
-  inline-size: var(--dimension-space-800);
-  block-size: var(--dimension-space-100);
-  border-radius: var(--dimension-stroke-heavy-border);
-  background-color: var(--color-background-stacking);
-}
-
 /*
  * Knowie on the left, the words on the right. mascotSlot 2XL (Illustration/1500,
  * 120px) is the largest step that leaves the text column a readable width at
