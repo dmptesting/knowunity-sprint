@@ -3,20 +3,26 @@
  * build/css/tokens.css; no component is restyled here.
  *
  * Figma screen 09 stacks the eyebrow, the headline and the stat row, centred
- * in the page. They now sit at the top instead, with Knowie and his recall
- * line below them, and the action pinned at the bottom.
+ * in the page. The stack now runs from the eyebrow down to Knowie's recall
+ * line, with the action pinned at the bottom.
  */
 
 .content {
   display: flex;
+  flex: 1;
   flex-direction: column;
   align-items: center;
   gap: var(--dimension-space-400);
+  /*
+   * The whole stack sits just above the middle of the screen. Centring it in
+   * this region alone would leave it high, since the action row below has its
+   * own space: Space/1600 of extra top padding pushes it back down by half
+   * that, Space/800, landing its centre a little above the screen's.
+   */
+  justify-content: center;
   padding-inline: var(--dimension-space-400);
-  padding-block: var(--dimension-space-600);
-  /* Everything from the eyebrow to Knowie's bubble sits Space/700 lower than
-     the stack's own Space/600 inset. */
-  padding-block-start: calc(var(--dimension-space-600) + var(--dimension-space-700));
+  padding-block-start: calc(var(--dimension-space-600) + var(--dimension-space-1600));
+  padding-block-end: var(--dimension-space-600);
 }
 
 /*
