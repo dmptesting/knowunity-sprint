@@ -80,6 +80,13 @@ export type RecallQuestion = {
    * whose last attempt is not a pass ends at the reveal.
    */
   attempts: ScriptedAttempt[];
+  /**
+   * Knowie's line on the summary if this question is the one he recalls: the
+   * best part of the student's passing explanation, played back in their own
+   * terms, so it is clear he was listening. Written against the passing
+   * transcript above — the mock never hears the real answer.
+   */
+  recall: string;
 };
 
 /** The study-plan section this recall step follows. */
@@ -92,6 +99,15 @@ export const SECTION_TITLE = 'Network Basics';
  * spaced repetition here to come back to.
  */
 export const REVEAL_LINE = "No shame in this one. Here's the answer, so you've got it for next time.";
+
+/**
+ * Knowie's line on the summary when there is no passed answer to recall —
+ * every question skipped, missed or revealed. Warm, and it claims nothing:
+ * praising an explanation that never landed would read as not listening,
+ * which is the opposite of what the recall line is for.
+ */
+export const SUMMARY_FALLBACK_LINE =
+  'Thanks for talking these through with me. Every explanation makes the next one easier.';
 
 export const RECALL_SCRIPT: RecallQuestion[] = [
   /* Q1 — passes first try. The session opens on a win. */
@@ -115,6 +131,8 @@ export const RECALL_SCRIPT: RecallQuestion[] = [
         },
       },
     ],
+    recall:
+      'You said a router sends traffic between networks, and a switch just moves it around inside one. That’s the whole difference.',
   },
 
   /* Q2 — empty first (a free retry), then partial, then passes after hint 1. */
@@ -147,6 +165,8 @@ export const RECALL_SCRIPT: RecallQuestion[] = [
         },
       },
     ],
+    recall:
+      'I liked how you split the jobs: the IP address gets it to the right network, and the MAC address picks out the device.',
   },
 
   /*
@@ -196,6 +216,9 @@ export const RECALL_SCRIPT: RecallQuestion[] = [
         },
       },
     ],
+    /* The script never passes this one; only a forced verdict can. */
+    recall:
+      'You got to the heart of it: every extra character means far more guesses to get through.',
   },
 
   /* Q4 — passes. The session ends on a win. */
@@ -219,8 +242,30 @@ export const RECALL_SCRIPT: RecallQuestion[] = [
         },
       },
     ],
+    recall:
+      'You put DNS perfectly: it takes the name you type and looks up the address your computer needs.',
   },
 ];
 
 /** Every question in the session. Fixed at 4 — see sprint-context.md. */
 export const QUESTION_COUNT = RECALL_SCRIPT.length;
+
+/**
+ * The line Knowie closes the session with.
+ *
+ * Of the questions the student passed, the one that took the fewest hints —
+ * their strongest explanation — and on a tie the earliest, since remembering
+ * the first answer is the clearest sign he was listening all along. With no
+ * pass to recall, the canned line.
+ *
+ * `passes` is one entry per question in session order: the hints spent on it
+ * if it passed, `undefined` if it didn't.
+ */
+export function pickRecallLine(passes: (number | undefined)[]): string {
+  let best: { index: number; hints: number } | undefined;
+  passes.forEach((hints, index) => {
+    if (hints === undefined) return;
+    if (!best || hints < best.hints) best = { index, hints };
+  });
+  return best ? RECALL_SCRIPT[best.index].recall : SUMMARY_FALLBACK_LINE;
+}

@@ -36,6 +36,7 @@ const meta = {
           '',
           '### Departures from Figma',
           '',
+          '- **`showTail` is code-only.** Figma\'s bubble always has its tail, fixed pointing left, which points at nothing when Knowie sits above the bubble rather than beside it. `showTail={false}` drops the tail and its overlap. First used on the summary; the matching Figma property is still to be added.',
           '- **It fills its parent instead of a fixed 342px.** 342 is 390 minus `Space/600` a side, and there is no token for that width. The stories inset it by `Space/600`, which reproduces 342px at the 390px viewport.',
           '- **The tail is 20×16, not 15×19.** Figma rotates a 15×19 polygon 90°; neither number is a token, so the box is snapped to the nearest real steps (`Icon/250` × `Icon/200`) and the triangle is drawn with `clip-path` rather than a rotated node. Its `Space/Negative 200` overlap with the bubble is exact.',
           "- **The tail has sharp corners.** Figma binds its corner radius to `Radius/100`, but design-system.md records that the binding never renders on a POLYGON, so this matches what the file actually displays rather than what it's bound to.",
@@ -54,6 +55,10 @@ const meta = {
     body: {
       control: 'text',
       description: "The copy Knowie is 'saying'. Not a Figma property.",
+    },
+    showTail: {
+      control: 'boolean',
+      description: 'Draw the left-pointing tail. Off where Knowie is not beside the bubble. Not a Figma property.',
     },
   },
   args: {
@@ -89,5 +94,28 @@ export const Wrapping: Story = {
   name: 'Long copy wraps',
   args: {
     body: 'Explain how a hash function protects a stored password, and why adding a salt makes a precomputed table useless to an attacker.',
+  },
+};
+
+/**
+ * No tail, for a bubble under Knowie rather than beside him — the summary's
+ * recall line. The bubble starts flush with its parent instead of overlapping
+ * a tail.
+ */
+export const WithoutTail: Story = {
+  name: 'Without a tail',
+  args: {
+    showTail: false,
+    body: 'You said a router sends traffic between networks, and a switch just moves it around inside one.',
+  },
+  play: async ({ canvas, canvasElement, args }) => {
+    await expect(canvas.getByText(args.body)).toBeVisible();
+    const root = canvasElement.querySelector('p')!.closest('div')!.parentElement!;
+    // Only the bubble remains: no tail element beside it.
+    await expect(root.children).toHaveLength(1);
+    // Flush with the parent's left edge, not pulled over a tail.
+    await expect(root.firstElementChild!.getBoundingClientRect().left).toBe(
+      root.getBoundingClientRect().left,
+    );
   },
 };

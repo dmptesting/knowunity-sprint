@@ -8,6 +8,13 @@ export type CalloutBubbleProps = {
    * no default — the bubble should never render placeholder copy.
    */
   body: string;
+  /**
+   * Whether to draw the tail. On by default, as Figma ships it. The tail is
+   * fixed pointing left, so turn it off wherever Knowie is not directly to the
+   * bubble's left — above it, for one — or it points at nothing. Not a Figma
+   * property yet.
+   */
+  showTail?: boolean;
 } & Omit<HTMLAttributes<HTMLDivElement>, 'children'>;
 
 /**
@@ -22,15 +29,20 @@ export type CalloutBubbleProps = {
  *
  * "Talking" is on-screen text only: Knowie never gets a voice (CLAUDE.md).
  */
-export function CalloutBubble({ body, className, ...rest }: CalloutBubbleProps) {
+export function CalloutBubble({
+  body,
+  showTail = true,
+  className,
+  ...rest
+}: CalloutBubbleProps) {
   const classes = [styles.calloutBubble, className].filter(Boolean).join(' ');
 
   return (
     <div className={classes} {...rest}>
       {/* Figma's "Tail": a rotated polygon, decorative — the bubble's meaning
           is entirely in its copy. */}
-      <span className={styles.tail} aria-hidden="true" />
-      <div className={styles.bubble}>
+      {showTail ? <span className={styles.tail} aria-hidden="true" /> : null}
+      <div className={showTail ? styles.bubble : `${styles.bubble} ${styles.bubbleNoTail}`}>
         <p className={styles.body}>{body}</p>
       </div>
     </div>

@@ -2,8 +2,9 @@
  * Summary — composition only. Every value resolves to a custom property from
  * build/css/tokens.css; no component is restyled here.
  *
- * Geometry read off Figma screen 09: the eyebrow, the headline and the stat
- * row stacked and centred, with the action below them.
+ * Figma screen 09 stacks the eyebrow, the headline and the stat row, centred
+ * in the page. They now sit at the top instead, with Knowie and his recall
+ * line below them, and the action pinned at the bottom.
  */
 
 .content {
@@ -13,7 +14,6 @@
   gap: var(--dimension-space-400);
   padding-inline: var(--dimension-space-400);
   padding-block: var(--dimension-space-600);
-  flex: 1;
 }
 
 /*
@@ -22,7 +22,6 @@
  */
 .section {
   margin: var(--dimension-space-0);
-  margin-block-start: auto;
   color: var(--color-text-tertiary);
   font: var(--typography-text-style-headline-xxs-bold), Arial, Helvetica, sans-serif;
   /* Greed/Headline XXS Bold is +1% in Figma. 1% of the font size is 0.01em. */
@@ -52,10 +51,24 @@
   align-items: stretch;
   gap: var(--dimension-space-200);
   inline-size: 100%;
-  margin-block-end: auto;
 }
 
 .stats > * {
   flex: 1;
   min-inline-size: 0;
+}
+
+/*
+ * Knowie at 3XL, centred above his recall line — the same arrangement the
+ * primer uses — set apart from the stats by Space/800 on top of the stack's
+ * own gap. The bubble has no tail, so centring leaves nothing pointing the
+ * wrong way.
+ */
+.knowie {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--dimension-space-200);
+  inline-size: 100%;
+  margin-block-start: var(--dimension-space-800);
 }

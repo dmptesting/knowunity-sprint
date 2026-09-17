@@ -209,6 +209,7 @@ export function RecallSession() {
         correct={session.passed}
         xp={session.xp}
         elapsedSeconds={session.elapsedSeconds}
+        recallLine={session.recallLine}
         onContinue={leave}
       />
     );

@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   RECALL_SCRIPT,
   QUESTION_COUNT,
+  pickRecallLine,
   type Verdict,
   type RecallQuestion,
 } from './script';
@@ -98,6 +99,10 @@ export function useRecallSession({
   const [outcomes, setOutcomes] = useState<QuestionOutcome[]>(() =>
     Array.from({ length: startIndex }, () => 'skipped' as const),
   );
+  /** Hints spent on each finished question, in order — for the summary's recall. */
+  const [hintsSpent, setHintsSpent] = useState<number[]>(() =>
+    Array.from({ length: startIndex }, () => 0),
+  );
   const [xp, setXp] = useState(0);
   const [mode, setMode] = useState<InputMode>(initialMode);
   const [permission, setPermission] = useState<PermissionStatus>('unknown');
@@ -175,6 +180,7 @@ export function useRecallSession({
   const advance = useCallback(
     (outcome: QuestionOutcome, earned: number) => {
       setOutcomes((prev) => [...prev, outcome]);
+      setHintsSpent((prev) => [...prev, hintsUsed]);
       setXp((prev) => prev + earned);
       setAttempt(0);
       setHintsUsed(0);
@@ -188,7 +194,7 @@ export function useRecallSession({
         setPhase('idle');
       }
     },
-    [index],
+    [index, hintsUsed],
   );
 
   /*
@@ -291,6 +297,7 @@ export function useRecallSession({
     setAttempt(0);
     setHintsUsed(0);
     setOutcomes([]);
+    setHintsSpent([]);
     setXp(0);
     setNotice(undefined);
     setFinished(false);
@@ -337,6 +344,13 @@ export function useRecallSession({
       xp,
       passed,
       outcomes,
+      /**
+       * Knowie's closing line on the summary: the best passed explanation
+       * played back, or the canned line when nothing passed.
+       */
+      recallLine: pickRecallLine(
+        outcomes.map((o, i) => (o === 'passed' ? hintsSpent[i] : undefined)),
+      ),
       elapsedSeconds: Math.round(elapsedMs / 1000),
       /**
        * Questions finished, not attempts made — so it never moves on a
@@ -392,7 +406,7 @@ export function useRecallSession({
     }),
     [
       question, index, phase, attempt, hintsUsed, shownAttempt, notice, mode,
-      permission, tapMode, finished, xp, passed, outcomes, elapsedMs,
+      permission, tapMode, finished, xp, passed, outcomes, hintsSpent, elapsedMs,
       submit, retry, tryAgain, viewHint, showAnswer, nextQuestion, skip, restart,
       switchToText, switchToVoice, recordPermission,
     ],

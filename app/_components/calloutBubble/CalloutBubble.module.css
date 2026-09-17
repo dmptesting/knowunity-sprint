@@ -44,6 +44,11 @@
   background-color: var(--color-background-surface);
 }
 
+/* No tail, so nothing to overlap: the bubble starts flush with its parent. */
+.bubbleNoTail {
+  margin-inline-start: var(--dimension-space-0);
+}
+
 /*
  * Figma text style "Greed/Body M Regular".
  */

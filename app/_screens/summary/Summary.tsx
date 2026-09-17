@@ -3,7 +3,13 @@
 import { Screen } from '../../_components/screen/Screen';
 import { Button } from '../../_components/button/Button';
 import { StatTile } from '../../_components/statTile/StatTile';
-import { QUESTION_COUNT, SECTION_TITLE } from '../../_recall/script';
+import { MascotSlot } from '../../_components/mascotSlot/MascotSlot';
+import { CalloutBubble } from '../../_components/calloutBubble/CalloutBubble';
+import {
+  QUESTION_COUNT,
+  SECTION_TITLE,
+  SUMMARY_FALLBACK_LINE,
+} from '../../_recall/script';
 import styles from './Summary.module.css';
 
 export type SummaryProps = {
@@ -13,6 +19,12 @@ export type SummaryProps = {
   xp: number;
   /** Real elapsed seconds, with processing and hint-reading paused out. */
   elapsedSeconds: number;
+  /**
+   * Knowie's closing line: the best part of one passed explanation played back
+   * to the student, or the canned line when nothing passed. The session picks
+   * it (`pickRecallLine`); defaults to the canned line.
+   */
+  recallLine?: string;
   /** The section this recall step followed. */
   section?: string;
   /** Back to the study plan path. */
@@ -42,6 +54,7 @@ export function Summary({
   correct,
   xp,
   elapsedSeconds,
+  recallLine = SUMMARY_FALLBACK_LINE,
   section = SECTION_TITLE,
   onContinue,
 }: SummaryProps) {
@@ -78,6 +91,18 @@ export function Summary({
           <StatTile stat="xp" value={`+${xp}`} />
           <StatTile stat="correct" value={`${correct}/${QUESTION_COUNT}`} />
           <StatTile stat="time" value={formatElapsed(elapsedSeconds)} />
+        </div>
+
+        {/*
+          Knowie, then what he remembers — proof he was listening. Excited when
+          he is playing back a passed answer; on standby with the canned line,
+          since nothing passed and SPEC.md keeps him from wearing a reaction at
+          a student who struggled. Decorative: the bubble carries the words.
+          The bubble is under him, not beside him, so it has no tail.
+        */}
+        <div className={styles.knowie}>
+          <MascotSlot size="3XL" expression={correct > 0 ? 'excited' : 'standby'} />
+          <CalloutBubble body={recallLine} showTail={false} />
         </div>
       </div>
     </Screen>
