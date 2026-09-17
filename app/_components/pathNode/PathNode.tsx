@@ -53,8 +53,9 @@ export type PathNodeProps = {
  * Don't change its Label to anything longer than a lesson title; it isn't
  * built to wrap.
  *
- * Deliberate departure from Figma: `completed` shows its own format icon
- * rather than check-circle. See the Storybook docs for why.
+ * Deliberate departures from Figma: `completed` shows its own format icon
+ * rather than check-circle, and the current talk-it-through node pulses with a
+ * turning gradient ring. See the Storybook docs for why.
  */
 export function PathNode({
   progress = 'completed',
@@ -65,6 +66,17 @@ export function PathNode({
   ...rest
 }: PathNodeProps) {
   const classes = [styles.pathNode, className].filter(Boolean).join(' ');
+  // The one node worth calling out: talk it through, when it is the step to
+  // take now. It pulses and its ring turns, to invite the tap and mark it as
+  // the special feature. An upcoming one stays still — it can't be opened yet.
+  const featured = progress === 'current' && format === 'explainOutLoud';
+  const markerClasses = [
+    styles.marker,
+    MARKER_CLASS[progress],
+    featured ? styles.markerFeatured : undefined,
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   return (
     <button
@@ -73,7 +85,7 @@ export function PathNode({
       aria-current={progress === 'current' ? 'step' : undefined}
       {...rest}
     >
-      <span className={`${styles.marker} ${MARKER_CLASS[progress]}`}>
+      <span className={markerClasses}>
         {/* The icon says what the step is; the marker fill says how far along
             you are. Every progress state shows its own format icon. */}
         <span className={styles.iconSlot}>

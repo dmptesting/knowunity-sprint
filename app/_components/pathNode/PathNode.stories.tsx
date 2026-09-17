@@ -34,12 +34,15 @@ const meta = {
           '- `current` — brand marker (`accent/brand/subtle`) with a `Stroke/Heavy Border` stroke, icon in `text/primary`. The only bordered state, and the "you are here" node.',
           '- `upcoming` — surface marker (`background/surface`), icon in `text/primary`, no stroke.',
           '',
+          '**One combination is featured:** `current` + `explainOutLoud`. Its stroke is a gradient (`accent/brand/bold` → `accent/magenta/bold` → the marker\'s own `accent/brand/subtle`) that turns clockwise every 4.5s, and the marker pulses 5% larger every 2.4s — to invite the tap and mark talk it through as the special feature. An upcoming talk it through stays still, since it can\'t be opened yet. Under `prefers-reduced-motion` nothing moves; the gradient ring stays.',
+          '',
           '### Departures from Figma',
           '',
           '- **Icons are Material Symbols (rounded), not the Figma glyphs.** Swapped by design decision. A side effect worth knowing: all icons now share Material\'s 960 grid, which fixed a real defect \u2014 Figma\'s `mic` had kept voiceCircle\'s 40px-box geometry when it was promoted, so in the 24px slot it drew 23.33\u00d731.67 against ai-quiz\'s 18.87\u00d722. Measured in the browser, the glyphs now sit within 1px of each other.',
           '- **`completed` shows its format icon, not check-circle.** Figma and design-system.md both specify check-circle for `completed` "regardless of `format`", on the reasoning that format stops mattering once a node is done. Overridden by design decision: the icon now always identifies the step and the green fill alone marks it done. check-circle is no longer drawn anywhere in this component.',
           '- **A knock-on:** `completed` and `upcoming` now differ **by marker fill colour alone** for a given format. Voice UX Reference principle 1 warns that "colour alone isn\'t enough". Accepted deliberately for now. Screen readers are unaffected — the hidden text still announces "completed" or "upcoming" — but sighted students have only the green fill to go on.',
           '- **`completed` uses `feedback/success/bold`, not `accent/green/subtle`.** Changed by design decision, and the better semantic fit — that token\'s own description is "Solid success fill, used for correct answer banners, completion states", where `accent/green` is hue-named debt per design-system.md. Its icon takes the paired `feedback/success/onBold` (7.49:1). White would have been 2.08:1, under the 3:1 minimum for icons.',
+          '- **The featured node is not in Figma.** Figma\'s `current` stroke is a solid `accent/brand/bold`. The motion durations and the 5% pulse are unbound — tokens.json has no motion tokens. `accent/magenta` is hue-named debt (design-system.md), reused rather than extended.',
           '- **Two additions Figma has no spec for:** a keyboard focus ring (built from `Stroke/Heavy Border` + `accent/brand/bold`), and a visually hidden text suffix naming the progress and format, since both are otherwise conveyed by colour and icon alone. No hover (mobile only) and no pressed state, since the file defines neither.',
           '- **`label` is a required prop with no default.** Figma\'s Label is a plain text layer rather than an exposed property, and each variant ships a different placeholder lesson title. Requiring it keeps placeholder copy from shipping.',
           '',
@@ -122,6 +125,13 @@ export const CurrentExplainOutLoud: Story = {
     format: 'explainOutLoud',
     label: 'Talk it through',
   },
+  play: async ({ canvasElement }) => {
+    // Featured: the ring turns and the marker pulses.
+    const marker = canvasElement.querySelector('button > span') as HTMLElement;
+    const names = getComputedStyle(marker).animationName;
+    await expect(names).toMatch(/ring/);
+    await expect(names).toMatch(/pulse/);
+  },
 };
 
 export const UpcomingQuiz: Story = {
@@ -135,6 +145,11 @@ export const UpcomingExplainOutLoud: Story = {
     progress: 'upcoming',
     format: 'explainOutLoud',
     label: 'Talk it through',
+  },
+  play: async ({ canvasElement }) => {
+    // Not yet reachable, so not featured: nothing moves.
+    const marker = canvasElement.querySelector('button > span') as HTMLElement;
+    await expect(getComputedStyle(marker).animationName).toBe('none');
   },
 };
 

@@ -79,6 +79,71 @@
   color: var(--color-text-primary);
 }
 
+/*
+ * current + talk it through — the featured node. Not in Figma.
+ *
+ * Its stroke becomes a gradient that turns clockwise, and the whole marker
+ * pulses gently, to invite the tap and mark talk it through as the special
+ * feature. Only this combination gets it: a current quiz is an ordinary step,
+ * and an upcoming talk it through cannot be opened yet.
+ *
+ * The ring is two backgrounds: the marker's own fill clipped to the padding
+ * box, and a conic gradient clipped to the border box, showing through the
+ * transparent Stroke/Heavy Border. The gradient is brand violet into magenta,
+ * then down to the marker's own fill, so one bright arc sweeps round — that
+ * dim stretch is what makes the turn visible. Turning is an animated start
+ * angle; conic gradients run clockwise, so a growing angle turns clockwise.
+ *
+ * The pulse scales the marker by 5%, which paints over its neighbours without
+ * moving them. Durations and the scale are unbound: tokens.json carries no
+ * motion tokens.
+ */
+@property --path-node-ring-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0turn;
+}
+
+.markerFeatured {
+  border-color: transparent;
+  background:
+    linear-gradient(var(--color-accent-brand-subtle), var(--color-accent-brand-subtle)) padding-box,
+    conic-gradient(
+        from var(--path-node-ring-angle),
+        var(--color-accent-brand-bold),
+        var(--color-accent-magenta-bold) 35%,
+        var(--color-accent-brand-subtle) 70%,
+        var(--color-accent-brand-bold)
+      )
+      border-box;
+  animation:
+    path-node-ring 4.5s linear infinite,
+    path-node-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes path-node-ring {
+  to {
+    --path-node-ring-angle: 1turn;
+  }
+}
+
+@keyframes path-node-pulse {
+  0%,
+  100% {
+    scale: 1;
+  }
+  50% {
+    scale: 1.05;
+  }
+}
+
+/* Nothing moves. The gradient ring stays, so the node still reads as special. */
+@media (prefers-reduced-motion: reduce) {
+  .markerFeatured {
+    animation: none;
+  }
+}
+
 /* upcoming — no stroke, still shows the format icon. */
 .markerUpcoming {
   background-color: var(--color-background-surface);
