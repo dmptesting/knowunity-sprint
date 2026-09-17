@@ -19,7 +19,9 @@ export type PlanStep = {
 /** Kept as Figma writes it: the name of a specific exam, so a proper noun. */
 export const PLAN_TITLE = 'AP Cybersecurity Exam';
 export const PLAN_MODE = 'Focus mode';
-export const PLAN_META = '2 weeks · Grade goal: B';
+/** The two meta facts, each beside its own icon in the header. */
+export const PLAN_DEADLINE = '2 weeks';
+export const PLAN_GRADE_GOAL = 'Grade goal: B';
 
 /** The section the recall step belongs to. Matches script.ts's SECTION_TITLE. */
 export const SECTION_STEPS: PlanStep[] = [

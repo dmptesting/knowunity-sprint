@@ -4,9 +4,12 @@
  *
  * Geometry read off Figma screen 01: middleContent is a vertical stack with
  * Space/400 side padding and Space/200 between items. The type is bound to the
- * styles the frame uses — Caption M Bold for the mode line and the next
- * section, Headline XS Bold for the plan title, Headline XXS Bold for the
- * section headings.
+ * styles the frame uses — Caption M Bold for the meta row and the next
+ * section, Headline XXS Bold for the section headings.
+ *
+ * The header follows the shipped beta rather than the frame: a focus-mode
+ * chip, the plan's name centred and large, then the deadline and the grade
+ * goal each beside an icon, over tabs whose active half is underlined.
  */
 
 .content {
@@ -18,7 +21,6 @@
   flex: 1;
 }
 
-.mode,
 .title,
 .meta,
 .tabs,
@@ -29,38 +31,82 @@
   letter-spacing: calc(var(--number-font-tracking-loose) * 0.01em);
 }
 
-/* Figma: "Focus Mode", Greed/Caption M Bold, text/primary. Pushed down so the
-   plan header sits where the frame puts it, under the empty topNavigation. */
+/*
+ * "Focus mode" as a chip, left-aligned, the way the beta draws it. Pushed down
+ * so the header sits where the frame puts it, under the empty topNavigation.
+ *
+ * The beta's pill is a violet tint; `chips` has no brand colour — its inactive
+ * fill is `background/surface` — so it keeps the component's own treatment
+ * rather than being restyled here.
+ */
 .mode {
+  align-self: flex-start;
   margin-block-start: var(--dimension-space-1600);
-  color: var(--color-text-primary);
-  font: var(--typography-text-style-caption-mbold), Arial, Helvetica, sans-serif;
 }
 
-/* Figma: Greed/Headline XS Bold, text/primary. */
+/*
+ * The plan's name, centred and the loudest thing in the header, as in the
+ * beta. Greed/Headline M: the frame's Headline XS Bold is the size of a
+ * section heading, which left the plan reading as a caption above its own path.
+ */
 .title {
   margin-block-start: var(--dimension-space-300);
   color: var(--color-text-primary);
-  font: var(--typography-text-style-headline-xs-bold), Arial, Helvetica, sans-serif;
+  font: var(--typography-text-style-headline-m), Arial, Helvetica, sans-serif;
+  /* Headline M is −1% in Figma; .title is excluded from the +1% rule above. */
+  letter-spacing: calc(var(--number-font-tracking-tight) * 0.01em);
+  text-align: center;
 }
 
-/* Figma: Greed/Caption M Bold, text/secondary. */
+/* How long the plan runs, and the grade it aims at — side by side under the
+   title, each beside its own icon. Greed/Caption M Bold, text/secondary. */
 .meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--dimension-space-400);
   color: var(--color-text-secondary);
   font: var(--typography-text-style-caption-mbold), Arial, Helvetica, sans-serif;
 }
 
-/* Figma: Greed/Headline XXS Bold. One text node in the file; two spans here so
-   the active tab can carry the emphasis. */
+.fact {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--dimension-space-150);
+}
+
+/* Icon/200 (16px), the line height of the text beside it. */
+.factIcon {
+  display: inline-flex;
+  flex: none;
+  color: var(--color-text-tertiary);
+}
+
+/*
+ * Figma: Greed/Headline XXS Bold. One text node in the file; two spans here so
+ * the active tab can carry the emphasis. The beta divides the row with a rule
+ * and underlines the active half, which is what marks Plan as the view you are
+ * in — emphasis alone left the two reading as a heading and a subheading.
+ */
 .tabs {
   display: flex;
-  gap: var(--dimension-space-600);
   margin-block-start: var(--dimension-space-400);
+  border-block-end: var(--dimension-stroke-border) solid var(--color-border-default);
   font: var(--typography-text-style-headline-xxs-bold), Arial, Helvetica, sans-serif;
+}
+
+.tabs > * {
+  flex: 1;
+  padding-block-end: var(--dimension-space-200);
+  text-align: center;
 }
 
 .tabActive {
   color: var(--color-text-primary);
+  /* Sits on the row's own rule, so the underline reads as part of it. */
+  box-shadow: inset 0 calc(-1 * var(--dimension-stroke-heavy-border)) 0
+    var(--color-accent-green-bold);
 }
 
 .tab {

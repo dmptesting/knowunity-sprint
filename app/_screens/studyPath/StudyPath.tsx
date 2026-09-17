@@ -5,13 +5,16 @@ import {
   PathNode,
   type PathNodeProgress,
 } from "../../_components/pathNode/PathNode";
+import { Chips } from "../../_components/chips/Chips";
+import { CalendarIcon, TargetIcon, TimerIcon } from "../../_components/icons/UiIcons";
 import { SECTION_TITLE } from "../../_recall/script";
 import {
   EXPLAIN_STEP,
   NEXT_SECTION,
   NEXT_SECTION_STEPS,
   SECTION_GROUP,
-  PLAN_META,
+  PLAN_DEADLINE,
+  PLAN_GRADE_GOAL,
   PLAN_MODE,
   PLAN_TITLE,
   SECTION_STEPS,
@@ -56,9 +59,36 @@ export function StudyPath({
   return (
     <Screen>
       <div className={styles.content}>
-        <p className={styles.mode}>{PLAN_MODE}</p>
+        {/*
+          The beta's header: the focus-mode pill on the left, the plan's name
+          centred under it, then how long the plan runs and the grade it is
+          aimed at, each beside its own icon.
+        */}
+        <Chips
+          className={styles.mode}
+          size="S"
+          Text={PLAN_MODE}
+          showRightIcon={false}
+          leftIcon={<TimerIcon size="var(--dimension-icon-200)" />}
+        />
+
         <h1 className={styles.title}>{PLAN_TITLE}</h1>
-        <p className={styles.meta}>{PLAN_META}</p>
+
+        <p className={styles.meta}>
+          <span className={styles.fact}>
+            {/* Decorative: the words beside each icon already say what it is. */}
+            <span className={styles.factIcon} aria-hidden="true">
+              <CalendarIcon size="var(--dimension-icon-200)" />
+            </span>
+            {PLAN_DEADLINE}
+          </span>
+          <span className={styles.fact}>
+            <span className={styles.factIcon} aria-hidden="true">
+              <TargetIcon size="var(--dimension-icon-200)" />
+            </span>
+            {PLAN_GRADE_GOAL}
+          </span>
+        </p>
 
         {/*
           Figma draws the tabs as a single text node. They are scenery: this

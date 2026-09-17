@@ -2,6 +2,7 @@ import {
   ADD_PATH,
   ARROW_BACK_PATH,
   BOLT_PATH,
+  CALENDAR_PATH,
   CHECK_PATH,
   CLOSE_PATH,
   IOS_SHARE_PATH,
@@ -112,4 +113,9 @@ export function TargetIcon({ size }: IconProps) {
 /** Material Symbols `timer`, a stopwatch — statTile's time stat (stat=blazing). */
 export function TimerIcon({ size }: IconProps) {
   return <Glyph size={size} d={TIMER_PATH} />;
+}
+
+/** Material Symbols `calendar_month` — the study plan's deadline. */
+export function CalendarIcon({ size }: IconProps) {
+  return <Glyph size={size} d={CALENDAR_PATH} />;
 }

@@ -61,6 +61,12 @@ const recallNode = /^Talk it through\b/;
 export const Default: Story = {
   name: 'Recall not yet done',
   play: async ({ canvas, args }) => {
+    // The header: the plan's name, how long it runs, and the grade it aims at.
+    await expect(canvas.getByRole('heading', { name: 'AP Cybersecurity Exam' })).toBeVisible();
+    await expect(canvas.getByText('Focus mode')).toBeVisible();
+    await expect(canvas.getByText('2 weeks')).toBeVisible();
+    await expect(canvas.getByText('Grade goal: B')).toBeVisible();
+
     // Both groups are introduced the same way: the section's own heading above
     // its nodes, the next section's below them, in the same treatment.
     const group = canvas.getByRole('heading', { name: 'Devices and protocols' });
