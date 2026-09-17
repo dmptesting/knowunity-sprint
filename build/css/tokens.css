@@ -125,6 +125,7 @@
   --number-font-tracking-loose: 1;
   --font-family-display: 'Greed Standard-TRIAL';
   --font-family-default: 'Greed Standard-TRIAL';
+  --font-family-condensed: 'Greed Condensed-TRIAL'; /** The narrow numerals on statTile. No webfont ships for this family yet, so CSS falls back to font/family/default at the same weight and size. */
   --font-weight-regular: 400;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
@@ -233,4 +234,5 @@
   --typography-text-style-caption-mregular: 400 12px/16px 'Greed Standard-TRIAL'; /** Text style "Greed/Caption M Regular" from the file's type scale. */
   --typography-text-style-caption-sbold: 600 9px/12px 'Greed Standard-TRIAL'; /** Text style "Greed/Caption S Bold" from the file's type scale. */
   --typography-text-style-caption-sregular: 400 9px/12px 'Greed Standard-TRIAL'; /** Text style "Greed/Caption S Regular" from the file's type scale. */
+  --typography-text-style-stat: 800 21px/20px 'Greed Condensed-TRIAL'; /** Text style "Greed Condensed/Stat" — the numerals on statTile. The design drew 24px, which is not a step on the scale; snapped to font/size/lg. */
 }

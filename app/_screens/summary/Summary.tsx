@@ -15,9 +15,12 @@ import styles from './Summary.module.css';
 
 /** How long the closed-eye frame holds — quick enough to read as a blink, not a wink. */
 const BLINK_HOLD_MS = 150;
-/** A person blinks roughly every 2-6s; this samples the same range. */
-const BLINK_MIN_DELAY_MS = 2500;
-const BLINK_MAX_DELAY_MS = 5000;
+/**
+ * A person blinks roughly every 2-6s; this samples the same range, run 15%
+ * faster than that on request — 2500/1.15 and 5000/1.15.
+ */
+const BLINK_MIN_DELAY_MS = 2174;
+const BLINK_MAX_DELAY_MS = 4348;
 
 /**
  * Swaps `expression` to `sad` for one short beat every few seconds, standing
@@ -135,8 +138,8 @@ export function Summary({
 
         <div className={styles.stats}>
           <StatTile stat="xp" value={`+${xp}`} />
-          <StatTile stat="correct" value={`${correct}/${QUESTION_COUNT}`} />
-          <StatTile stat="time" value={formatElapsed(elapsedSeconds)} />
+          <StatTile stat="score" value={`${correct}/${QUESTION_COUNT}`} />
+          <StatTile stat="blazing" value={formatElapsed(elapsedSeconds)} />
         </div>
 
         {/*

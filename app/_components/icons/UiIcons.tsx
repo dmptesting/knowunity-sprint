@@ -104,12 +104,12 @@ export function BoltIcon({ size }: IconProps) {
   return <Glyph size={size} d={BOLT_PATH} />;
 }
 
-/** Material Symbols `target` — statTile's correct-answers stat. */
+/** Material Symbols `target` — statTile's score stat. */
 export function TargetIcon({ size }: IconProps) {
   return <Glyph size={size} d={TARGET_PATH} />;
 }
 
-/** Material Symbols `timer`, a stopwatch — statTile's time stat. */
+/** Material Symbols `timer`, a stopwatch — statTile's time stat (stat=blazing). */
 export function TimerIcon({ size }: IconProps) {
   return <Glyph size={size} d={TIMER_PATH} />;
 }

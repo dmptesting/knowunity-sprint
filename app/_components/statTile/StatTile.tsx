@@ -7,34 +7,38 @@ import styles from './StatTile.module.css';
  * axes — design-system.md reserves Title Case for emphasis and size. Each one
  * sets the tile's accent, its icon and its default label.
  */
-export type StatTileStat = 'xp' | 'correct' | 'time';
+export type StatTileStat = 'xp' | 'score' | 'blazing';
 
-const ICON_SIZE = 'var(--dimension-icon-200)';
+const ICON_SIZE = 'var(--dimension-icon-300)';
 
+// `blazing` names the variant and its accent, not the label: Figma writes
+// "BLAZING" over the elapsed time, which would praise a slow run as readily as
+// a fast one. The visible label stays "Time"; callers can override it.
 const STAT: Record<StatTileStat, { label: string; icon: ReactNode; className: string }> = {
   xp: { label: 'XP', icon: <BoltIcon size={ICON_SIZE} />, className: styles.xp },
-  correct: { label: 'Correct', icon: <TargetIcon size={ICON_SIZE} />, className: styles.correct },
-  time: { label: 'Time', icon: <TimerIcon size={ICON_SIZE} />, className: styles.time },
+  score: { label: 'Score', icon: <TargetIcon size={ICON_SIZE} />, className: styles.score },
+  blazing: { label: 'Time', icon: <TimerIcon size={ICON_SIZE} />, className: styles.blazing },
 };
 
 export type StatTileProps = {
   /** Which stat: sets the accent colour, the icon and the default label. */
   stat: StatTileStat;
   /**
-   * What the number is. Defaults to the stat's own label — "XP", "Correct" or
+   * What the number is. Defaults to the stat's own label — "XP", "Score" or
    * "Time". Keep any override to a word or two.
    */
   label?: string;
   /**
    * The number itself, e.g. "+18". A plain text layer in Figma too, so it takes
-   * a string rather than a number — the "+" and the "%" are part of the value.
+   * a string rather than a number — the "+" and the "/" are part of the value.
    */
   value: string;
 } & Omit<HTMLAttributes<HTMLElement>, 'children'>;
 
 /**
- * A compact badge that surfaces a single numeric stat — XP earned, number
- * correct, or time taken — each in its own accent with its own icon.
+ * A compact tile that surfaces a single stat — XP earned, score, or time taken
+ * — each in its own accent with its own icon: a coloured chip naming the stat,
+ * and the number below it on the page's own dark ground.
  *
  * Reach for it inline after a recall attempt or on a summary screen when one
  * number deserves emphasis.

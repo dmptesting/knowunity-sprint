@@ -52,8 +52,7 @@
 
 /*
  * Figma 09's three tiles, Space/200 apart, each taking an equal share of the
- * row. The frame draws them in three different accents; statTile has no
- * variants and is tied to accent/blue, so all three are blue here.
+ * row. Each carries its own accent, which statTile's `stat` now sets.
  */
 .stats {
   display: flex;

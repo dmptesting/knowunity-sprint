@@ -2,83 +2,92 @@
  * statTile — every value resolves to a custom property from
  * build/css/tokens.css. No raw hex, no raw pixel dimensions.
  *
- * Layer names mirror Figma's: Label, then Value (now with an icon beside it).
+ * Layer names mirror Figma's: Label, then Value (Figma calls the panel "Timer",
+ * a name left over from the instance it was built from).
  *
- * Each stat takes one accent family, used the same way the Figma tile used
- * accent/blue: subtle fill, bold stroke and icon, onSubtle label. The hue-named
- * accents are existing debt (design-system.md) — these use families that
- * already exist rather than adding new hue-named tokens.
+ * Each stat takes one accent family, used the way the Figma component uses it:
+ * the tile is the accent's `bold`, the label on it is `onBold`, and the value
+ * panel is `background/page` with its icon and number in `bold` again. The
+ * hue-named accents are existing debt (design-system.md) — these use families
+ * that already exist rather than adding new hue-named tokens.
  */
 
 .statTile {
   display: inline-flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: var(--dimension-space-100);
   margin: var(--dimension-space-0);
-  padding: var(--dimension-space-300);
-  border: var(--dimension-stroke-heavy-border) solid var(--stat-tile-bold);
   border-radius: var(--dimension-radius-400);
-  background-color: var(--stat-tile-subtle);
+  background-color: var(--stat-tile-bold);
 }
 
 /* ------------------------------------------------------------------ stat --- */
 /*
- * Label contrast on each fill (onSubtle on subtle): coral 6.94:1, green 9.20:1,
- * blue 7.40:1 — all above 4.5:1. accent/brand was ruled out at 4.10:1, and
- * accent/magenta left spare.
+ * Contrast on each accent — label (onBold on bold) and value (bold on
+ * background/page): blue 6.64:1 / 7.35:1, green 7.49:1 / 8.49:1, brand
+ * 5.61:1 / 5.60:1. All above 4.5:1. accent/brand works here, having been ruled
+ * out of the tile's previous subtle-fill treatment at 4.10:1.
  */
 
-/* XP — coral: warm and energetic, beside the bolt. */
+/* XP — blue, beside the bolt. */
 .xp {
-  --stat-tile-subtle: var(--color-accent-coral-subtle);
-  --stat-tile-bold: var(--color-accent-coral-bold);
-  --stat-tile-on-subtle: var(--color-accent-coral-on-subtle);
-}
-
-/* Correct — green: the file's own positive accent ("positive stat chips"). */
-.correct {
-  --stat-tile-subtle: var(--color-accent-green-subtle);
-  --stat-tile-bold: var(--color-accent-green-bold);
-  --stat-tile-on-subtle: var(--color-accent-green-on-subtle);
-}
-
-/* Time — blue: calm and informational, and the colour the tile shipped in. */
-.time {
-  --stat-tile-subtle: var(--color-accent-blue-subtle);
   --stat-tile-bold: var(--color-accent-blue-bold);
-  --stat-tile-on-subtle: var(--color-accent-blue-on-subtle);
+  --stat-tile-on-bold: var(--color-accent-blue-on-bold);
+}
+
+/* Score — green: the file's own positive accent ("positive stat chips"). */
+.score {
+  --stat-tile-bold: var(--color-accent-green-bold);
+  --stat-tile-on-bold: var(--color-accent-green-on-bold);
+}
+
+/* Time — brand, the accent Figma gives the "BLAZING" tile. */
+.blazing {
+  --stat-tile-bold: var(--color-accent-brand-bold);
+  --stat-tile-on-bold: var(--color-accent-brand-on-bold);
 }
 
 /* ---------------------------------------------------------------- parts --- */
 
 /*
- * Greed/Caption M Bold — one step up from Figma's Caption S Bold (font/size/xs
- * and font/lineHeight/xs, from 2xs).
+ * Figma text style "Greed/Body S Bold". Its 20px line height is the whole
+ * height of the coloured strip — the panel below covers everything else, so
+ * the label needs no padding of its own to sit clear.
  */
 .label {
-  color: var(--stat-tile-on-subtle);
-  font: var(--typography-text-style-caption-mbold), Arial, Helvetica, sans-serif;
-  /* Caption M Bold is +1% in Figma. 1% of the font size is 0.01em. */
+  padding: var(--dimension-space-0) var(--dimension-space-200);
+  color: var(--stat-tile-on-bold);
+  font: var(--typography-text-style-body-sbold), Arial, Helvetica, sans-serif;
+  /* Body S Bold is +1% in Figma. 1% of the font size is 0.01em. */
   letter-spacing: calc(var(--number-font-tracking-loose) * 0.01em);
+  text-align: center;
   white-space: nowrap;
 }
 
-/* Figma text style "Greed/Headline XXS Bold", with the stat's icon before it. */
+/*
+ * The dark panel. Full width, so it covers the tile's lower corners and leaves
+ * only the coloured strip showing behind the label.
+ *
+ * Figma text style "Greed Condensed/Stat". No webfont ships for the condensed
+ * family, so Greed Standard leads the fallback chain: until one does, the
+ * number renders in the shipped face at the same weight and size rather than
+ * dropping all the way to Arial.
+ */
 .value {
   display: flex;
+  gap: var(--dimension-space-150);
   align-items: center;
-  gap: var(--dimension-space-100);
+  justify-content: center;
   margin: var(--dimension-space-0);
-  color: var(--color-text-primary);
-  font: var(--typography-text-style-headline-xxs-bold), Arial, Helvetica, sans-serif;
-  letter-spacing: calc(var(--number-font-tracking-loose) * 0.01em);
+  padding: var(--dimension-space-300);
+  border-radius: var(--dimension-radius-400);
+  background-color: var(--color-background-page);
+  color: var(--stat-tile-bold);
+  font: var(--typography-text-style-stat), var(--font-family-default), Arial, Helvetica, sans-serif;
   white-space: nowrap;
 }
 
-/* Icon/200 (16px) — the value's own line height, so the icon adds no height. */
+/* Icon/300 (24px) — Figma draws it at 29px, which is not a step on the scale. */
 .icon {
   display: inline-flex;
   flex: none;
-  color: var(--stat-tile-bold);
 }
