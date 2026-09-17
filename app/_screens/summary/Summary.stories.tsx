@@ -22,7 +22,7 @@ const meta = {
           '',
           '### Knowie remembers',
           '',
-          'Below the stats, Knowie (`mascotSlot` 3XL, centred) sits above a tailless `calloutBubble` (`showTail={false}`), with the bottom fifth of his body tucked behind it, recalling one passed answer in the student\'s own terms, to show he was really listening. The session picks it with `pickRecallLine`: of the passed questions, the one that took the fewest hints, and on a tie the earliest. Each question carries its own `recall` line in script.ts, written against its passing transcript.',
+          'Below the stats, Knowie (`mascotSlot` 3XL, centred) sits above a tailless `calloutBubble` (`showTail={false}`), with the lower quarter of his body tucked behind it, recalling one passed answer in the student\'s own terms, to show he was really listening. The session picks it with `pickRecallLine`: of the passed questions, the one that took the fewest hints, and on a tie the earliest. Each question carries its own `recall` line in script.ts, written against its passing transcript.',
           '',
           'With nothing passed — all skipped, missed or revealed — the bubble shows a canned line that praises nothing, and Knowie is on `standby` instead of `excited`: SPEC.md keeps him from wearing a reaction at a student who struggled.',
           '',

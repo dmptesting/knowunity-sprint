@@ -14,6 +14,9 @@
   gap: var(--dimension-space-400);
   padding-inline: var(--dimension-space-400);
   padding-block: var(--dimension-space-600);
+  /* Everything from the eyebrow to Knowie's bubble sits Space/700 lower than
+     the stack's own Space/600 inset. */
+  padding-block-start: calc(var(--dimension-space-600) + var(--dimension-space-700));
 }
 
 /*
@@ -73,20 +76,22 @@
 }
 
 /*
- * The bottom fifth of Knowie's body sits behind the bubble, so he reads as
+ * The lower part of Knowie's body sits behind the bubble, so he reads as
  * leaning over it rather than floating above it.
  *
  * mascotSlot 3XL is Illustration/2500 with Space/300 of padding a side, so the
  * art is 200 − 2 × 12 = 176px tall and fills that height. The bubble rises by
- * the slot's bottom padding plus 20% of the art: 12 + 35.2 = 47.2px. Derived
- * from the tokens rather than typed, so it follows either one if it changes;
- * 0.2 is the ratio asked for, not a design value.
+ * the slot's bottom padding, plus 20% of the art, plus Space/200 more to sink
+ * Knowie a little further: 12 + 35.2 + 8 = 55.2px, about a quarter of his
+ * body. Derived from the tokens rather than typed, so it follows any of them
+ * if they change; 0.2 is the ratio asked for, not a design value.
  */
 .mascot {
   margin-block-end: calc(
     -1 * (
       var(--dimension-space-300) +
-      0.2 * (var(--dimension-illustration-2500) - 2 * var(--dimension-space-300))
+      0.2 * (var(--dimension-illustration-2500) - 2 * var(--dimension-space-300)) +
+      var(--dimension-space-200)
     )
   );
 }

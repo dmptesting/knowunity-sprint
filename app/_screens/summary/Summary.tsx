@@ -99,7 +99,7 @@ export function Summary({
           since nothing passed and SPEC.md keeps him from wearing a reaction at
           a student who struggled. Decorative: the bubble carries the words.
           The bubble is under him, not beside him, so it has no tail, and it
-          overlaps the bottom fifth of his body.
+          overlaps the lower quarter of his body.
         */}
         <div className={styles.knowie}>
           <MascotSlot
