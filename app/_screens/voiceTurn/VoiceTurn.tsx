@@ -231,7 +231,7 @@ export function VoiceTurn({
              * state for assistive tech.
              */
             <p className={styles.hintLine}>
-              {processing ? 'Checking your answer…' : hintLines[phase]}
+              {processing ? 'Let me check that…' : hintLines[phase]}
             </p>
           )}
 

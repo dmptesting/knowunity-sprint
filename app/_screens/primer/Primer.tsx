@@ -27,7 +27,7 @@ export type PrimerProps = {
   onClose?: () => void;
 };
 
-const DEFAULT_LINE = `Nice work finishing ${SECTION_TITLE}. Let's talk through what stuck.`;
+const DEFAULT_LINE = `Nice work finishing ${SECTION_TITLE}. Let's talk through what actually stuck.`;
 
 /**
  * Entry + mic primer — the first thing the student sees, and the screen that
@@ -78,7 +78,7 @@ export function Primer({
         <Button
           variant="Primary"
           size="L"
-          CTA="Let's get started"
+          CTA="Let's go"
           onClick={start}
         />
       }

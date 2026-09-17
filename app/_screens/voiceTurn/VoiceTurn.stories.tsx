@@ -103,7 +103,7 @@ export const ArmedToCancel: Story = {
 export const Processing: Story = {
   args: { processing: true },
   play: async ({ canvas }) => {
-    await expect(canvas.getByText('Checking your answer…')).toBeVisible();
+    await expect(canvas.getByText('Let me check that…')).toBeVisible();
     await expect(canvas.getByRole('img', { name: 'Checking your answer' })).toBeVisible();
   },
 };

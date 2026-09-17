@@ -32,14 +32,14 @@ export type Notice = {
 export const NOTICES: Record<NoticeKind, Notice> = {
   /* Nothing came through at all. */
   empty: {
-    body: "I didn't catch anything that time. Give it another go.",
+    body: "Didn't catch that one — give it another go.",
     retryCTA: 'Try again',
     chargesLadder: false,
   },
 
   /* Something came through, but not enough of it to judge. */
   garbled: {
-    body: 'That came through in pieces. Have another go?',
+    body: 'That came through in pieces — want to try again?',
     retryCTA: 'Try again',
     chargesLadder: false,
   },
@@ -49,13 +49,13 @@ export const NOTICES: Record<NoticeKind, Notice> = {
    * never flips to an error, because the answer usually does arrive.
    */
   timeoutSoft: {
-    body: 'Still thinking about this one…',
+    body: 'Give me a second, still working this out…',
     chargesLadder: false,
   },
 
   /* Past 8s. Now there is something to decide, so offer the decision. */
   timeoutRetry: {
-    body: "This is taking longer than it should. You can wait, or say it again.",
+    body: "This is taking longer than it should — you can wait it out or say it again.",
     retryCTA: 'Say it again',
     chargesLadder: false,
   },

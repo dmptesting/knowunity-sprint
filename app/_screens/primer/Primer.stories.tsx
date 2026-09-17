@@ -57,7 +57,7 @@ export const Default: Story = {
   args: { requestMicrophone: grants },
   play: async ({ canvas, args }) => {
     await expect(
-      canvas.getByRole('button', { name: "Let's get started" }),
+      canvas.getByRole('button', { name: "Let's go" }),
     ).toBeVisible();
     // Nothing has asked for the microphone yet.
     await expect(args.onPermission).not.toHaveBeenCalled();
@@ -69,7 +69,7 @@ export const PermissionGranted: Story = {
   name: 'Tapping start, then allowing',
   args: { requestMicrophone: grants },
   play: async ({ canvas, args }) => {
-    await userEvent.click(canvas.getByRole('button', { name: "Let's get started" }));
+    await userEvent.click(canvas.getByRole('button', { name: "Let's go" }));
     await expect(args.onPermission).toHaveBeenCalledWith('granted');
   },
 };
@@ -79,7 +79,7 @@ export const PermissionRefused: Story = {
   name: 'Tapping start, then refusing',
   args: { requestMicrophone: refuses },
   play: async ({ canvas, args }) => {
-    await userEvent.click(canvas.getByRole('button', { name: "Let's get started" }));
+    await userEvent.click(canvas.getByRole('button', { name: "Let's go" }));
     await expect(args.onPermission).toHaveBeenCalledWith('denied');
   },
 };

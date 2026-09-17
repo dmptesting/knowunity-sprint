@@ -32,8 +32,8 @@ export type Verdict = JudgedVerdict | 'empty';
  */
 export const MISS_TITLE: Record<Exclude<JudgedVerdict, 'pass'>, string> = {
   /* Acknowledges they were close without inventing credit. */
-  partial: 'Almost…',
-  fail: 'Not quite…',
+  partial: 'So close…',
+  fail: 'Not quite',
 };
 
 /**
@@ -126,7 +126,7 @@ export const RECALL_SCRIPT: RecallQuestion[] = [
         transcript:
           'a router sends traffic between networks using ip addresses and a switch just moves it around inside one network with mac addresses',
         feedback: {
-          headline: "That's it.",
+          headline: "Nailed it.",
           detail: "A router crosses networks; a switch never leaves the one it's on.",
         },
       },
@@ -151,7 +151,7 @@ export const RECALL_SCRIPT: RecallQuestion[] = [
         verdict: 'partial',
         transcript: 'the ip address is how the packet finds the right network',
         feedback: {
-          headline: 'Right about the IP address.',
+          headline: "You've got the IP address part.",
           detail: "There's a second address doing a different job.",
         },
       },
@@ -160,7 +160,7 @@ export const RECALL_SCRIPT: RecallQuestion[] = [
         transcript:
           'the ip address gets it to the right network and then the mac address picks out the actual device on that network',
         feedback: {
-          headline: "That's it.",
+          headline: "Now you've got both halves.",
           detail: 'IP gets it to the network, MAC finds the device on it.',
         },
       },
@@ -190,7 +190,7 @@ export const RECALL_SCRIPT: RecallQuestion[] = [
           "it needs symbols and numbers and capitals so it's harder to brew tea force it",
         feedback: {
           headline: "That's not the main thing here.",
-          detail: 'Something else about the password matters much more.',
+          detail: "It's not that — something else about the password matters a lot more.",
         },
       },
       {
