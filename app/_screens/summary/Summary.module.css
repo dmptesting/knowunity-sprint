@@ -68,7 +68,31 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--dimension-space-200);
   inline-size: 100%;
   margin-block-start: var(--dimension-space-800);
+}
+
+/*
+ * The bottom fifth of Knowie's body sits behind the bubble, so he reads as
+ * leaning over it rather than floating above it.
+ *
+ * mascotSlot 3XL is Illustration/2500 with Space/300 of padding a side, so the
+ * art is 200 − 2 × 12 = 176px tall and fills that height. The bubble rises by
+ * the slot's bottom padding plus 20% of the art: 12 + 35.2 = 47.2px. Derived
+ * from the tokens rather than typed, so it follows either one if it changes;
+ * 0.2 is the ratio asked for, not a design value.
+ */
+.mascot {
+  margin-block-end: calc(
+    -1 * (
+      var(--dimension-space-300) +
+      0.2 * (var(--dimension-illustration-2500) - 2 * var(--dimension-space-300))
+    )
+  );
+}
+
+/* Positioned so it paints over the mascot's art rather than under it. */
+.recall {
+  position: relative;
+  z-index: 1;
 }

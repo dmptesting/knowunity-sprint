@@ -98,11 +98,16 @@ export function Summary({
           he is playing back a passed answer; on standby with the canned line,
           since nothing passed and SPEC.md keeps him from wearing a reaction at
           a student who struggled. Decorative: the bubble carries the words.
-          The bubble is under him, not beside him, so it has no tail.
+          The bubble is under him, not beside him, so it has no tail, and it
+          overlaps the bottom fifth of his body.
         */}
         <div className={styles.knowie}>
-          <MascotSlot size="3XL" expression={correct > 0 ? 'excited' : 'standby'} />
-          <CalloutBubble body={recallLine} showTail={false} />
+          <MascotSlot
+            className={styles.mascot}
+            size="3XL"
+            expression={correct > 0 ? 'excited' : 'standby'}
+          />
+          <CalloutBubble className={styles.recall} body={recallLine} showTail={false} />
         </div>
       </div>
     </Screen>
