@@ -16,6 +16,10 @@
   display: inline-flex;
   flex-direction: column;
   margin: var(--dimension-space-0);
+  /* Figma's Stroke/Heavy Border, in the same accent as the fill. The dark
+     panel covers the tile everywhere but the label strip, so the stroke is
+     what carries the accent around the rest of the tile. */
+  border: var(--dimension-stroke-heavy-border) solid var(--stat-tile-bold);
   border-radius: var(--dimension-radius-400);
   background-color: var(--stat-tile-bold);
 }
@@ -64,8 +68,9 @@
 }
 
 /*
- * The dark panel. Full width, so it covers the tile's lower corners and leaves
- * only the coloured strip showing behind the label.
+ * The dark panel. Full width inside the stroke, so it covers the tile's lower
+ * corners and leaves the coloured strip behind the label plus the stroke
+ * around the edge.
  *
  * Figma text style "Greed Condensed/Stat". No webfont ships for the condensed
  * family, so Greed Standard leads the fallback chain: until one does, the

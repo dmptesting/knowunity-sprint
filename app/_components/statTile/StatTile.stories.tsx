@@ -31,7 +31,7 @@ const meta = {
           '| `score` | `accent/green` | `target` | Score |',
           '| `blazing` | `accent/brand` | `timer` (a stopwatch) | Time |',
           '',
-          'Each accent is used the same way: the tile is `bold`, the label on it is `onBold`, and the value panel is `background/page` with its icon and number in `bold` again. Contrast, label then value: 6.64:1 / 7.35:1 (blue), 7.49:1 / 8.49:1 (green), 5.61:1 / 5.60:1 (brand). `accent/brand` works here, having been ruled out of the tile’s previous subtle-fill treatment at 4.10:1.',
+          'Each accent is used the same way: the tile and its `Stroke/Heavy Border` are `bold`, the label on the tile is `onBold`, and the value panel is `background/page` with its icon and number in `bold` again. The panel covers everything but the label strip, so the stroke is what carries the accent round the rest of the tile. Contrast, label then value: 6.64:1 / 7.35:1 (blue), 7.49:1 / 8.49:1 (green), 5.61:1 / 5.60:1 (brand). `accent/brand` works here, having been ruled out of the tile’s previous subtle-fill treatment at 4.10:1.',
           '',
           '### Also worth knowing',
           '',
@@ -46,7 +46,6 @@ const meta = {
           '- **The numerals fall back to Greed Standard.** Figma’s text style is `Greed Condensed/Stat`, but no webfont ships for the condensed family, so the shipped face leads the fallback chain at the same weight and size.',
           '- **The value is 21px, not 24.** Figma drew 24, which is not a step on the type scale; the text style snaps to `font/size/lg`. The icon likewise snaps to `Icon/300` (24px) from Figma’s 29px.',
           '- **The tile hugs its content** rather than sitting at Figma’s fixed 108.25px, which is not a token either.',
-          '- **The invisible stroke is dropped.** Figma gives the tile a 2px stroke in the same `bold` token as its fill, so it paints nothing.',
           '- **It is a description list, not two bare text layers.** `<dl>`/`<dt>`/`<dd>` ties the label to its value for screen readers.',
         ].join('\n'),
       },
@@ -76,6 +75,21 @@ function resolveColor(token: string) {
   probe.remove();
   return value;
 }
+
+/** The accent runs round the whole tile, not only the label strip. */
+export const Stroke: Story = {
+  name: 'The stroke',
+  args: { stat: 'blazing', value: '2:09' },
+  play: async ({ canvasElement }) => {
+    const tile = canvasElement.querySelector('dl')!;
+    const style = getComputedStyle(tile);
+    const accent = resolveColor('--color-accent-brand-bold');
+    for (const side of ['borderTopColor', 'borderRightColor', 'borderBottomColor', 'borderLeftColor'] as const) {
+      await expect(style[side]).toBe(accent);
+    }
+    await expect(style.borderTopWidth).toBe('2px');
+  },
+};
 
 /** XP earned — blue, with a bolt. */
 export const Xp: Story = {
